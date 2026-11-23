@@ -18,7 +18,30 @@ const URL_OF: Record<Tab, string> = { new: "/api/new", final: "/api/pulse?list=f
 const EVERY: Record<Tab, number> = { new: 3_000, final: 5_000, migrated: 8_000, trending: 30_000 };
 type Sort = "volume" | "new" | "mcap";
 
-const SCAN_AFTER_MS = 12_000; // on attend que les 10 premières secondes soient passées
+const SCAN_AFTER_MS = 12_000;
+
+/**
+ * Sur Vercel, chaque rafraîchissement peut venir d'une copie différente du serveur, avec sa propre liste
+ * (12 tokens, puis 45, puis 12…). On fusionne au lieu de remplacer : un token reste affiché tant qu'il a moins
+ * de 4 min, et garde le verdict le plus complet reçu (scan complet > rapide > premier regard).
+ */
+const DEPTH: Record<string, number> = { memory: 1, quick: 2, full: 3 };
+function mergeRows(prev: Row[] | null, next: Row[], keepMs = 4 * 60_000): Row[] {
+  const now = Date.now();
+  const by = new Map<string, Row>();
+  for (const r of prev ?? []) if (!r.createdAt || now - r.createdAt < keepMs) by.set(r.mint, r);
+  for (const r of next) {
+    const old = by.get(r.mint);
+    if (!old) {
+      by.set(r.mint, r);
+      continue;
+    }
+    const os = old.scan, ns = r.scan;
+    const scan = !ns ? os : !os ? ns : (DEPTH[ns.depth] ?? 0) >= (DEPTH[os.depth] ?? 0) ? ns : os;
+    by.set(r.mint, { ...old, ...r, scan, early: r.early ?? old.early, dev: r.dev ?? old.dev, image: r.image ?? old.image, name: r.name || old.name });
+  }
+  return [...by.values()].sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0)).slice(0, 120);
+} // on attend que les 10 premières secondes soient passées
 const SCAN_TOP = 15; // nouvelles paires scannées automatiquement (les autres : au clic)
 
 function useNow(ms = 1000) {
@@ -82,7 +105,7 @@ export default function Discover() {
         j.tokens.forEach((x) => seen.current.add(x.mint));
         setFresh(first ? new Set() : added);
       } else if (t === "trending") setSweepKey((k) => k + 1);
-      setLists((l) => ({ ...l, [t]: j.tokens }));
+      setLists((l) => ({ ...l, [t]: t === "new" ? mergeRows(l.new, j.tokens) : j.tokens }));
       setUpdatedAt((u) => ({ ...u, [t]: Date.now() }));
       setErr(false);
     } catch {
@@ -104,10 +127,11 @@ export default function Discover() {
       const next = buffered.current;
       buffered.current = null;
       setWaitingNew(0);
+      // (fusion aussi à la reprise après la pause)
       const added = new Set(next.map((x) => x.mint).filter((m) => !seen.current.has(m)));
       next.forEach((x) => seen.current.add(x.mint));
       setFresh(added);
-      setLists((l) => ({ ...l, new: next }));
+      setLists((l) => ({ ...l, new: mergeRows(l.new, next) }));
     }
   };
 
