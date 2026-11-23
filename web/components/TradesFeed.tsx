@@ -1,5 +1,4 @@
 "use client";
-import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useRef, useState } from "react";
 import { fromRaw, short } from "@/lib/format";
 import type { Scan } from "@/lib/types";
@@ -14,7 +13,6 @@ function ago(t: number | null, now: number) {
 
 /** Trades en direct, avec le scan dans chaque ligne : le dev et les wallets du bundle sont marqués. */
 export default function TradesFeed({ mint, scan, decimals, insiders }: { mint: string; scan: Scan | null; decimals: number | null; insiders?: string[] }) {
-  const { publicKey } = useWallet();
   const [trades, setTrades] = useState<Trade[] | null>(null);
   const [fresh, setFresh] = useState<Set<string>>(new Set());
   const [now, setNow] = useState(0);
@@ -50,7 +48,6 @@ export default function TradesFeed({ mint, scan, decimals, insiders }: { mint: s
   const dev = scan?.signals.dev.address;
   const bundle = new Set((scan?.holders ?? []).filter((h) => h.group != null).map((h) => h.owner));
   const insider = new Set(insiders ?? []);
-  const me = publicKey?.toBase58();
   const dec = decimals ?? 6;
 
   if (!trades) return <p className="empty">Loading live trades…</p>;
@@ -73,7 +70,6 @@ export default function TradesFeed({ mint, scan, decimals, insiders }: { mint: s
                 {t.trader === dev && <span className="tag dev">DEV</span>}
                 {bundle.has(t.trader) && <span className="tag bundle">BUNDLE</span>}
                 {!bundle.has(t.trader) && t.trader !== dev && insider.has(t.trader) && <span className="tag bundle" title="Bought in the first 10 seconds">INSIDER</span>}
-                {t.trader === me && <span className="tag you">YOU</span>}
               </td>
             </tr>
           ))}

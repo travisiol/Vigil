@@ -7,13 +7,11 @@ import { setScan } from "@/lib/client/scans";
 import { pct, price, short, usd, age } from "@/lib/format";
 import type { Market, Scan, ScanLite } from "@/lib/types";
 import BubbleMap from "./BubbleMap";
-import Position from "./Position";
 import ExitRadar, { useRadar } from "./ExitRadar";
 import PriceChart from "./PriceChart";
 import ScanPanel from "./ScanPanel";
 import TradesFeed from "./TradesFeed";
-import TradeBox from "./TradeBox";
-import { Pill, TokenIcon } from "./ui";
+import { TokenIcon } from "./ui";
 
 /** Erreur "définitive" (token introuvable…) : on ne réessaie pas. Le reste (coupure, serveur occupé) est réessayé. */
 class FinalError extends Error {}
@@ -283,9 +281,6 @@ export default function TokenView({ mint }: { mint: string }) {
             )}
           </p>
         )}
-        <ExitRadar r={radar} />
-        <ScanPanel scan={scan} early={early} />
-
         <section className="card" style={{ marginTop: 18 }}>
           <div className="card-h">
             <div className="tabs2" role="tablist">
@@ -298,25 +293,8 @@ export default function TokenView({ mint }: { mint: string }) {
         </section>
       </div>
       <div className="tside">
-        <Position mint={mint} symbol={m?.symbol ?? "tokens"} />
-        <TradeBox mint={mint} symbol={m?.symbol ?? "tokens"} decimals={scan?.decimals ?? null} />
-      </div>
-      {/* Mobile : verdict + achat toujours à portée de pouce */}
-      <div className="mbuy" role="region" aria-label="Quick trade">
-        {knownVerdict ? <Pill v={knownVerdict} /> : <span className="mut mono">{symbol}</span>}
-        <span className="sp" />
-        {(["buy", "sell"] as const).map((sd) => (
-          <button
-            key={sd}
-            className={`btn ${sd === "buy" ? "btn-main" : "btn-ghost"}`}
-            onClick={() => {
-              window.dispatchEvent(new CustomEvent("vigil:trade", { detail: sd }));
-              document.getElementById("trade")?.scrollIntoView({ behavior: "smooth", block: "start" });
-            }}
-          >
-            {sd === "buy" ? "Buy" : "Sell"}
-          </button>
-        ))}
+        <ScanPanel scan={scan} early={early} />
+        <ExitRadar r={radar} />
       </div>
     </div>
   );

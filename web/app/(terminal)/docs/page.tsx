@@ -7,17 +7,16 @@ const pc = (x: number) => `${Math.round(x * 100)}%`;
 
 export default function Page() {
   const t = brand.scan;
-  const fee = brand.fees.tradeFeeBps / 100;
   return (
     <article className="doc">
       <div className="hero-s">
         <h1>How Vigil <span className="grad-text">watches.</span></h1>
-        <p className="mut">What Vigil reads, how a verdict is decided, how Vigil Lens shows it on the sites you use, what a trade costs and why your keys never leave your wallet.</p>
+        <p className="mut">What Vigil reads on the chain, how a verdict is decided, and how the extension shows it on the sites you already use.</p>
       </div>
 
       <section>
-        <h2>Vigil Lens</h2>
-        <p>Vigil Lens is a free Chrome extension. On pump.fun, Axiom, GMGN, DexScreener and X, it puts a Clean, Watch or Bundled badge next to every Solana token on your screen. Hover the badge for the reason; click it for the full scan. On a token page, a small panel shows the verdict, the exit radar and an "Open in Vigil" button. <Link href="/lens" style={{ textDecoration: "underline" }}>Install Vigil Lens</Link>.</p>
+        <h2>The extension</h2>
+        <p>Vigil Lens is a free browser extension. On Axiom, GMGN, pump.fun, DexScreener and X (and in beta on Padre, Photon and BullX), it puts a Clean, Watch or Bundled badge next to every Solana token on your screen. Hover the badge for the reason; click it for the full scan. On a token page, a small panel shows the verdict, the key numbers and the exit radar. <Link href="/lens" style={{ textDecoration: "underline" }}>Get the extension</Link>.</p>
         <p>Lens is read-only: it never touches your wallet, and the only thing it sends to Vigil is the token addresses shown on screen.</p>
       </section>
 
@@ -73,26 +72,11 @@ export default function Page() {
       </section>
 
       <section>
-        <h2>Verify everything</h2>
-        <p>Nothing Vigil claims needs to be taken on trust. The <Link href="/verify" style={{ textDecoration: "underline" }}>Verify</Link> page recomputes every number from public transactions:</p>
+        <h2>Privacy</h2>
         <ul>
-          <li><b>Fees</b>: each Vigil trade pays a separate {fee}% SOL transfer, shown before you sign and counted on the Verify page.</li>
-          <li><b>Cashback</b>: paid daily from the cashback wallet; every payout carries the memo <code>vigil-cashback</code>.</li>
-          <li><b>Buybacks</b>: {brand.fees.split.find((x) => /buyback/i.test(x.label))?.pct ?? 50}% of fees buy $VIGIL on the open market, memo <code>vigil-buyback</code>; half of what is bought is burned, memo <code>vigil-burn</code>. Until $VIGIL launches, the buyback share is set aside and spent on the first buyback.</li>
-        </ul>
-      </section>
-
-      <section>
-        <h2>Fees</h2>
-        <p><b>{fee}% per trade</b>, half of the ~1% most Solana terminals charge, in SOL, inside the transaction you sign. {brand.fees.cashbackPct}% of it comes back to you as daily SOL cashback, so your real cost is {(brand.fees.tradeFeeBps * (100 - brand.fees.cashbackPct)) / 10000}%. On a buy it comes out of the SOL you spend; on a sell it is {fee}% of the minimum SOL you are guaranteed to receive. If the trade fails, the fee fails with it. Where it goes is public on the <Link href="/fees" style={{ textDecoration: "underline" }}>Fees page</Link>.</p>
-      </section>
-
-      <section>
-        <h2>Security</h2>
-        <ul>
-          <li><b>Non-custodial.</b> Vigil never holds your funds or your keys. Every trade is a transaction you read and sign in your own wallet.</li>
-          <li><b>Best route.</b> Trades are routed by Jupiter across pump.fun, PumpSwap, Raydium, Meteora and more.</li>
-          <li><b>Checked before you sign.</b> Each trade is simulated first, so a trade that would fail is stopped before it reaches your wallet.</li>
+          <li><b>No wallet.</b> Vigil never asks to connect a wallet, never signs anything and never sees your funds.</li>
+          <li><b>Only token addresses.</b> The extension sends Vigil the token addresses shown on your screen, nothing else: no browsing history, no account, no cookies.</li>
+          <li><b>Listed sites only.</b> The extension runs on Axiom, GMGN, pump.fun, DexScreener, X, Padre, Photon and BullX, and nowhere else.</li>
         </ul>
       </section>
 
@@ -101,7 +85,7 @@ export default function Page() {
         <ul>
           <li>Tokens with a very long history can&apos;t be traced back to their launch live yet: the 10-second signal then shows &quot;not measured&quot;.</li>
           <li>The full scan runs when you open a token; Lens badges use the quick scan, which takes a few seconds for a token nobody has looked at yet.</li>
-          <li>Lens is not on the Chrome Web Store yet: it installs in four steps from the <Link href="/lens" style={{ textDecoration: "underline" }}>Lens page</Link>.</li>
+          <li>Lens is not on the Chrome Web Store yet: it installs in four steps from the <Link href="/lens" style={{ textDecoration: "underline" }}>extension page</Link>.</li>
         </ul>
       </section>
     </article>

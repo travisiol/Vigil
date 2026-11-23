@@ -37,16 +37,28 @@
     if ((m = p.match(/\/solana\/([1-9A-HJ-NP-Za-km-z]{32,44})/))) return m[1]; // dexscreener (paire)
     return null;
   }
+  // Terminaux (Padre, Photon, BullX…) : l'adresse du token ou de la paire est dans le chemin ou dans ?address=.
+  // Le serveur trie ensuite token / paire, donc une adresse qui n'est ni l'un ni l'autre est simplement ignorée.
+  const TERMINALS = /(padre\.gg|tinyastro\.io|bullx\.io|bloombot\.app|nova\.trade)$/;
+  function addrFromUrl(u) {
+    const h = u.hostname.replace(/^www\./, "");
+    const fromPath = addrFromPath(u.pathname);
+    if (fromPath || !TERMINALS.test(h)) return fromPath;
+    const q = u.searchParams.get("address") || u.searchParams.get("token") || u.searchParams.get("mint");
+    if (q && IS_B58.test(q)) return q;
+    const segs = u.pathname.split("/").filter((x) => IS_B58.test(x));
+    return segs.length ? segs[segs.length - 1] : null;
+  }
   function addrFromHref(href) {
     try {
       const u = new URL(href, location.href);
       const h = u.hostname.replace(/^www\./, "");
-      if (!/(pump\.fun|axiom\.trade|gmgn\.ai|dexscreener\.com|birdeye\.so|solscan\.io|photon-sol\.tinyastro\.io)$/.test(h)) return null;
+      if (!/(pump\.fun|axiom\.trade|gmgn\.ai|dexscreener\.com|birdeye\.so|solscan\.io)$/.test(h) && !TERMINALS.test(h)) return null;
       if (/solscan\.io$/.test(h)) {
         const m = u.pathname.match(/\/token\/([1-9A-HJ-NP-Za-km-z]{32,44})/);
         return m ? m[1] : null;
       }
-      return addrFromPath(u.pathname);
+      return addrFromUrl(u);
     } catch {
       return null;
     }
@@ -145,7 +157,7 @@
     }
     const v = d?.verdict;
     tip.innerHTML = v
-      ? `<b style="color:${v === "clean" ? "#07E7C3" : v === "watch" ? "#FFB21F" : "#FF6B6B"}">Vigil · ${LABEL[v]}</b><span class="m">${escapeHtml(d.reason || "")}</span><span class="m">Click to open the full scan, exit radar and buy.</span>`
+      ? `<b style="color:${v === "clean" ? "#07E7C3" : v === "watch" ? "#FFB21F" : "#FF6B6B"}">Vigil · ${LABEL[v]}</b><span class="m">${escapeHtml(d.reason || "")}</span><span class="m">Click to open the full scan and the exit radar.</span>`
       : `<b>Vigil is scanning this token…</b><span class="m">Launch wallets, dev history, funding links.</span>`;
     const r = el.getBoundingClientRect();
     tip.style.left = Math.min(window.innerWidth - 300, Math.max(8, r.left)) + "px";
@@ -209,9 +221,9 @@
   let panelRoot = null;
   let lastPath = "";
   function checkPage() {
-    if (location.pathname === lastPath) return;
-    lastPath = location.pathname;
-    const a = /x\.com$|twitter\.com$/.test(host) ? null : addrFromPath(location.pathname);
+    if (location.pathname + location.search === lastPath) return;
+    lastPath = location.pathname + location.search;
+    const a = /x\.com$|twitter\.com$/.test(host) ? null : addrFromUrl(new URL(location.href));
     panelAddr = a;
     if (!a) {
       if (panelHost) panelHost.style.display = "none";

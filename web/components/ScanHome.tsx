@@ -69,7 +69,7 @@ export default function ScanHome() {
         </form>
         {bad && <p className="msg err" role="alert">That doesn&apos;t look like a Solana contract address.</p>}
         <Link className="lens-pill" href="/lens">
-          <span className="dotlive" aria-hidden="true" /> Get the verdict on pump.fun, Axiom, GMGN, DexScreener and X with <b>Vigil Lens</b> →
+          <span className="dotlive" aria-hidden="true" /> Get these verdicts inside Axiom, GMGN and pump.fun with <b>the Vigil extension</b> →
         </Link>
       </section>
 
@@ -114,7 +114,7 @@ export default function ScanHome() {
           {err && !rows && <p className="empty">Couldn&apos;t load trending tokens right now.</p>}
         </div>
       </section>
-      <p className="mut" style={{ fontSize: 12, marginTop: 12 }}>Facts from the chain, not financial advice. Buying through Vigil costs 0.5%, shown before you sign, and 25% of it comes back to you.</p>
+      <p className="mut" style={{ fontSize: 12, marginTop: 12 }}>Facts from the chain, not financial advice. A clean token can still go to zero.</p>
     </>
   );
 }

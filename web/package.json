@@ -6,10 +6,7 @@
     "dev": "next dev -p 3100",
     "build": "next build",
     "start": "next start -p 3100",
-    "typecheck": "tsc --noEmit",
-    "payout": "npx tsx --env-file=.env.local --conditions=react-server scripts/payout.mts",
-    "buyback": "npx tsx --env-file=.env.local --conditions=react-server scripts/buyback.mts",
-    "daily": "npx tsx --env-file=.env.local --conditions=react-server scripts/daily.mts"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@solana/wallet-adapter-base": "^0.9.28",

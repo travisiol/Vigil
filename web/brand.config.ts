@@ -7,7 +7,7 @@ export const brand = {
   name: "Vigil",
   tagline: "Always on watch.",
   description:
-    "The Solana memecoin terminal that watches every token for you. One-click buys, and every bundle, insider and serial dev flagged before you click.",
+    "A free browser extension that flags rugs on Axiom, GMGN, pump.fun, DexScreener and X. Every bundle, insider and serial dev, flagged before you click.",
   domain: "vigil.trade",
   ticker: "$VIGIL",
   contract: "", // CA du token $VIGIL, vide tant qu'il n'est pas lancé
@@ -42,20 +42,6 @@ export const brand = {
     error: "Vigil lost the signal. Retry.",
   },
 
-  // FEES.md — 0,5 % par trade (moitié du marché, ~1 %) [F-041]. 75 % reviennent aux traders et aux holders (modèle Pons).
-  fees: {
-    tradeFeeBps: 50,
-    marketFeeBps: 100, // ce que prennent la plupart des terminaux Solana
-    cashbackPct: 25, // part de la fee rendue au trader, en SOL, chaque jour
-    cashbackMinSol: 0.0005, // en dessous, le cashback attend le versement suivant
-    payoutHourUtc: 0, // versement quotidien à 00:00 UTC
-    split: [
-      { label: "Back to you", pct: 25, note: "Daily SOL cashback on every trade you make" },
-      { label: "$VIGIL buyback", pct: 50, note: "Bought on the open market, half of it burned" },
-      { label: "Operations", pct: 25, note: "RPC, APIs, servers and the team" },
-    ],
-  },
-
   // Seuils du scan (ARCHITECTURE.md)
   scan: {
     early10sBundled: 0.3,
@@ -64,14 +50,6 @@ export const brand = {
     liquidityWatch: 0.05,
   },
 
-  trade: {
-    buyPresetsSol: [0.1, 0.5, 1, 2],
-    sellPresetsPct: [25, 50, 100],
-    slippagePresetsBps: [500, 1000, 2000],
-    defaultSlippageBps: 1000,
-  },
-
-  network: "mainnet-beta" as "devnet" | "mainnet-beta", // Jupiter n'existe que sur mainnet
 } as const;
 
 export type Brand = typeof brand;

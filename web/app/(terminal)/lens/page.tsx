@@ -9,6 +9,7 @@ const SITES = [
   { name: "GMGN", where: "every token link and token page" },
   { name: "DexScreener", where: "every pair, converted to its token" },
   { name: "X", where: "every tweet that posts a contract address" },
+  { name: "Padre · Photon · BullX", where: "beta: token pages and token links" },
 ];
 
 /** Page d'installation de Vigil Lens (F-080). Chrome Web Store en attente : installation manuelle en 4 étapes. */
@@ -16,19 +17,19 @@ export default function Page() {
   return (
     <article className="lens">
       <div className="lens-hero">
-        <span className="eyebrow mono">VIGIL LENS · CHROME EXTENSION · FREE</span>
+        <span className="eyebrow mono">VIGIL · BROWSER EXTENSION · FREE</span>
         <h1>See the rug <span className="grad-text">before you click.</span></h1>
         <p className="mut">
-          Vigil Lens puts a verdict next to every Solana token on the sites you already trade from. Hover it for the reason. Click it for the full scan, the exit radar and a one-click buy.
+          Vigil puts a rug verdict next to every Solana token on Axiom, GMGN, pump.fun, DexScreener, X, and in beta on Padre, Photon and BullX. Hover it for the reason. Click it for the full scan and the exit radar.
         </p>
         <div className="lens-badges" aria-label="The three verdicts">
           <Pill v="clean" /> <Pill v="watch" /> <Pill v="bundled" />
         </div>
         <div className="cta">
-          <a className="btn btn-main" href="/vigil-lens.zip" download>Download for Chrome</a>
+          <a className="btn btn-main" href="/vigil-lens.zip" download>Download the extension</a>
           <Link className="btn btn-ghost" href="/app">Scan a token on the web</Link>
         </div>
-        <p className="mut lens-note">Works in Chrome, Brave, Edge and Arc. Chrome Web Store listing on the way: until then, it installs in four steps.</p>
+        <p className="mut lens-note">Works in Chrome, Brave, Edge, Arc and Opera. Chrome Web Store listing on the way: until then, it installs in four steps.</p>
       </div>
 
       <section className="lens-grid">
@@ -67,9 +68,9 @@ export default function Page() {
           <ul className="lens-list">
             <li><b>No wallet access.</b> Lens never asks to connect a wallet and never signs anything.</li>
             <li><b>Only token addresses.</b> The only thing sent to Vigil is the token addresses shown on your screen.</li>
-            <li><b>Free.</b> The extension costs nothing. A 0.5% fee applies only if you choose to buy through Vigil, and 25% of it comes back to you.</li>
+            <li><b>Free.</b> No account, no subscription, nothing to pay.</li>
           </ul>
-          <Link className="lens-more" href="/verify">Verify every claim →</Link>
+          <Link className="lens-more" href="/docs">How Vigil reads a token →</Link>
         </div>
       </section>
     </article>

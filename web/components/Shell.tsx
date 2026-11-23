@@ -4,16 +4,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { brand } from "@/brand.config";
 import { VMark } from "./ui";
-import WalletButton from "./WalletButton";
 
 const NAV: { href: string; label: string; m?: string; desktopOnly?: boolean }[] = [
-  { href: "/app", label: "Scan" },
-  { href: "/lens", label: "Lens" },
-  { href: "/portfolio", label: "Portfolio" },
-  { href: "/rewards", label: "Rewards" },
-  { href: "/fees", label: "Fees" },
-  { href: "/verify", label: "Verify" },
-  { href: "/docs", label: "Docs", desktopOnly: true },
+  { href: "/app", label: "Scanner" },
+  { href: "/lens", label: "Extension" },
+  { href: "/docs", label: "How it reads" , m: "Docs" },
 ];
 
 import OpeningOverlay from "./OpeningOverlay";
@@ -58,7 +53,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
             </svg>
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Paste a contract address to scan it" aria-label="Contract address" spellCheck={false} />
           </form>
-          <WalletButton />
+          <Link className="btn btn-main top-cta" href="/lens">Get the extension</Link>
         </div>
       </header>
       <main className="page">{children}</main>
