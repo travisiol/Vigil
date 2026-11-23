@@ -65,7 +65,8 @@ export function newLaunches(limit = 80): Promise<Launch[]> {
     const sigs = (await conn.getSignaturesForAddress(new PublicKey(PUMP_MINT_AUTHORITY), { limit: 100 })).filter((s) => !s.err);
     // Au plus 30 nouveaux lancements lus par tour (les plus récents d'abord) : au démarrage il y en a 100,
     // et tout lire d'un coup bloquait le flux 20 s et plus (F-076). Les plus anciens se complètent aux tours suivants.
-    const todo = sigs.map((s) => s.signature).filter((s) => !known.has(s)).slice(0, 30);
+    // Instance neuve : 12 d'abord pour afficher vite, puis 30 par tour
+    const todo = sigs.map((s) => s.signature).filter((s) => !known.has(s)).slice(0, known.size ? 30 : 12);
     for (let i = 0; i < todo.length; i += 25) {
       const txs = await getTxs(conn, todo.slice(i, i + 25));
       txs.forEach((tx, j) => {
@@ -296,10 +297,17 @@ let last: { rows: Awaited<ReturnType<typeof newPairs>>; at: number } | null = nu
 export function feedRow(mint: string) {
   return last?.rows.find((r) => r.mint === mint) ?? null;
 }
+let firstRun: Promise<Awaited<ReturnType<typeof newPairs>>> | null = null;
 export async function newPairsFast() {
   startLoop();
   if (last && Date.now() - last.at < 60_000) return last.rows;
-  return newPairs();
+  // Instance neuve (Vercel) : on ne fait jamais attendre l'écran plus de 8 s. Le calcul continue,
+  // et les rafraîchissements suivants (toutes les 3 s) reçoivent la liste dès qu'elle est prête.
+  firstRun ??= newPairs().finally(() => {
+    firstRun = null;
+  });
+  const r = await Promise.race([firstRun, new Promise<null>((res) => setTimeout(() => res(null), 8_000))]);
+  return r ?? last?.rows ?? [];
 }
 
 // Un token qui arrive en Final stretch mérite le scan complet (financements, clusters), même si personne ne l'a ouvert
