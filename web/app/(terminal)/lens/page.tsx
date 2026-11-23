@@ -68,7 +68,7 @@ export default function Page() {
           <ul className="lens-list">
             <li><b>No wallet access.</b> Lens never asks to connect a wallet and never signs anything.</li>
             <li><b>Only token addresses.</b> The only thing sent to Vigil is the token addresses shown on your screen.</li>
-            <li><b>Free.</b> No account, no subscription, nothing to pay.</li>
+            <li><b>Free plan.</b> Badges, reasons and the token panel, with no account. Pro adds funding traces, the live exit radar and alerts: <a href="/#pricing" style={{ textDecoration: "underline" }}>see the plans</a>.</li>
           </ul>
           <Link className="lens-more" href="/docs">How Vigil reads a token →</Link>
         </div>

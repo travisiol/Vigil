@@ -77,10 +77,12 @@ header{position:sticky;top:0;z-index:50;background:rgba(0,0,0,.72);backdrop-filt
 .ext{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;border:1px solid var(--line);opacity:.45;transition:opacity .3s,box-shadow .3s,border-color .3s}
 .ext svg{width:16px;height:14px}
 .ext.on{opacity:1;border-color:rgba(181,123,255,.5);box-shadow:0 0 18px -4px rgba(188,51,201,.8)}
-.win-body{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 230px}
-.tk-main{border-right:1px solid var(--line)}
+.win-body{position:relative}
 .tk-head{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
-.av{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:#2A1F12;color:#FFC46B;font:700 13px/1 Sora,sans-serif;flex:none}
+.av{width:38px;height:38px;border-radius:50%;flex:none;object-fit:cover;background:#111}
+.logo-s{width:24px;height:24px;border-radius:50%;object-fit:cover;flex:none;background:#111}
+.exc .top .who2{display:flex;align-items:center;gap:10px}
+.rowx .l{display:flex;align-items:center;gap:10px}
 .tk-name b{font:600 16px/1.2 Sora,sans-serif}
 .tk-name span{display:block;font-size:12px;color:var(--dim)}
 .vslot{min-width:92px;display:flex}
@@ -136,6 +138,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(0,0,0,.72);backdrop-filt
 .exc{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:18px;background:var(--s1);padding:20px}
 .exc .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .exc .top b{font:600 18px/1 Sora,sans-serif}
+.exc .top img{width:36px;height:36px;border-radius:50%;object-fit:cover;background:#111}
 .exc .addr2{font-size:12px;color:var(--dim);margin-top:6px}
 .exc .why{margin-top:14px;font-size:15px;line-height:1.45}
 .exc dl{margin:14px 0 0;padding-top:14px;border-top:1px solid var(--line);display:grid;gap:8px;font-size:13px}
@@ -193,6 +196,22 @@ header{position:sticky;top:0;z-index:50;background:rgba(0,0,0,.72);backdrop-filt
 .code p{color:var(--mut);margin-top:6px;max-width:60ch}
 .code pre{margin:0;font:12.5px/1.6 'JetBrains Mono',monospace;color:var(--mut);background:#000;border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto}
 .code pre b{color:var(--vt);font-weight:500}
+/* plans */
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}
+.plan{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:22px;background:var(--s1);padding:28px}
+.plan.pro{border-color:rgba(181,123,255,.5);background:radial-gradient(90% 60% at 100% 0%,rgba(146,50,241,.2),transparent 60%),var(--s1)}
+.plan h3{font-size:20px}
+.plan .price{margin-top:16px;font:700 40px/1 Sora,sans-serif;letter-spacing:-.04em}
+.plan .price small{font:500 15px Inter,sans-serif;color:var(--mut);letter-spacing:0;margin-left:6px}
+.plan .sub{color:var(--mut);font-size:14px;margin-top:8px;min-height:42px}
+.plan ul{list-style:none;margin:20px 0 0;padding:0;font-size:14.5px}
+.plan li{padding:10px 0;border-top:1px solid var(--line);color:var(--mut)}
+.plan li b{color:var(--ink);font-weight:600}
+.soon{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:99px;border:1px solid var(--line);font-size:11px;color:var(--dim);vertical-align:1px}
+.plan .btn{margin-top:auto;width:100%}
+.plan ul+.btn{margin-top:24px}
+.beta{margin-top:16px;padding:16px 20px;border-radius:16px;border:1px dashed rgba(181,123,255,.45);color:var(--mut);font-size:14.5px}
+.beta b{color:var(--ink)}
 /* install */
 .install{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:16px;align-items:start}
 .dl{position:sticky;top:96px;border-radius:22px;padding:30px;background:radial-gradient(90% 70% at 0% 0%,rgba(146,50,241,.22),transparent 62%),var(--s1);border:1px solid rgba(181,123,255,.35);display:grid;gap:18px}
@@ -233,7 +252,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:2
 footer nav{display:flex;gap:22px;flex-wrap:wrap}
 .mbar{display:none}
 @media(max-width:1100px){.ex{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:1000px){.hero-top,.sec-h,.faq,.install,.code{grid-template-columns:minmax(0,1fr)}.nav nav{display:none}.verds,.signals,.trust{grid-template-columns:minmax(0,1fr)}.dl{position:static}.win-body{grid-template-columns:minmax(0,1fr)}.tape{display:none}.tk-main{border-right:0}.chaps{display:flex;overflow-x:auto;scroll-snap-type:x mandatory}.chaps li{flex:0 0 150px;scroll-snap-align:start}}
+@media(max-width:1000px){.hero-top,.sec-h,.faq,.install,.code{grid-template-columns:minmax(0,1fr)}.nav nav{display:none}.verds,.signals,.trust,.plans{grid-template-columns:minmax(0,1fr)}.dl{position:static}.win-body{grid-template-columns:minmax(0,1fr)}.tape{display:none}.tk-main{border-right:0}.chaps{display:flex;overflow-x:auto;scroll-snap-type:x mandatory}.chaps li{flex:0 0 150px;scroll-snap-align:start}}
 @media(max-width:700px){.feat,.ex{grid-template-columns:minmax(0,1fr)}.dpanel{position:static;width:auto;margin:10px;transform:none;display:none}.dpanel.on{display:block}.chartbox{height:auto}#dChart{position:relative;height:240px}.tk-kpi{margin-left:0;width:100%}.istep{grid-template-columns:40px minmax(0,1fr);padding:18px}.vis{grid-column:2;justify-self:start;min-width:0}.sites td:first-child{width:auto;white-space:normal}.sites td{padding-right:10px}.dtip{width:210px}}
 @media(max-width:600px){.nav .ca,.nav .right .btn{display:none}.mob-note{display:block;margin-top:16px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--s1);font-size:13.5px;color:var(--mut)}.mob-note a{color:var(--vt)}.mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;gap:10px;align-items:center;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(0,0,0,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line)}.mbar .ca{flex:1;height:44px}.mbar .btn{height:44px;padding:0 18px}body{padding-bottom:72px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
@@ -251,7 +270,7 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
 <header>
   <div class="wrap nav">
     <a class="logo" href="#top" aria-label="Vigil home"><svg aria-hidden="true"><use href="#vmark"/></svg>Vigil</a>
-    <nav aria-label="Main"><a href="#demo">Demo</a><a href="#examples">Examples</a><a href="#detect">What it detects</a><a href="#trust">Privacy</a><a href="#install">Install</a><a href="#faq">FAQ</a></nav>
+    <nav aria-label="Main"><a href="#demo">Demo</a><a href="#examples">Examples</a><a href="#detect">What it detects</a><a href="#trust">Privacy</a><a href="#pricing">Pricing</a><a href="#install">Install</a><a href="#faq">FAQ</a></nav>
     <div class="right">
       <span class="ca mono">$VIGIL <b>7xKX…9fQa</b><button class="copy" data-copy type="button">Copy</button></span>
       <a class="btn btn-main" href="#install">Get the extension</a>
@@ -267,7 +286,7 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
       <div>
         <p class="lead">Vigil is a free browser extension for Solana traders. It flags rugs inside the sites you already use (Axiom, GMGN, pump.fun, DexScreener, X) and tells you why, in one sentence, before you put money in.</p>
         <div class="cta"><a class="btn btn-main" href="/vigil-lens.zip" download>Download the extension</a><a class="btn btn-ghost" href="#demo">Watch the demo</a></div>
-        <p class="facts">Free · no wallet · no account · Chrome, Brave, Edge, Arc, Opera</p>
+        <p class="facts">Free plan · no wallet · no account · Chrome, Brave, Edge, Arc, Opera</p>
         <p class="mob-note">On a phone? Extensions run on a computer. Open this page on your desktop to install it, or <a href="/app">scan a token on the web</a>.</p>
       </div>
     </div>
@@ -276,48 +295,47 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
       <div class="win">
         <div class="win-bar">
           <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span class="addr mono">axiom.trade/meme/Fa7kQ2…pump</span>
+          <span class="addr mono">axiom.trade/meme/7yJDP2VmgazVEa6usbXM61uSk5AT3J4dZFaJQvq2LnfZ</span>
           <span class="ext" id="dExt" title="Vigil extension"><svg aria-hidden="true"><use href="#vmark"/></svg></span>
         </div>
         <div class="win-body" id="dBody">
           <div class="tk-main">
             <div class="tk-head">
-              <span class="av" aria-hidden="true">GL</span>
-              <div class="tk-name"><b>GLIMMER</b><span class="mono">Fa7k…pump · launched 38 s ago</span></div>
+              <img class="av" src="data:image/webp;base64,UklGRogCAABXRUJQVlA4IHwCAABQDgCdASpgAGAAPpVCnkslo6KhpzQKSLASiWIAcA7XuzNG/uq+gzbF+YDnpfUA6UD0AOlNX4K0FBZbzGUMGT83XXigzCtWXq+qQHbY3/sCNHo7aOyh0ZP+Jc4P2gvneIs/Fw9gIm3q7+jTbH6uOU6n6HIf0acVrX5NuAAA/vrXgI7ExqboRaoOzeI03uOu32DmRf+9QyFj/7Pjs5PepaCOgvPjiHdiVuX5ju6MTsllQJpLK8OLQZX1qvpojmYnAbXT/soU/6/5YffWa+55D/0BROvDL65Df7PKlQ08DkEN/OYD64E5+n7PtNmAXTcY1bUkDXIJfriTYeIMA87wZgKSJRcgPFWC4ok7r6LTYCQdJy9KvcFQ5RpMTDq3xaaNTPqX9vU+APRS6oI1VRPnGRWfjUsanYwtyPvUvdG/HWmrGEnZ4Kx6G09VLGr9/jFT/oX9f0oUIsj3TmqyaLJ49BzPAXRDA0s3BKhroqQJ9S1tWnPSwwkOODKLMxMDXaVGqDeduiYE6ossUChRb4gDRqXhE7dmXJHAMFAGXt1PI2lJJ2LbwEngomMAim6WYb3Ad9436L0euLNxLK8rudX9b4PsvWoLlOPsqLHCFXD5r9Vn9CmCbeCysUlVRzIZX9T3oH2wM3eAgJNcIidhajaZen/JYiIMUi0AaN3YWynwQG83ZUI4x2HCILQWebg8VLa3m2+G3unk/nkYnfOz6zi6dqGLfPDdmU/rLx3cEVMJeyNb5ETRYZCU6gcNnpm6RbrW5SizMT0wBmlpCpIZ+oOYX8oRodobuzfyW/I53+o69iuvs/BROmko0F+g6e5j4K+fEvbW3Jmfr56wQAAAAAA=" alt="MINELIUS logo">
+              <div class="tk-name"><b>MINELIUS</b><span class="mono">E9rW…pump · Minelius</span></div>
               <span class="vslot" id="dSlot"><span class="pill p-scan" id="dBadge">Scanning</span></span>
-              <div class="tk-kpi"><div>Market cap<b id="dMc">$48.2K</b></div><div>Holders<b id="dHold">112</b></div><div>Volume<b id="dVol">$31K</b></div></div>
+              <div class="tk-kpi"><div>Market cap<b id="dMc">–</b></div><div>Age<b id="dAge">0m</b></div><div>Time (UTC)<b id="dClock">22 Nov 21:30</b></div></div>
             </div>
             <div class="chartbox">
-              <canvas id="dChart" aria-label="Price chart of the sample token"></canvas>
+              <canvas id="dChart" aria-label="MINELIUS market cap, 15-minute candles"></canvas>
               <div class="panelx dpanel" id="dPanel" aria-live="polite">
                 <div class="px-h"><svg aria-hidden="true"><use href="#vmark"/></svg>Vigil<span class="x" aria-hidden="true">–</span></div>
-                <div class="px-t"><b>$GLIMMER</b><span id="dPill"></span></div>
+                <div class="px-t"><b>$MINELIUS</b><span id="dPill"></span></div>
                 <p class="px-r" id="dReason"></p>
                 <div class="px-g">
                   <div class="hot"><span>Bought in first 10 s</span><b id="dS1">–</b></div>
                   <div class="hot"><span>Dev's past launches</span><b id="dS2">–</b></div>
-                  <div><span>Launch wallets still hold</span><b id="dS3">–</b></div>
-                  <div><span>Dev sold</span><b id="dS4">–</b></div>
+                  <div class="hot"><span>Sniper bots at launch</span><b id="dS3">–</b></div>
+                  <div><span>Launch wallets still hold</span><b id="dS4">–</b></div>
                 </div>
-                <div class="px-a" id="dAlert"><i></i>Insiders are dumping: 4 launch wallets sold together</div>
+                <div class="px-a" id="dAlert"><i></i>The launch wallets sold 100% of what they bought</div>
                 <span class="px-o">Open the full scan</span>
               </div>
             </div>
             <div class="tk-tabs" aria-hidden="true"><span>Trades</span><span>Holders</span><span>Top traders</span><span>Dev tokens</span></div>
           </div>
-          <div class="tape" aria-hidden="true"><h4>Trades</h4><div id="dTape"></div></div>
-          <div class="dtip" id="dTip"><b>Vigil · Bundled</b><span>3 wallets took 79% of supply in the first 10 s. Dev wallet: 63 tokens launched in 24 h.</span></div>
+          <div class="dtip" id="dTip"><b>Vigil · Bundled</b><span>3 wallets took 80% of supply in the first 10 s (2 sniper bots). The dev wallet has launched 37 tokens.</span></div>
           <svg class="cursor" id="dCur" viewBox="0 0 18 22" aria-hidden="true"><path d="M1 1l15 9-7 1.6-3.6 6.8z" fill="#fff" stroke="#000" stroke-width="1.2" stroke-linejoin="round"/></svg>
         </div>
       </div>
       <div class="player">
         <button class="pp" id="dPlay" type="button" aria-label="Pause the demo"><svg viewBox="0 0 14 14" aria-hidden="true"><path id="dIcon" d="M3 2h3v10H3zM8 2h3v10H8z" fill="currentColor"/></svg></button>
-        <div class="bar" id="dBar" role="slider" aria-label="Demo progress" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0" tabindex="0"><div class="fill" id="dFill"></div></div>
-        <span class="time mono" id="dTime">0:00 / 0:20</span>
+        <div class="bar" id="dBar" role="slider" aria-label="Demo progress" aria-valuemin="0" aria-valuemax="24" aria-valuenow="0" tabindex="0"><div class="fill" id="dFill"></div></div>
+        <span class="time mono" id="dTime">0:00 / 0:24</span>
       </div>
       <ol class="chaps" id="dChaps"></ol>
       <p class="caption" id="dCap" aria-live="polite"></p>
-      <p class="small">Illustration of what Vigil shows on a token page, with a sample token. The badge, panel and warning follow the extension's real layout.</p>
+      <p class="small">A replay of MINELIUS, a real Solana token: its real chart (15-minute candles, GMGN data) and the verdict Vigil gives it, read on 23 Nov 2026. The −99% in 6 hours is DexScreener's figure. Everything behind the verdict was on-chain within 10 seconds of launch.</p>
     </div>
   </div>
 </section>
@@ -341,23 +359,25 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
     </div>
     <div class="feat">
       <div class="cell"><h3>On lists and boards</h3><p>Every row of a new pairs list or a trending board gets its badge as soon as it scrolls into view.</p>
-        <div class="rowx"><b>MOCHI</b><span class="r"><span class="mut mono">$412K</span><span class="pill p-ok">Clean</span></span></div>
-        <div class="rowx"><b>ORBIT</b><span class="r"><span class="mut mono">$1.2M</span><span class="pill p-wa">Watch</span></span></div>
-        <div class="rowx"><b>HOLLOW</b><span class="r"><span class="mut mono">$1.7M</span><span class="pill p-bad">Bundled</span></span></div>
+        <div class="rowx"><span class="l"><img class="logo-s" src="data:image/webp;base64,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" alt=""><b>JENSEN</b></span><span class="r"><span class="mut mono">$1.28M</span><span class="pill p-bad">Bundled</span></span></div>
+        <div class="rowx"><span class="l"><img class="logo-s" src="data:image/webp;base64,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" alt=""><b>FIONA</b></span><span class="r"><span class="mut mono">$2.47M</span><span class="pill p-bad">Bundled</span></span></div>
+        <div class="rowx"><span class="l"><img class="logo-s" src="data:image/webp;base64,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" alt=""><b>BRUH</b></span><span class="r"><span class="mut mono">$7.93M</span><span class="pill p-wa">Watch</span></span></div>
+        <div class="rowx"><span class="l"><img class="logo-s" src="data:image/webp;base64,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" alt=""><b>DESSA</b></span><span class="r"><span class="mut mono">$2.43M</span><span class="pill p-ok">Clean</span></span></div>
       </div>
       <div class="cell"><h3>On X</h3><p>Someone posts a contract address? The verdict appears right after it, in the tweet.</p>
-        <div class="tweet"><div class="who"><i aria-hidden="true"></i><span><b>sample_trader</b> @sample_trader · 2m</span></div><p>this one is sending, dev looks based <span class="ca2">9Hc2Lx…pump</span> <span class="pill p-wa">Watch</span></p></div>
+        <div class="tweet"><div class="who"><i aria-hidden="true"></i><span><b>sample_trader</b> @sample_trader · 2m</span></div><p>JENSEN is sending, chart looks clean <span class="ca2">HKiMA2…cfmpump</span> <span class="pill p-bad">Bundled</span></p></div>
+        <p class="small" style="margin-top:10px">Same dev wallet as MINELIUS: 37 tokens launched.</p>
       </div>
       <div class="cell"><h3>Dev history</h3><p>Serial launchers and dev farms are caught on sight, from the dev's wallet.</p><div class="alerts" id="alerts"></div></div>
       <div class="cell"><h3>Exit radar</h3><p>A rug is the insiders getting out. Vigil keeps reading the launch wallets after the verdict.</p>
         <div class="radarx">
-          <div class="rx-h"><span class="rx-dot"></span><b>Insiders are dumping</b></div>
-          <p class="mono">4 launch wallets sold 10.6% of supply in the same 2 s</p>
-          <div class="rx-g"><div><span>Still holding</span><b class="mono">2% of buy</b></div><div><span>Dev sold</span><b class="mono">100% of bag</b></div></div>
+          <div class="rx-h"><span class="rx-dot"></span><b>MINELIUS · the insiders are out</b></div>
+          <p class="mono">The launch wallets already sold 100% of what they bought</p>
+          <div class="rx-g"><div><span>Launch wallets watched</span><b class="mono">13</b></div><div><span>Still holding</span><b class="mono">0% of buy</b></div></div>
         </div>
       </div>
     </div>
-    <p class="small" style="margin-top:14px">Sample tokens.</p>
+    <p class="small" style="margin-top:14px">Real tokens and real dev wallets, read on 23 Nov 2026 (market caps at scan). The tweet is a sample.</p>
   </div>
 </section>
 
@@ -431,6 +451,27 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
   </div>
 </section>
 
+<section class="band" id="pricing" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-h">
+      <h2>Free to start. Pro when it counts.</h2>
+      <p class="lead">The free plan puts a verdict on every token, on every site. Pro adds the deep reads and the alerts that save a trade.</p>
+    </div>
+    <div class="plans">
+      <div class="plan"><h3>Free</h3><div class="price">$0<small>forever</small></div><p class="sub">Everything you need to stop aping into bundles.</p>
+        <ul><li><b>Badges</b> on Axiom, GMGN, pump.fun, DexScreener and X</li><li><b>The reason</b> on hover</li><li><b>The token panel</b> with the key numbers</li><li><b>The web scanner</b>, for any contract address</li></ul>
+        <a class="btn btn-ghost" href="#install">Install the free plan</a></div>
+      <div class="plan pro"><h3>Pro</h3><div class="price">$29<small>a month, paid in SOL</small></div><p class="sub">For traders who open dozens of tokens a day.</p>
+        <ul><li><b>Everything in Free</b></li><li><b>Funding links</b> traced two hops back, in the panel</li><li><b>Exit radar</b> live on every token page</li><li><b>Exit alerts</b> when launch wallets start selling<span class="soon">soon</span></li><li><b>Dev watchlist</b>: know when a flagged dev launches again<span class="soon">soon</span></li><li><b>Priority scans</b> on brand-new tokens</li></ul>
+        <a class="btn btn-main" href="#install">Get Pro free during the beta</a></div>
+      <div class="plan"><h3>Holders</h3><div class="price">$VIGIL<small>hold to unlock</small></div><p class="sub">Pro is included for $VIGIL holders above a set amount.</p>
+        <ul><li><b>Everything in Pro</b></li><li><b>Early access</b> to new sites and features</li><li><b>A say</b> in what Vigil reads next</li></ul>
+        <a class="btn btn-ghost" href="#faq">How it works</a></div>
+    </div>
+    <p class="beta"><b>Beta:</b> while Vigil is in beta, every Pro feature that exists is open to everyone, with no key and no payment. Paid plans start with the Chrome Web Store release, and the holder amount is announced with the token launch.</p>
+  </div>
+</section>
+
 <section class="band" id="install" style="padding-top:0">
   <div class="wrap">
     <div class="sec-h">
@@ -466,11 +507,11 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
       <details><summary>Which sites does it work on?</summary><p>Axiom, GMGN, pump.fun, DexScreener and X today. Padre, Photon and BullX are in beta: badges show up on their token pages and links.</p></details>
       <details><summary>How fast is a verdict?</summary><p>A few seconds for a token nobody has checked yet, instantly after that: verdicts are shared, so the next trader who sees the token gets it straight away.</p></details>
       <details><summary>Does it see my wallet or my funds?</summary><p>No. Vigil never asks to connect a wallet and never signs anything. The only thing it sends is the token addresses shown on your screen.</p></details>
-      <details><summary>Is it really free?</summary><p>Yes. No subscription, no account, nothing to pay.</p></details>
+      <details><summary>Is it free?</summary><p>The free plan is, for good: badges, reasons and the token panel on every supported site. Pro adds funding traces, the live exit radar and alerts for $29 a month, paid in SOL, or is included for $VIGIL holders. During the beta, everything that exists is open to everyone.</p></details>
       <details><summary>Why isn't it on the Chrome Web Store yet?</summary><p>The listing is in review. Until it's live, you install the same extension by hand in four steps. Once it's on the store, it will install in one click and update itself.</p></details>
       <details><summary>Is a Clean verdict a buy signal?</summary><p>No. A verdict is a fact about how the token launched and who holds it, not a prediction. A clean token can still go to zero.</p></details>
       <details><summary>Can I check a token without the extension?</summary><p>Yes: paste a contract address in the <a href="/app">web scanner</a>. It runs the same scan, with the chart, the holders map and the exit radar.</p></details>
-      <details><summary>What is $VIGIL?</summary><p>The community token behind the project. You don't need it to use the extension.</p></details>
+      <details><summary>What is $VIGIL?</summary><p>The community token behind the project. You don't need it for the free plan; holding it above a set amount, announced at launch, unlocks Pro.</p></details>
     </div>
   </div>
 </section>
@@ -517,16 +558,17 @@ for (const b of $$('[data-copy]')) b.addEventListener('click', async () => {
 });
 
 /* real examples, read on 23 Nov 2026 (quick scan of the trending list) */
+const L = {"HOGE": "data:image/webp;base64,UklGRu4GAABXRUJQVlA4IOIGAAAwHgCdASpgAGAAPpU+mkiloyKhK5TtiLASiWwAtZoBfxnNyYy9H511k/ynFqnRhh7Z3zFebv0YHVW+gB0uFeXY2egkOYrQfGuklgM8l38Pd1Yjt5jNId9IsXuvuZkaCvHOIvvq/Q5bOWHdJRvhfLcoiHNEUJdYxn/PJLq+K/dKmEhvnohTd8/4NLZiXh4HDLIO0aBQ6zeoal6O8fiPFGELV548uiWGu3Xmcd0iRqkvIxayKjprtYsh3qVF3MjJie6I2xelOeJ2BkzejYJn/gH7foES4aMNVebV2V1Y7LOl5Fz2wNiyhTdLYar2GouUEpZnsLYqmunqlxUAAP7/VkOQsdjnuYfVqABKcBrwsg8Q+Svq7xKBfxMlHsFu5Z0rWE35xX8jhZ/n73YjllFwFVh7MPgxscokn7r+NEdmuv0F17M04NkJwoRy6SVByEAxDsS3KQFECm4u+bZtRCA9hFDiWqy3A3hirxIOljpbm3TRVOjZVS3YrBwmnhGDnMyG+dKY2HrXQYupplW7krsxisEpxUPak44Dj7D0wyqkTI2xDO+M/NDNCoQp4EtWw6eycMBaucIK3h2FcIw36gdpufR+OkvEpynJ4WNI0iRebvjQQ7zA45yChgCQARd4MXYbD0+768P+bLradG1q/Noh81ptb+M/p5/PAiZ1uHJA1uP2yHz85uG096FeGuQ4FXeov2Wf64/V4XZioG18Y/z4VAE/e9/5U0Elm+DibaJ2UxkDHtkjsqZyX/5cN8RTSHkD4X54tU4BUq8uL17hp84yjt+19zVLSILAZArnTgHbbR1sYwWzqwj/rX0U+hepRwAhbSwP8cVINfJ3IjH2V4DS4TKFVTjoAI60aOS3Sji9CIBvuQvU+A+VSIU7bWQRJqyGAP2fZglCI3Mj/iS4MyZ0ujTIrMUc2wbcuED5uZ0GwBgWOCgZy9VrdjwNcgnPAVfqXlRQJKrheVLdTKniX7QHvF8ezJh6Q793uKVSB1hyTuiqQ8U6X8nyB2OOpP5LJPnupmfEPwpS4VvWub6zSSzQ9H0/6BwxbTi/yT584TWWW5K5Q8zaL8SPmtai0t694Q6lItxscM1uv7YcG7vW4ILRVRt7C9FAu9oQHel7r5btZZzqrz8+9mcs1R2bl5UIUWr9qHmBMecKrJ4UX5d6ARuviP3bBjmJ4V87WWlTvgBgp6BQ4rfnO8dD7D+kSoMG/FWCyQz1a3QcXggZhkCPhG7fo5mY3i93eVP6wvPZGT4KYl/cllQVd8nzpDzF/jyWtivRjIvdepyvUE2H3qKA+BaV7iTf3svg0oQh6PUVTfsNzybAD0+1scOMQveQvKYTIk6afm3q1Nrhkc6hLKZ0DdKy7AK9s5NMpHE8SMwl4v5EPAIyPuc8nOJCZzWXW6qslVEgnQV4/8b8Iptbie6tY1CfJBYsDk5CVC0JaAwjOyMKA+tN14dnfczrhsuWp/i6iLNFD7Fq1WPY8kwh434ERMGOiNK+BBNI+xEY7g1OVmerVk8LXtc8Pm0FHvVnMwL4r/L+CfT/Jts0Xk81vVf72QWolCQ5VrGL4W5po/PkkR11+veoSeX5Ao6HKFPYTm1NCdmEvs8FwkrGxoq507LqvY1FOkybPZIpEADQmQXPXBsx4QHmU7V8zATuAvkiiO7UeAfiN6k4ULyDZ/pBHJx8HnthZMxFE3vOwausVwbPS7l135hHq4lz2jCkoEeLfzOByOSEDZhUItgxmfMKm6QiogBuNWm/21BHKy2X5E76gBRa+gTlm3yEwjGnSb/A3L9579QvPpfxVeIk2GVdtBvhefjkxPbMAKJXwQq7q5+QT74pOzOZaC8yje/O6lpBCyVGUhn1VBI87jayqB9MK8AV/fI6wJRl31Em8lkuRbeUv+bsgwrMYVEidM8roQC5X7ClETxU/6blWsDAEM4Rebp8NHrp/vrN6016XCqujHShDoKCkB3n8DUc0sp18xahgvNp3rkqzAEVxITl2OAOcIRDpXlGgpKQ6Hkvs13fhuikvczIjuzrZM8HzY/k0JSVoDQjPvP0TDosEZz6JUmwEpRIMKtj42SLVhZfDrXYASCCYfLm4NtC+AXlNKK0VMvi8cm2+fnvpSsm0QsYqhCkuZFh6QaEauAsB8Icqt9ZTs6U8z2kGRO8nG0IVzyC8waMV622df3/bpxEIbVeRnV0Q8sv3R3Qzp0Gu27yz/Yj0iLIn1nrp31QfFZHdHXuZDNATO8J4V79clVO63A/bTyIXsI0q8Kpe7yo9OYs/2Zs71mRAtJSgagKFgQrDGIhrLrwJLTOQlBv7zTcllSIjvNx8g33ouiRplG0an/bEd62MCxbPJp15R6qwgAA", "UCASH": "data:image/webp;base64,UklGRjoDAABXRUJQVlA4IC4DAABQEQCdASpgAGAAPpVEmkolo6IhrjQIaLASiWQA1XA4fD8q7xXAfdIQD/x31cbYzzAdEbeWvQz6WX9xYAjnxewE+o2M3DIFnoOcL/zGuO5OwcY95I/y53F0EY/MIN58fvyp+5nqTiBKhrSklAPJHs9q6mzbIiwM8YVL4bJRdp7piyncv59Mh20Yc9MPnKAGxpkjkDgA/vuwDgBw9S+0AI3YZmc9uO/QY2ZvPLhZcybT+WGDYITHguILBqTDEd7Cks6jVd46dmm1k+vKRkv0JRxe1o521svxgVGvrfJ1Cel0afgvLwDhGdcH5tCA/GzZV0doOE5T1GrNeKcWZgJnLclXTe8aJUvXEy30VQ7g+zO9ga0AEBtjRW9B9WhOyr6qgb8rf685pIkl0HGnFMP9M2qJfbHNCjBP1RFIiy/y6XnqJjmqnc0GMuaOGqc+qIkOGw6s4jqFiullpD6mUIEyXN5StQYd+A9PRARYaXxUSCgf4eWDnO3puehTGiK8WXlbFFerHGe4E1842Chja3tz27pLwniw0d5CJTq/KVZFx3q6fJXh42WxjJ9aQYPWHL+7SpVC6mII68DMee65STOqpJ/Hr1fPWrdyM+cNm3AFbe59KqySf5a6yCufsQ6sLhe6PQXDOW3UVJdj847hROKXEIcdkUJQd+YbvCbZeXAb7aIU0mvUMYvvKjWsnvErejCLVmFZPxG6pATO6sr/NgZbB8lEVzqoXyRS1jNgYIXzPhg8ejbEVTgGx7ZqTxTuq2Z/xlLu89yl6pbxkVlfid/Mf9WYRJwtJ8iiHlj8DqPucqhgspmdH51D2fFQyzXjBij741u6w7lq0NGS7d14x0piz4kpoG+bE4lMxu/U7mjrzLw+WaOetgdR9XugGJss+Q07Vd9jeru8W/VXfx1g9OiuZG01HIK/e7KXnNhtby7V1KOAW5dcIMEFQa7qMSVyumAzxxFLGLhq2lEQzEqPi5GpVg+f+sHBsaprJWyRJbwwnYOOrQfw2O2/T3lr4N34a5ZPmeQck17GC7xpu4nwkrcA/tz93KyBV++UDaQ/T+RekqI5/aEbo/nd8ZrmuQAAAAAA", "BRUH": "data:image/webp;base64,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", "COPIUM": "data:image/webp;base64,UklGRiQFAABXRUJQVlA4IBgFAABQFwCdASpgAGAAPpVGnUqlo6KhplbbULASiUAZ+pSw1jxNunz3fR/5MH5GdNM/HcRRmvjd5O3efbQZc/2Pq3zO1Vk0vyE/VnsG/rT1rP3AYn9rfPGI9MHwjUBk4mcgQ5Ok5A/12owW5p4vNfF00XN32WZWzWjbYNxItTR4BTrBo44PdJTrXIg4FUzmBXwAVD3/Jm12GMmUxSw4S/uBolYEPN4UCSXYqG5e3Ev5fdcSFSt9672EH59lSGHff0jNQ9sgBAAA/vu4qbUlV/4VqARLb1dbIEydTBN7gN9ZmBEMWrKQggJi3ZcXvsR2aMGwDJp/dl/HJAT+0HeVNMz9oXwm7FfjlgbbZRe532oS6fw5eozRejMrDU9efq/8Q1JeBg0mc4gyxWnv3DcT4FQgbFLrRn0jiSusSlh2sX0zd/Dl9mfe+u7pGTvq95aboifGRWWKnjHYAQk4bmvB+eRSnQzEePq6bwZ090HtHv0W9N8Bbwd6zhB9TOfN/ezXlBcnDpqK86E/b0WbRp8yjH+Lst3dHAglKnG7wF0EZcBMFTppf1x3HN5jlf/zgnChSVh9FN3AGaCZaqgporXkOvDTpfhKWPcRrqlL1Debjc9bCszKaJsK54t+z0nJ96K3jsKVJwiM2lfed+29T6eHGpxNSbZhIf8cFS968S9N97x+fw0/F7qJj3oMZXcMr0CV2e5mUd9+wxvnjWuHVxo96lyKRcH5anMNmuRpquvczsqyUgANbQnmV/pdtO3/5YSiTyY0zQyD6xIc/Ufa+NlNnreNLBi7AQ2B4Js8UkB6CsIQ/K61LuisG38ixUfR9bO8yXv+abcXJKdMbyNenPW44QEoOg7howUT9dZ6ixQrttEHUNzShHbPJMqQHAwdOuLGnYCXmLyrf8DUDGXQEbEARgF6qddtBH1TQy/ocY7RE1C2RimXgcaVsaCxWPYjmMz5fPvbWPEVqt+P0JH6DqK1g1rRDUqb+GLYisP6ji8LIP4xRHZD9Xnu45ctKyBylxj1yp5bqkoWbd8tuT1IQuh3R5ZdfrDw5aIAu8ysgFIwac/RzG2k0wUqsUWswU8FMNgVw5rGpdtEG7qzvuJpiTYI18eJC29B+IzA20FSNdsBZuhumKbsLofjEHZmnueQ24LCT80jpBC8ESFHRBv9G3uYXhNp8WVA7f0BIDOrmifcCnaz7nfyxlaM/3N3iDBhCSdnskScVO0v2VGdSh7xNuj4+X2B//7e3H5BG+jt/hKo9ahAt1Z6+0cAigWNV4ZgWJFLnv/Kt0367VdWs9e9iH6nhBaPirUxHsnVaLXRWuWVR95R8x6Ovf/Y3pxL+xj5KJofu4pyfhL0/b+IqtX6yPh18tD8qQTGoD7K3yomztS1MMVXqeptBJASm+wNOF6YNSxVb6iL1iQeFbqivqLB0ainXMc7UoHOjSBoiziYqp9bk4SLjiiH7lCpgClumMwVLQ09UY+79rUeIdmytBLPH427bjuXDtJUJYLZQmhX9JepQrfyIxr3BpuL2BTHIr+mP/LReZ8eb5Q8y5rpaP8IEf+hBytgmdQ87bgd09zXX2vA9Ip/pKZEGk7N2BeQVyRoKUWCUt9L3xsh4/yqCIdy/MioCGtrT6HvHwT3+ec1qCAHiTPFT9wQEvugofiJAjw/mlrbYnVhhL1EaD/a3MknBUAwXXbqyb17wGSsa74pimN5Y4MKRB2a51XYfUTNseGf4RBAqar7vEOPB4dP8SAAAA=="};
 const EX = [
-  { s: 'HOGE', m: 'FVzqGqRmr4UH1Fif6dewmwbJ1p4YUZCu8dcw4Efopump', v: 'bad', why: 'Serial dev: the creator’s wallet has launched 542 tokens.', f: [['Bundler wallets hold', '20.6%'], ['Biggest wallet', '2.2%'], ['Market cap at scan', '$560K']] },
-  { s: 'UCASH', m: '7cFiqdT46zs7ooHWLFiLSaSQKLMibtokh9dBinsspump', v: 'bad', why: 'Dev farm: the wallet that funded this dev also funded 41 other dev wallets. The holders look spread out; the funding trail doesn’t.', f: [['Top 10 wallets', '7.2%'], ['Biggest wallet', '0.7%'], ['Market cap at scan', '$916K']] },
-  { s: 'BRUH', m: 'PgFtGGquvnv2zEkjG2N2QPvBTBrafuExGYEqahRpump', v: 'wa', why: 'Liquidity is only 2.8% of the market cap: little real money behind the price.', f: [['Top 10 wallets', '4.3%'], ['Biggest wallet', '0.9%'], ['Market cap at scan', '$7.9M']] },
-  { s: 'COPIUM', m: 'BAKsQrynzwadyACDMsg3J5R8a4CTvj1u7kEYyjq7pump', v: 'ok', why: 'Biggest wallet 0.5%; dev history, bundlers and insiders look normal.', f: [['Top 10 wallets', '5.2%'], ['Mint and freeze', 'revoked'], ['Market cap at scan', '$793K']] }
+  { s: 'HOGE', img: L.HOGE, m: 'FVzqGqRmr4UH1Fif6dewmwbJ1p4YUZCu8dcw4Efopump', v: 'bad', why: 'Serial dev: the creator’s wallet has launched 542 tokens.', f: [['Bundler wallets hold', '20.6%'], ['Biggest wallet', '2.2%'], ['Market cap at scan', '$560K']] },
+  { s: 'UCASH', img: L.UCASH, m: '7cFiqdT46zs7ooHWLFiLSaSQKLMibtokh9dBinsspump', v: 'bad', why: 'Dev farm: the wallet that funded this dev also funded 41 other dev wallets. The holders look spread out; the funding trail doesn’t.', f: [['Top 10 wallets', '7.2%'], ['Biggest wallet', '0.7%'], ['Market cap at scan', '$916K']] },
+  { s: 'BRUH', img: L.BRUH, m: 'PgFtGGquvnv2zEkjG2N2QPvBTBrafuExGYEqahRpump', v: 'wa', why: 'Liquidity is only 2.8% of the market cap: little real money behind the price.', f: [['Top 10 wallets', '4.3%'], ['Biggest wallet', '0.9%'], ['Market cap at scan', '$7.9M']] },
+  { s: 'COPIUM', img: L.COPIUM, m: 'BAKsQrynzwadyACDMsg3J5R8a4CTvj1u7kEYyjq7pump', v: 'ok', why: 'Biggest wallet 0.5%; dev history, bundlers and insiders look normal.', f: [['Top 10 wallets', '5.2%'], ['Mint and freeze', 'revoked'], ['Market cap at scan', '$793K']] }
 ];
-$('#exGrid').innerHTML = EX.map(e => '<article class="exc"><div class="top"><b>$' + e.s + '</b>' + pill(e.v) + '</div><div class="addr2 mono">' + e.m.slice(0, 4) + '…' + e.m.slice(-4) + '</div><p class="why">' + e.why + '</p><dl>' + e.f.map(x => '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>').join('') + '</dl><div class="links"><a href="' + SITE + '/token/' + e.m + '">Open the scan</a><a href="https://solscan.io/token/' + e.m + '">Solscan</a></div></article>').join('');
+$('#exGrid').innerHTML = EX.map(e => '<article class="exc"><div class="top"><span class="who2"><img src="' + e.img + '" alt="' + e.s + ' logo"><b>$' + e.s + '</b></span>' + pill(e.v) + '</div><div class="addr2 mono">' + e.m.slice(0, 4) + '…' + e.m.slice(-4) + '</div><p class="why">' + e.why + '</p><dl>' + e.f.map(x => '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>').join('') + '</dl><div class="links"><a href="' + SITE + '/token/' + e.m + '">Open the scan</a><a href="https://solscan.io/token/' + e.m + '">Solscan</a></div></article>').join('');
 
 /* dev history feed */
-const alertPool = [['8xKq…3vN · 62 launches', 'bad'], ['Fz2d…Qa1 · 6 launches', 'wa'], ['Hm7p…cU9 · first launch', 'ok'], ['3jRt…Lw8 · 89 launches', 'bad'], ['Pq4n…7yE · farm of 3', 'wa']];
+const alertPool = [['ZXez…se5p · 37 launches (MINELIUS, JENSEN)', 'bad'], ['D9gQ…2ArA · 542 launches (HOGE)', 'bad'], ['CWpP…LSH5 · first launch (DESSA)', 'ok'], ['2Bon…Q6z4 · 79 launches (FIONA)', 'bad'], ['9SFU…XJBK · first launch (COPIUM)', 'ok']];
 let ai = 0;
 const al = $('#alerts');
 const pushAlert = (first) => {
@@ -538,41 +580,37 @@ const pushAlert = (first) => {
 pushAlert(true); pushAlert(true); pushAlert(true);
 if (!reduce) setInterval(() => pushAlert(false), 3200);
 
-/* ---------- the demo: a token page with Vigil active, played like a video ---------- */
-const DUR = 20;
+/* ---------- the demo: MINELIUS replayed on its real chart, with the verdict Vigil gives it ---------- */
+const DUR = 24, GROW = 19.5;
+/* real 15-minute candles from launch (22 Nov 2026, 21:30 UTC), market cap in $K: [open, high, low, close] */
+const CAND = [[2.0,1823.0,2.0,1511.3],[1511.3,3783.6,1489.2,3668.4],[3668.4,5749.3,3080.1,5321.8],[5321.8,7882.7,4784.8,7353.2],[7353.2,10444.1,6839.5,9767.5],[9767.5,9771.7,7368.9,7958.6],[7958.6,8317.7,7075.1,8166.3],[8166.3,8166.5,7053.9,7220.0],[7220.0,7817.8,7185.1,7450.9],[7450.9,8094.5,6993.4,7945.5],[7945.5,8981.6,7810.7,8729.8],[8729.8,8777.2,7465.8,7559.7],[7559.7,8222.1,7221.3,7671.5],[7671.5,7762.1,6743.7,7314.8],[7314.8,7857.6,7052.2,7146.4],[7146.4,8165.4,7025.5,8165.3],[8165.3,8379.3,7070.1,7931.9],[7931.9,8743.1,7736.4,8323.6],[8323.6,8607.9,7678.8,7723.1],[7723.1,8102.3,7342.3,8026.9],[8026.9,8116.6,7310.4,8114.9],[8114.9,9060.5,8067.6,8794.6],[8794.6,8874.7,8227.0,8266.1],[8266.1,8266.9,6462.8,6704.2],[6704.2,7663.0,6572.3,6578.3],[6578.3,6881.6,6084.8,6556.9],[6556.9,7619.1,6458.3,7580.9],[7580.9,8914.0,7196.1,8682.7],[8682.7,9345.5,8038.8,8326.9],[8326.9,8717.0,7889.2,8647.2],[8647.2,9188.8,7553.4,7728.1],[7728.1,7996.7,7328.3,7950.8],[7950.8,7993.5,7361.4,7577.0],[7577.0,8476.8,7451.6,8333.2],[8333.2,9140.0,7840.9,8149.4],[8149.4,10043.4,7509.9,9986.9],[9986.9,10781.5,9934.1,10368.9],[10368.9,10930.9,10248.6,10631.6],[10631.6,10977.0,10106.3,10581.3],[10581.3,10946.4,9941.4,10362.6],[10362.6,10703.1,10126.8,10517.7],[10517.7,12761.4,10465.7,12548.2],[12548.2,13780.3,12468.8,13343.3],[13343.3,14617.9,13337.6,14500.5],[14500.5,15773.6,14292.8,15667.2],[15667.2,16722.1,15667.1,16583.9],[16583.9,16791.6,16349.6,16521.3],[16521.3,16745.2,16250.6,16575.4],[16575.4,16644.0,16257.8,16583.0],[16583.0,16627.4,16237.9,16494.8],[16494.8,16879.9,14620.3,15121.5],[15121.5,15399.0,14074.9,15057.8],[15057.8,15311.3,13493.2,13962.3],[13962.3,14546.5,13219.2,13498.7],[13498.7,13759.0,12428.0,12524.3],[12524.3,13130.7,12456.9,13127.5],[13127.5,14762.6,12824.2,14710.2],[14710.2,17796.4,14512.8,17598.8],[17598.8,20566.0,16680.9,19886.7],[19886.7,23069.7,18964.8,22399.7],[22399.7,24089.4,18047.5,19541.9],[19541.9,19590.4,15560.1,17057.5],[17057.5,17272.1,14225.8,15507.7],[15507.7,15699.1,13786.7,15078.4],[15078.4,15228.0,13882.5,13882.6],[13882.6,15382.6,13724.8,15134.0],[15134.0,15918.4,14468.6,15702.1],[15702.1,17170.3,15668.0,17109.2],[17109.2,17164.5,15381.5,15406.9],[15406.9,16295.8,15368.4,15907.5],[15907.5,15999.5,14466.0,14941.4],[14941.4,15169.6,13055.7,14520.4],[14520.4,14540.4,3242.5,3772.1],[3772.1,4269.7,3737.5,3757.7],[3757.7,3869.0,3445.4,3718.2],[3718.2,3812.6,3500.0,3501.6],[3501.6,3990.9,3467.3,3950.7],[3950.7,4334.3,3908.3,3939.6],[3939.6,4129.2,3635.4,3898.2],[3898.2,4051.6,2113.5,2358.1],[2358.1,2548.4,2164.3,2222.6],[2222.6,2353.4,2050.8,2255.2],[2255.2,2286.9,2030.9,2164.1],[2164.1,2431.6,705.5,764.6],[764.6,935.3,93.2,106.0],[106.0,109.5,96.9,102.7],[102.7,112.1,97.3,102.8],[102.8,121.6,99.2,118.3],[118.3,123.1,79.4,86.8],[86.8,89.7,86.5,88.7]];
+const T0 = 1795383000, NC = CAND.length;
 const CH = [
-  { t: 0, k: 'Open a token', cap: 'You open a fresh token on Axiom, like any other day. Nothing to click: Vigil is already on.' },
-  { t: 2.5, k: 'Vigil reads it', cap: 'Vigil spots the token and reads its launch: the first 10 seconds of buys, the dev’s wallet, who funded the first buyers.' },
-  { t: 5, k: 'The verdict', cap: 'Bundled. 3 wallets took 79% of the supply in the first 10 seconds, and the dev launched 63 tokens in the last 24 hours.' },
-  { t: 9, k: 'Hover for why', cap: 'The reason is one hover away, right on the page. You haven’t opened a single new tab.' },
-  { t: 12.5, k: 'Insiders sell', cap: 'The chart still looks great. Then the launch wallets sell together, and Vigil warns you while it happens.' }
+  { t: 0, k: 'Launch', cap: '22 Nov, 21:30 UTC. MINELIUS launches and you open it on Axiom. Vigil is already on.' },
+  { t: 1.6, k: 'The verdict', cap: 'Bundled, from the first seconds: 3 wallets, 2 of them sniper bots, took 80% of the supply in the first 10 seconds.' },
+  { t: 5.5, k: 'Hover for why', cap: 'One hover gives the reason. The same dev wallet has launched 37 tokens, JENSEN among them today.' },
+  { t: 9.5, k: 'Still climbing', cap: 'The chart keeps climbing for 15 hours, up to a $24M market cap. Nothing on the chart itself warns you.' },
+  { t: 15.4, k: 'The dump', cap: '23 Nov, 15:30 UTC. The price breaks. In 6 hours MINELIUS loses 99% of its value.' },
+  { t: 19.6, k: 'Today', cap: 'Vigil\u2019s exit radar today: the launch wallets have sold 100% of what they bought. The badge said it from the start.' }
 ];
 const chapAt = (t) => { let i = 0; CH.forEach((c, j) => { if (t >= c.t) i = j; }); return i; };
 $('#dChaps').innerHTML = CH.map((c, i) => '<li><button type="button" data-i="' + i + '"><span>0:' + String(Math.floor(c.t)).padStart(2, '0') + '</span>' + c.k + '</button></li>').join('');
+$('#dChaps').style.gridTemplateColumns = 'repeat(' + CH.length + ',minmax(0,1fr))';
 const bar = $('#dBar');
 bar.insertAdjacentHTML('beforeend', CH.slice(1).map(c => '<i style="left:' + (c.t / DUR * 100) + '%"></i>').join(''));
-
-/* price path (market cap in $K), fixed so every replay is the same film */
-let seed = 7; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
-const N = 80, STEP = DUR / N, candles = [];
-let prev = 46;
-for (let i = 0; i < N; i++) {
-  const u = (i + 1) * STEP;
-  let target = u < 13 ? 46 * Math.exp(Math.log(162 / 46) * Math.pow(u / 13, 1.35)) : 162 * Math.exp(-2.1 * Math.min(1, (u - 13) / 3.6)) + (u > 16.6 ? (rnd() - 0.5) * 3 : 0);
-  target *= 1 + (rnd() - 0.5) * (u < 13 ? 0.07 : 0.05);
-  const o = prev, c = target, h = Math.max(o, c) * (1 + rnd() * 0.03), l = Math.min(o, c) * (1 - rnd() * 0.03);
-  candles.push({ o, c, h, l }); prev = c;
-}
+const nAt = (t) => Math.max(1, Math.min(NC, Math.floor(t / GROW * (NC - 1)) + 1));
 const cv = $('#dChart'), cx = cv.getContext('2d');
 const dpr = Math.min(devicePixelRatio || 1, 2);
 let CW = 0, CHh = 0;
 const sizeC = () => { CW = cv.clientWidth; CHh = cv.clientHeight; cv.width = CW * dpr; cv.height = CHh * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); };
-const kfmt = (k) => k >= 1000 ? '$' + (k / 1000).toFixed(2) + 'M' : '$' + k.toFixed(1) + 'K';
+const kfmt = (k) => k >= 1000 ? '$' + (k / 1000).toFixed(k >= 10000 ? 1 : 2) + 'M' : '$' + Math.round(k) + 'K';
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const clock = (i) => { const d = new Date((T0 + i * 900) * 1000); return d.getUTCDate() + ' ' + MON[d.getUTCMonth()] + ' ' + String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0'); };
 const drawChart = (t) => {
-  const n = Math.max(1, Math.min(N, Math.floor(t / STEP) + 1));
+  const n = nAt(t);
   cx.clearRect(0, 0, CW, CHh);
-  const room = CW > 700 ? 306 : 0, padR = 64, padT = 18, padB = 22, w = CW - padR - room, h = CHh - padT - padB;
-  const hi = 180, lo = 0;
+  const room = CW > 700 ? 306 : 0, padR = 64, padT = 18, padB = 26, w = CW - padR - room, h = CHh - padT - padB;
+  const hi = 26000, lo = 0;
   const Y = (v) => padT + (1 - (v - lo) / (hi - lo)) * h;
   cx.font = '11px "JetBrains Mono", monospace'; cx.textAlign = 'left';
   for (let g = 0; g <= 4; g++) {
@@ -580,82 +618,69 @@ const drawChart = (t) => {
     cx.strokeStyle = 'rgba(255,255,255,.05)'; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(0, y); cx.lineTo(w, y); cx.stroke();
     cx.fillStyle = '#6E6880'; cx.fillText(kfmt(v), w + 8, y + 4);
   }
-  const slot = w / N, bw = Math.max(2, slot * 0.62);
+  const slot = w / NC, bw = Math.max(2, slot * 0.62);
+  cx.fillStyle = '#6E6880';
+  for (const i of [0, 30, 60]) cx.fillText(clock(i), Math.min(i * slot + 2, w - 90), CHh - 8);
   for (let i = 0; i < n; i++) {
-    const k = candles[i], x = i * slot + slot / 2, up = k.c >= k.o;
+    const [o, hh, l, c] = CAND[i], x = i * slot + slot / 2, up = c >= o;
     const col = up ? '#07E7C3' : '#FF4545';
-    cx.strokeStyle = col; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(x, Y(k.h)); cx.lineTo(x, Y(k.l)); cx.stroke();
-    cx.fillStyle = col; const y1 = Y(Math.max(k.o, k.c)), y2 = Y(Math.min(k.o, k.c)); cx.fillRect(x - bw / 2, y1, bw, Math.max(1, y2 - y1));
+    cx.strokeStyle = col; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(x, Y(hh)); cx.lineTo(x, Y(l)); cx.stroke();
+    cx.fillStyle = col; const y1 = Y(Math.max(o, c)), y2 = Y(Math.min(o, c)); cx.fillRect(x - bw / 2, y1, bw, Math.max(1, y2 - y1));
   }
-  const lk = candles[n - 1], last = lk.c, ly = Y(last);
+  const lk = CAND[n - 1], last = lk[3], ly = Y(last);
   cx.setLineDash([3, 4]); cx.strokeStyle = 'rgba(255,255,255,.25)'; cx.beginPath(); cx.moveTo(0, ly); cx.lineTo(w, ly); cx.stroke(); cx.setLineDash([]);
-  cx.fillStyle = lk.c >= lk.o ? '#07E7C3' : '#FF4545'; cx.fillRect(w + 2, ly - 9, padR - 4, 18);
+  cx.fillStyle = lk[3] >= lk[0] ? '#07E7C3' : '#FF4545'; cx.fillRect(w + 2, ly - 9, padR - 4, 18);
   cx.fillStyle = '#000'; cx.fillText(kfmt(last), w + 6, ly + 4);
-  /* the moment Vigil warned */
-  if (t >= 12.5) {
-    const wx = Math.floor(12.5 / STEP) * slot + slot / 2;
-    cx.strokeStyle = 'rgba(255,69,69,.6)'; cx.setLineDash([4, 4]); cx.beginPath(); cx.moveTo(wx, padT); cx.lineTo(wx, padT + h); cx.stroke(); cx.setLineDash([]);
-    cx.fillStyle = '#FF6B6B'; cx.textAlign = 'right'; cx.fillText('Vigil warning', wx - 6, padT + 12); cx.textAlign = 'left';
+  /* the verdict sits at launch: mark it */
+  if (t >= 1.6) {
+    cx.strokeStyle = 'rgba(255,69,69,.7)'; cx.setLineDash([4, 4]); cx.beginPath(); cx.moveTo(slot / 2, padT); cx.lineTo(slot / 2, padT + h); cx.stroke(); cx.setLineDash([]);
+    cx.fillStyle = '#FF6B6B'; cx.fillText('Vigil: Bundled', slot / 2 + 6, padT + 12);
   }
-  return last;
-};
-
-/* the trades tape on the right (sample); launch wallets are marked once Vigil knows them */
-const tapeRows = (t) => {
-  const rows = [];
-  for (let i = 0; i < 12; i++) {
-    const tt = t - i * 0.45; if (tt < 0) break;
-    const dump = tt > 12.6 && tt < 16.5, sell = dump ? (i % 3 !== 2) : ((Math.floor(tt * 7) % 4) === 0);
-    const ins = dump && i % 3 === 0;
-    const amt = sell ? (dump ? (2 + ((i * 7) % 9)).toFixed(1) : (0.1 + ((i * 3) % 7) / 10).toFixed(2)) : (0.2 + ((i * 5) % 9) / 10).toFixed(2);
-    rows.push('<div' + (ins ? ' class="ins"' : '') + '><span class="' + (sell ? 's' : 'b') + '">' + (sell ? 'Sell' : 'Buy') + '</span><span class="mono">' + amt + ' SOL</span><span class="mono">' + (ins ? 'insider' : Math.max(1, Math.round(i * 0.45)) + 's') + '</span></div>');
-  }
-  return rows.join('');
+  if (n > 60) { const px = 60 * slot + slot / 2; cx.fillStyle = '#A6A1B8'; cx.textAlign = 'center'; cx.fillText('peak ' + kfmt(CAND[60][1]), px, Y(CAND[60][1]) - 8); cx.textAlign = 'left'; }
+  return n;
 };
 
 const body = $('#dBody'), slotEl = $('#dSlot'), badge = $('#dBadge'), panel = $('#dPanel'), tip = $('#dTip'), cur = $('#dCur'), ext = $('#dExt');
 const OUT = { pill: $('#dPill'), reason: $('#dReason'), s1: $('#dS1'), s2: $('#dS2'), s3: $('#dS3'), s4: $('#dS4') };
 const shown = {};
 const put = (k, v) => { if (shown[k] !== v) { shown[k] = v; OUT[k].innerHTML = v; } };
-let lastCh = -1, lastTape = '';
+let lastCh = -1;
 const render = (t) => {
-  const last = drawChart(t);
-  $('#dMc').textContent = kfmt(last);
-  $('#dHold').textContent = String(Math.round(112 + Math.min(t, 13) * 31 - Math.max(0, t - 13) * 9));
-  $('#dVol').textContent = kfmt(31 + t * 18);
-  const tape = tapeRows(t); if (tape !== lastTape) { lastTape = tape; $('#dTape').innerHTML = tape; }
-  ext.classList.toggle('on', t >= 2.5);
-  slotEl.classList.toggle('on', t >= 2.5);
-  const v = t >= 5 ? 'bad' : 'scan';
+  const n = drawChart(t);
+  $('#dMc').textContent = kfmt(CAND[n - 1][3]);
+  const mins = (n - 1) * 15; $('#dAge').textContent = mins < 60 ? mins + 'm' : Math.floor(mins / 60) + 'h ' + String(mins % 60).padStart(2, '0') + 'm';
+  $('#dClock').textContent = clock(n - 1);
+  ext.classList.toggle('on', true);
+  slotEl.classList.toggle('on', t >= 0.6);
+  const v = t >= 1.6 ? 'bad' : 'scan';
   if (badge.dataset.v !== v) { badge.dataset.v = v; badge.className = 'pill ' + PILL[v][0]; badge.textContent = PILL[v][1]; }
-  panel.classList.toggle('on', t >= 2.5);
-  if (t < 5) {
+  panel.classList.toggle('on', t >= 0.6);
+  if (t < 1.6) {
     put('pill', pill('scan'));
-    put('reason', 'Reading the launch wallets, the dev’s history and who funded the first buyers…<span class="skel" style="width:90%"></span><span class="skel" style="width:60%"></span>');
+    put('reason', 'Reading the launch wallets, the dev\u2019s history and who funded the first buyers\u2026<span class="skel" style="width:90%"></span><span class="skel" style="width:60%"></span>');
     put('s1', '–'); put('s2', '–'); put('s3', '–'); put('s4', '–');
   } else {
-    const k = ease(clamp01((t - 5) / 1.2));
+    const k = ease(clamp01((t - 1.6) / 1.2));
     put('pill', pill('bad'));
-    put('reason', 'Bundled · serial dev: this wallet launched 63 tokens in 24 h. 3 wallets took 79% of supply in the first 10 s.');
-    put('s1', (79.3 * k).toFixed(1) + '%');
-    put('s2', String(Math.round(63 * k)));
-    const d = clamp01((t - 12.5) / 3.2);
-    put('s3', Math.round(96 - 94 * d) + '% of buy');
-    put('s4', Math.round(100 * clamp01((t - 13) / 2)) + '%');
+    put('reason', 'Bundled · 3 wallets took 80% of supply in the first 10 s (2 of them sniper bots). Serial dev: this wallet has launched 37 tokens.');
+    put('s1', (79.6 * k).toFixed(1) + '%');
+    put('s2', String(Math.round(37 * k)));
+    put('s3', String(Math.round(2 * k)));
+    put('s4', t >= 19.6 ? '0% of buy' : 'watching');
   }
-  $('#dAlert').classList.toggle('on', t >= 12.5);
+  $('#dAlert').classList.toggle('on', t >= 19.6);
   /* cursor + tooltip on the badge */
   const B = body.getBoundingClientRect(), bb = badge.getBoundingClientRect();
   const bx = bb.left - B.left + bb.width * 0.55, by = bb.top - B.top + bb.height * 0.6;
-  const sx = B.width * 0.6, sy = B.height * 0.75;
+  const sx = B.width * 0.5, sy = B.height * 0.7;
   let px = sx, py = sy;
-  const show = t >= 7.6 && t < 14;
-  if (t >= 7.6 && t < 9) { const k = ease(clamp01((t - 7.6) / 1.3)); px = sx + (bx - sx) * k; py = sy + (by - sy) * k; }
-  else if (t >= 9 && t < 12.5) { px = bx; py = by; }
-  else if (t >= 12.5 && t < 14) { const k = ease(clamp01((t - 12.5) / 1.2)); px = bx + (sx - bx) * k; py = by + (sy - by) * k; }
+  const show = t >= 4.2 && t < 10.5;
+  if (t >= 4.2 && t < 5.5) { const k = ease(clamp01((t - 4.2) / 1.2)); px = sx + (bx - sx) * k; py = sy + (by - sy) * k; }
+  else if (t >= 5.5 && t < 9.3) { px = bx; py = by; }
+  else if (t >= 9.3 && t < 10.5) { const k = ease(clamp01((t - 9.3) / 1.1)); px = bx + (sx - bx) * k; py = by + (sy - by) * k; }
   cur.style.opacity = show ? '1' : '0';
   cur.style.transform = 'translate(' + px.toFixed(1) + 'px,' + py.toFixed(1) + 'px)';
-  const tipOn = t >= 9.2 && t < 12.5;
+  const tipOn = t >= 5.7 && t < 9.3;
   tip.classList.toggle('on', tipOn);
   if (tipOn) { const tl = Math.min(Math.max(8, bb.left - B.left - 40), B.width - tip.offsetWidth - 8); tip.style.left = tl + 'px'; tip.style.top = (bb.bottom - B.top + 10) + 'px'; }
   /* player */
@@ -665,7 +690,7 @@ const render = (t) => {
   const ci = chapAt(t);
   if (ci !== lastCh) { lastCh = ci; $('#dCap').textContent = CH[ci].cap; $$('#dChaps button').forEach((b, j) => b.classList.toggle('on', j === ci)); const ul = $('#dChaps'); if (ul.scrollWidth > ul.clientWidth + 4) ul.scrollTo({ left: ul.children[ci].offsetLeft - ul.offsetLeft, behavior: reduce ? 'auto' : 'smooth' }); }
 };
-let t = reduce ? 6.5 : 0, playing = !reduce, visible = true, lastTs = 0, hold = 0;
+let t = reduce ? 6 : 0, playing = !reduce, visible = true, lastTs = 0, hold = 0;
 const setPlaying = (p) => { playing = p; $('#dIcon').setAttribute('d', p ? 'M3 2h3v10H3zM8 2h3v10H8z' : 'M3 1.5l9 5.5-9 5.5z'); $('#dPlay').setAttribute('aria-label', p ? 'Pause the demo' : 'Play the demo'); };
 setPlaying(playing);
 const tick = (ts) => {
