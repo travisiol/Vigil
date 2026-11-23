@@ -1,7 +1,6 @@
 import { cdn } from "@/lib/server/cdn";
 import { markets } from "@/lib/server/dex";
 import { gmgnInfo } from "@/lib/server/gmgn";
-import { feedRow } from "@/lib/server/launches";
 import { pumpMarket } from "@/lib/server/pump";
 import { errorResponse, isMint, UserError } from "@/lib/server/rpc";
 
@@ -11,13 +10,6 @@ async function get(_req: Request, ctx: { params: Promise<{ mint: string }> }) {
   try {
     const { mint } = await ctx.params;
     if (!isMint(mint)) throw new UserError("This address is not a token.", 404);
-    // Token récent déjà dans le flux : réponse immédiate si le calcul complet tarde (> 0,35 s) ; le calcul continue et sert au prochain rafraîchissement
-    const row = feedRow(mint);
-    if (row) {
-      const full = compute(mint);
-      const quick = await Promise.race([full, new Promise<null>((r) => setTimeout(() => r(null), 350))]);
-      return quick ?? Response.json({ market: row });
-    }
     return await compute(mint);
   } catch (e) {
     return errorResponse(e);

@@ -9,7 +9,6 @@ type Proof = {
   fees: { bps: number; split: { label: string; pct: number }[]; since: number | null; trades: number; traders: number; sol: number; recent: { time: number | null; sol: number }[] };
   cashback: { dueSol: number; paidSol: number };
   buyback: { dueSol: number; spentSol: number; bought: number; burned: number; held: number; count: number; recent: { signature: string; time: number | null; kind: "buyback" | "burn"; sol: number; tokens: number }[] };
-  verdicts: { graded7d: number; tracking: number; byVerdict: { verdict: string; n: number; realN: number; crashedOfReal: number; survivedOfReal: number }[] };
   rules: { early10sBundled: number; topWalletBundled: number; top10Watch: number; liquidityWatch: number };
   syncedAt: number;
 };
@@ -141,22 +140,6 @@ export default function Verify() {
 
         <Claim
           n={4}
-          title="Every verdict, graded in public"
-          claim="The first verdict Vigil shows on each launch is frozen, then graded 15 minutes later from what the bonding curve became. Bad calls stay up."
-          check={<p>Download every grade as raw data and redo the stats yourself. Each row has the token address: look it up on any explorer to check what happened.{" "}<a href="/api/track?hours=168&raw=1">Download the last 7 days (JSON) ↓</a></p>}
-        >
-          <div className="vf-stats">
-            <div><span>Graded, last 7 days</span><b className="mono">{p ? num(p.verdicts.graded7d) : "…"}</b></div>
-            <div><span>Being followed now</span><b className="mono">{p ? num(p.verdicts.tracking) : "…"}</b></div>
-            {p?.verdicts.byVerdict.map((v) => (
-              <div key={v.verdict}><span>{v.verdict[0].toUpperCase() + v.verdict.slice(1)}: crashed</span><b className="mono">{v.realN ? pc(v.crashedOfReal / v.realN) : "–"}</b></div>
-            ))}
-          </div>
-          <p className="vf-more"><Link href="/track">Open the Track record →</Link></p>
-        </Claim>
-
-        <Claim
-          n={5}
           title="The same rules for every token"
           claim="No paid placement, no manual override. Every token gets the same checks with the same thresholds, published here and in the Docs."
           check={<p>Open any token and read its verdict reason. The wallets behind it are shown in the scan panel and the bubble map, and every trade in the live feed links to its transaction on Solscan.</p>}
@@ -171,7 +154,7 @@ export default function Verify() {
         </Claim>
 
         <Claim
-          n={6}
+          n={5}
           title="Your keys never leave your wallet"
           claim="Vigil never holds your funds. Every trade is a transaction your own wallet shows you and asks you to sign."
           check={<p>Before you sign, your wallet lists every account the transaction touches: the Jupiter swap, the {fee}% fee transfer, and nothing else. Vigil&apos;s server only relays transactions that you already signed.</p>}

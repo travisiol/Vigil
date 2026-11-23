@@ -7,8 +7,8 @@ import { VMark } from "./ui";
 import WalletButton from "./WalletButton";
 
 const NAV: { href: string; label: string; m?: string; desktopOnly?: boolean }[] = [
-  { href: "/app", label: "Discover" },
-  { href: "/track", label: "Track record", m: "Record" },
+  { href: "/app", label: "Scan" },
+  { href: "/lens", label: "Lens" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/rewards", label: "Rewards" },
   { href: "/fees", label: "Fees" },

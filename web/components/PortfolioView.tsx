@@ -76,7 +76,7 @@ export default function PortfolioView() {
               })}
             </tbody>
           </table>
-          {data && !priced.length && <p className="empty">No token positions yet. Find one on Discover.</p>}
+          {data && !priced.length && <p className="empty">No token positions yet. Scan one on Vigil or with Lens.</p>}
         </div>
       </div>
     </>

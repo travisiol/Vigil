@@ -3,13 +3,12 @@ import { brand } from "@/brand.config";
 import { buybacks } from "@/lib/server/buybacks";
 import { syncLedger, totals } from "@/lib/server/ledger";
 import { cached, errorResponse } from "@/lib/server/rpc";
-import { trackRecord } from "@/lib/server/watch";
 
 export const maxDuration = 60;
 
 /**
  * Tout ce qu'il faut pour vérifier Vigil de A à Z, relu sur la blockchain :
- * fees reçues (trade par trade), cashback versé, rachats et burns de $VIGIL, bulletin des verdicts, règles du scan.
+ * fees reçues (trade par trade), cashback versé, rachats et burns de $VIGIL, règles du scan.
  * Jamais le solde total des wallets (ils peuvent contenir autre chose) : seulement les mouvements Vigil.
  */
 async function get() {
@@ -19,7 +18,6 @@ async function get() {
       const t = l ? totals(l) : null;
       const feesSol = t ? Number(t.fees) / 1e9 : 0;
       const share = (label: RegExp) => brand.fees.split.find((s) => label.test(s.label))?.pct ?? 0;
-      const tr = trackRecord(168);
       return {
         addresses: {
           cashback: process.env.VIGIL_CASHBACK_WALLET || null,
@@ -46,7 +44,6 @@ async function get() {
           count: bb?.count ?? 0,
           recent: bb?.recent ?? [],
         },
-        verdicts: { graded7d: tr.total, byVerdict: tr.byVerdict, tracking: tr.tracking },
         rules: brand.scan,
         syncedAt: Date.now(),
       };

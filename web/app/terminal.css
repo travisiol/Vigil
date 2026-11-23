@@ -278,3 +278,40 @@
 @media (max-width: 640px) { .vf-body, .vf-check { margin-left: 0; } }
 /* Mobile : la raison du verdict prend toute la largeur (elle s'écrasait sur une colonne d'un mot) */
 @media (max-width: 640px) { .verdict-row p { flex: 1 1 100%; order: 2; } .verdict-row > :not(p):not(.pill) { order: 3; } }
+
+/* Page Scan (F-080) */
+.scan-hero { max-width: 760px; margin: 18px auto 34px; text-align: center; }
+.scan-hero h1 { font-size: clamp(30px, 4.2vw, 52px); }
+.scan-hero > p { margin: 12px auto 0; max-width: 58ch; }
+.scan-box { display: flex; align-items: center; gap: 10px; margin: 26px auto 0; padding: 8px 8px 8px 16px; border-radius: 16px; background: var(--s1); border: 1px solid var(--line); box-shadow: 0 30px 80px -40px rgba(146,50,241,.6); }
+.scan-box:focus-within { border-color: rgba(181,123,255,.6); }
+.scan-box svg { width: 18px; height: 18px; color: var(--mut); flex: none; }
+.scan-box input { flex: 1; min-width: 0; height: 46px; border: 0; background: transparent; color: var(--ink); font: 14px var(--f-mono); outline: none; }
+.scan-box .btn { height: 46px; padding: 0 22px; }
+.scan-hero .msg { margin-top: 12px; }
+.lens-pill { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; padding: 8px 14px; border-radius: 99px; border: 1px solid var(--line); background: rgba(146,50,241,.08); font-size: 13px; color: var(--mut); }
+.lens-pill b { color: var(--ink); white-space: nowrap; }
+.lens-pill:hover { border-color: rgba(181,123,255,.5); color: var(--ink); }
+@media (max-width: 640px) { .scan-box { padding-left: 12px; } .scan-box .btn { padding: 0 14px; } .lens-pill { font-size: 12px; } }
+
+/* Page Vigil Lens (F-080) */
+.lens-hero { max-width: 780px; margin: 22px auto 40px; text-align: center; }
+.lens-hero .eyebrow { display: inline-block; font-size: 11px; letter-spacing: .12em; color: var(--vt); padding: 5px 10px; border-radius: 99px; border: 1px solid rgba(181,123,255,.35); background: rgba(146,50,241,.1); }
+.lens-hero h1 { font-size: clamp(32px, 4.6vw, 58px); margin-top: 16px; }
+.lens-hero > p { margin: 14px auto 0; max-width: 60ch; font-size: 16px; }
+.lens-badges { display: flex; justify-content: center; gap: 8px; margin-top: 22px; }
+.lens-badges .pill { height: 30px; padding: 0 12px; font-size: 13px; }
+.lens-hero .cta { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+.lens-note { font-size: 12.5px; margin-top: 14px !important; }
+.lens-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
+.lens-card { padding: 22px; }
+.lens-card h2 { font-size: 18px; margin-bottom: 14px; }
+.lens-steps { margin: 0; padding-left: 20px; display: grid; gap: 10px; color: var(--mut); font-size: 14px; }
+.lens-steps b, .lens-list b { color: var(--ink); }
+.lens-card code { font-family: var(--f-mono); font-size: 12.5px; color: var(--ink); background: var(--s2); padding: 1px 6px; border-radius: 5px; }
+.lens-sites, .lens-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.lens-sites li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 10px; background: #000; border: 1px solid var(--line); font-size: 13.5px; }
+.lens-sites li span { font-size: 12.5px; text-align: right; }
+.lens-list li { color: var(--mut); font-size: 14px; }
+.lens-more { display: inline-block; margin-top: 14px; color: var(--vt); font-size: 13px; }
+@media (max-width: 860px) { .lens-grid { grid-template-columns: minmax(0, 1fr); } .lens-sites li { flex-direction: column; } .lens-sites li span { text-align: left; } }

@@ -12,18 +12,23 @@ export default function Page() {
     <article className="doc">
       <div className="hero-s">
         <h1>How Vigil <span className="grad-text">watches.</span></h1>
-        <p className="mut">What Vigil reads, how a verdict is decided and graded, what a trade costs and why your keys never leave your wallet.</p>
+        <p className="mut">What Vigil reads, how a verdict is decided, how Vigil Lens shows it on the sites you use, what a trade costs and why your keys never leave your wallet.</p>
       </div>
 
       <section>
-        <h2>Three speeds</h2>
-        <p>Vigil watches every pump.fun launch from its first second, whether anyone looks at it or not, and judges it in three steps. Each step replaces the one before.</p>
+        <h2>Vigil Lens</h2>
+        <p>Vigil Lens is a free Chrome extension. On pump.fun, Axiom, GMGN, DexScreener and X, it puts a Clean, Watch or Bundled badge next to every Solana token on your screen. Hover the badge for the reason; click it for the full scan. On a token page, a small panel shows the verdict, the exit radar and an "Open in Vigil" button. <Link href="/lens" style={{ textDecoration: "underline" }}>Install Vigil Lens</Link>.</p>
+        <p>Lens is read-only: it never touches your wallet, and the only thing it sends to Vigil is the token addresses shown on screen.</p>
+      </section>
+
+      <section>
+        <h2>Two depths</h2>
+        <p>A token is scanned the moment someone looks at it, with Lens or on this site. Results are shared, so the next person sees them instantly.</p>
         <table>
           <thead><tr><th>When</th><th>What Vigil reads</th></tr></thead>
           <tbody>
-            <tr><td><b>First look</b><br /><span className="mut">~8 seconds after launch</span></td><td>How much of the supply was bought in the first seconds, read straight from the bonding curve, and everything Vigil remembers about the dev. No extra request: this is why every launch gets a verdict in seconds.</td></tr>
-            <tr><td><b>Quick scan</b><br /><span className="mut">a few seconds</span></td><td>Holders, the dev&apos;s wallet, mint and freeze authority, liquidity, bundler and insider labels.</td></tr>
-            <tr><td><b>Full scan</b><br /><span className="mut">when you open a token, and for every token in Final stretch</span></td><td>Every buy of the first 10 seconds, who funded each of those wallets (two hops back), and which holders are secretly the same person.</td></tr>
+            <tr><td><b>Quick scan</b><br /><span className="mut">a few seconds</span></td><td>Holders, the dev&apos;s wallet and past launches, mint and freeze authority, liquidity, bundler and insider labels, the share of supply taken at launch.</td></tr>
+            <tr><td><b>Full scan</b><br /><span className="mut">when you open a token</span></td><td>Every buy of the first 10 seconds, who funded each of those wallets (two hops back), and which holders are secretly the same person.</td></tr>
           </tbody>
         </table>
       </section>
@@ -35,7 +40,7 @@ export default function Page() {
           <thead><tr><th>Signal</th><th>What it means</th></tr></thead>
           <tbody>
             <tr><td><b>Supply taken in the first 10 s</b></td><td>A real crowd can&apos;t buy that fast; a bundle can. Vigil counts the wallets and flags the sniper bots among them.</td></tr>
-            <tr><td><b>Dev memory</b></td><td>Vigil records every launch it sees. A wallet that launched 3 tokens in 24 hours is a <i>serial dev</i>. A wallet that funds several dev wallets runs a <i>dev farm</i>. A dev wallet created less than an hour before launch is flagged too.</td></tr>
+            <tr><td><b>Dev history</b></td><td>How many tokens the creator&apos;s wallet launched before. 20 or more makes it a <i>serial dev</i>; 5 or more is worth watching. A wallet that funds several dev wallets runs a <i>dev farm</i>, and a dev wallet created less than an hour before launch is flagged too.</td></tr>
             <tr><td><b>Funding links</b></td><td>For the early buyers and top holders, Vigil follows where their SOL came from, two hops back. Wallets funded by the same source are one player, even if they look like ten. If that source also funded the dev, it says so.</td></tr>
             <tr><td><b>Biggest wallet · top 10</b></td><td>How much of the supply the largest holders own right now.</td></tr>
             <tr><td><b>Bundlers, insiders, rat traders</b></td><td>Share of supply held by wallets labelled this way, from GMGN&apos;s data.</td></tr>
@@ -68,18 +73,12 @@ export default function Page() {
       </section>
 
       <section>
-        <h2>Track record</h2>
-        <p>Vigil grades itself in public. The first verdict shown on each launch is frozen, then graded 15 minutes later from what the bonding curve became: migrated, still alive, faded, crashed or never took off. Grades are never edited. See them on the <Link href="/track" style={{ textDecoration: "underline" }}>Track record</Link> page.</p>
-      </section>
-
-      <section>
         <h2>Verify everything</h2>
         <p>Nothing Vigil claims needs to be taken on trust. The <Link href="/verify" style={{ textDecoration: "underline" }}>Verify</Link> page recomputes every number from public transactions:</p>
         <ul>
           <li><b>Fees</b>: each Vigil trade pays a separate {fee}% SOL transfer, shown before you sign and counted on the Verify page.</li>
           <li><b>Cashback</b>: paid daily from the cashback wallet; every payout carries the memo <code>vigil-cashback</code>.</li>
           <li><b>Buybacks</b>: {brand.fees.split.find((x) => /buyback/i.test(x.label))?.pct ?? 50}% of fees buy $VIGIL on the open market, memo <code>vigil-buyback</code>; half of what is bought is burned, memo <code>vigil-burn</code>. Until $VIGIL launches, the buyback share is set aside and spent on the first buyback.</li>
-          <li><b>Verdicts</b>: every first verdict is frozen and graded 15 minutes later; the raw grades can be downloaded.</li>
         </ul>
       </section>
 
@@ -101,8 +100,8 @@ export default function Page() {
         <h2>Limits today</h2>
         <ul>
           <li>Tokens with a very long history can&apos;t be traced back to their launch live yet: the 10-second signal then shows &quot;not measured&quot;.</li>
-          <li>The full scan runs when you open a token and on every token in Final stretch. Brand-new launches get the first look and the quick scan first.</li>
-          <li>Dev memory starts the day Vigil started watching: a dev&apos;s older launches only count once Vigil has seen them.</li>
+          <li>The full scan runs when you open a token; Lens badges use the quick scan, which takes a few seconds for a token nobody has looked at yet.</li>
+          <li>Lens is not on the Chrome Web Store yet: it installs in four steps from the <Link href="/lens" style={{ textDecoration: "underline" }}>Lens page</Link>.</li>
         </ul>
       </section>
     </article>

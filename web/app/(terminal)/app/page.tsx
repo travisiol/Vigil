@@ -1,7 +1,7 @@
-import Discover from "@/components/Discover";
+import ScanHome from "@/components/ScanHome";
 
-export const metadata = { title: "Discover" };
+export const metadata = { title: "Scan" };
 
 export default function Page() {
-  return <Discover />;
+  return <ScanHome />;
 }
