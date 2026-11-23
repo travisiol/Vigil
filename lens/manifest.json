@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Vigil: Solana rug detector",
   "short_name": "Vigil",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "See the rug before you click: a Clean, Watch or Bundled verdict next to every Solana token on Axiom, GMGN, pump.fun and X.",
   "icons": {
     "16": "icons/icon16.png",

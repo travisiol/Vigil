@@ -58,8 +58,10 @@ header.solid{background:rgba(7,6,11,.78);backdrop-filter:blur(14px);-webkit-back
 .seals-h{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 56px;align-items:end;margin-bottom:clamp(56px,6vw,90px)}
 .seal-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(18px,3vw,48px)}
 .seal-card{text-align:center}
-.seal-card canvas{display:block;width:min(100%,300px);aspect-ratio:1;margin:0 auto;image-rendering:pixelated}
-.seal-card h3{font-size:clamp(36px,3.6vw,52px);margin-top:24px}
+.seal-card canvas{display:block;max-width:100%;height:auto;margin:0 auto;image-rendering:pixelated}
+.seal-note{margin-top:clamp(40px,4vw,56px);text-align:center;font:400 13px 'Martian Mono',monospace;color:var(--mut)}
+.seal-note b{color:var(--ink);font-weight:500}
+.seal-card h3{font-size:clamp(36px,3.6vw,52px);margin-top:28px}
 .seal-card p{color:var(--mut);margin:12px auto 0;max-width:30ch}
 /* the night shift (pinned) */
 .shift-pin{min-height:100svh;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(40px,5vw,96px);align-items:center;padding:110px 0 56px}
@@ -71,7 +73,7 @@ header.solid{background:rgba(7,6,11,.78);backdrop-filter:blur(14px);-webkit-back
 .window{position:relative;border:1px solid var(--line);border-radius:18px;background:var(--s1);overflow:hidden;box-shadow:0 60px 140px -60px rgba(190,128,255,.5)}
 .window-bar{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--line)}
 .window-bar i{width:10px;height:10px;border-radius:50%;background:#241b2c}
-.window-bar span{margin-left:12px;font:400 12px 'Martian Mono',monospace;color:var(--mut)}
+.window-bar span{margin-left:12px;font:400 12px 'Martian Mono',monospace;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .window-bar svg{margin-left:auto;width:22px;height:19px;opacity:.3;transition:opacity .4s,filter .4s}
 .window-bar svg.lit{opacity:1;filter:drop-shadow(0 0 10px rgba(188,51,201,.9))}
 #rows{display:block;width:100%;height:auto}
@@ -81,7 +83,7 @@ header.solid{background:rgba(7,6,11,.78);backdrop-filter:blur(14px);-webkit-back
 .read{position:relative;background:var(--bg);padding:36px 32px 40px;isolation:isolate;overflow:hidden}
 .read::after{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .4s;background:radial-gradient(300px circle at var(--x,50%) var(--y,50%),rgba(190,128,255,.13),transparent 70%)}
 .read:hover::after{opacity:1}
-.read canvas{display:block;width:56px;height:56px;image-rendering:pixelated}
+.read canvas{display:block;width:64px;height:64px;image-rendering:pixelated}
 .read h3{font-size:28px;margin-top:24px}
 .read p{color:var(--mut);margin-top:8px;font-size:16px}
 /* read-only */
@@ -117,7 +119,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 footer nav{display:flex;gap:22px}
 .dv{display:block;width:100%;height:48px}
 @media(max-width:1000px){.hero-copy .wrap,.seals-h,.shift-pin,.install-card{grid-template-columns:minmax(0,1fr)}.nav nav{display:none}.nav .btn{margin-left:auto}.reads-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.shift-pin{min-height:0}.hero-hint{display:none}}
-@media(max-width:700px){.seal-row,.reads-grid{grid-template-columns:minmax(0,1fr)}.seal-card canvas{width:200px}.nav .btn{display:none}.hero{min-height:760px}}
+@media(max-width:700px){.seal-row,.reads-grid{grid-template-columns:minmax(0,1fr)}.nav .btn{display:none}.hero{min-height:760px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -155,13 +157,14 @@ footer nav{display:flex;gap:22px}
   <div class="wrap">
     <div class="seals-h">
       <h2>Three seals. Nothing in between.</h2>
-      <p class="lead">No score to decode. Vigil stamps each token with one of three words, and tells you the fact behind it.</p>
+      <p class="lead">No score to decode. Vigil stamps each token with one of three words and a mark you learn in a second, and tells you the fact behind it.</p>
     </div>
     <div class="seal-row">
-      <div class="seal-card"><canvas data-seal="ok" width="96" height="96" aria-hidden="true"></canvas><h3>Clean</h3><p>The launch looks spread out. No wallet in control, no dev with a rug history.</p></div>
-      <div class="seal-card"><canvas data-seal="wa" width="96" height="96" aria-hidden="true"></canvas><h3>Watch</h3><p>Nothing proves a rug, but something is off. Look twice before you buy.</p></div>
-      <div class="seal-card"><canvas data-seal="bad" width="96" height="96" aria-hidden="true"></canvas><h3>Bundled</h3><p>One player took the launch, or the dev has done this many times. Stay out.</p></div>
+      <div class="seal-card"><canvas data-seal="ok" width="76" height="30" aria-hidden="true"></canvas><h3>Clean</h3><p>One dot, alone. The launch looks spread out: no wallet in control, no dev with a rug history.</p></div>
+      <div class="seal-card"><canvas data-seal="wa" width="76" height="30" aria-hidden="true"></canvas><h3>Watch</h3><p>A dot under watch. Nothing proves a rug, but something is off. Look twice before you buy.</p></div>
+      <div class="seal-card"><canvas data-seal="bad" width="76" height="30" aria-hidden="true"></canvas><h3>Bundled</h3><p>Three dots, one player. Wallets that bought together, or a dev who has done this many times. Stay out.</p></div>
     </div>
+    <p class="seal-note">This is the badge you get <b>right after each token's name</b>, on every site.</p>
   </div>
 </section>
 
@@ -179,8 +182,8 @@ footer nav{display:flex;gap:22px}
       </div>
     </div>
     <div class="window" aria-hidden="true">
-      <div class="window-bar"><i></i><i></i><i></i><span>your terminal</span><svg id="extV"><use href="#vmark"/></svg></div>
-      <canvas id="rows" width="760" height="490"></canvas>
+      <div class="window-bar"><i></i><i></i><i></i><span>your terminal · real tokens, read by Vigil on 23 Nov 2026</span><svg id="extV"><use href="#vmark"/></svg></div>
+      <canvas id="rows" width="1520" height="1120"></canvas>
     </div>
   </div>
 </section>
@@ -192,12 +195,12 @@ footer nav{display:flex;gap:22px}
     <span class="mark">what the light reads</span>
     <h2 style="margin-top:14px;max-width:14ch">Everything you'd check in four tabs.</h2>
     <div class="reads-grid">
-      <div class="read"><canvas data-glyph="clock" width="14" height="14" aria-hidden="true"></canvas><h3>The first ten seconds</h3><p>A crowd can't buy that fast. A bundle can.</p></div>
-      <div class="read"><canvas data-glyph="tree" width="14" height="14" aria-hidden="true"></canvas><h3>Who funded who</h3><p>Ten wallets funded by one source are one player.</p></div>
-      <div class="read"><canvas data-glyph="mask" width="14" height="14" aria-hidden="true"></canvas><h3>The dev's past</h3><p>How many tokens this wallet launched before, and how they ended.</p></div>
-      <div class="read"><canvas data-glyph="stack" width="14" height="14" aria-hidden="true"></canvas><h3>The holders</h3><p>The biggest wallet, the top ten, the bundlers and the insiders.</p></div>
-      <div class="read"><canvas data-glyph="key" width="14" height="14" aria-hidden="true"></canvas><h3>The keys left on</h3><p>Whether someone can still mint more, or freeze yours.</p></div>
-      <div class="read"><canvas data-glyph="door" width="14" height="14" aria-hidden="true"></canvas><h3>The exit</h3><p>Whether the launch wallets are already walking out.</p></div>
+      <div class="read"><canvas data-glyph="clock" width="16" height="16" aria-hidden="true"></canvas><h3>The first ten seconds</h3><p>A crowd can't buy that fast. A bundle can.</p></div>
+      <div class="read"><canvas data-glyph="tree" width="16" height="16" aria-hidden="true"></canvas><h3>Who funded who</h3><p>Ten wallets funded by one source are one player.</p></div>
+      <div class="read"><canvas data-glyph="mask" width="16" height="16" aria-hidden="true"></canvas><h3>The dev's past</h3><p>How many tokens this wallet launched before, and how they ended.</p></div>
+      <div class="read"><canvas data-glyph="stack" width="16" height="16" aria-hidden="true"></canvas><h3>The holders</h3><p>The biggest wallet, the top ten, the bundlers and the insiders.</p></div>
+      <div class="read"><canvas data-glyph="key" width="16" height="16" aria-hidden="true"></canvas><h3>The keys left on</h3><p>Whether someone can still mint more, or freeze yours.</p></div>
+      <div class="read"><canvas data-glyph="door" width="16" height="16" aria-hidden="true"></canvas><h3>The exit</h3><p>Whether the launch wallets are already walking out.</p></div>
     </div>
   </div>
 </section>
@@ -355,68 +358,155 @@ const lanternSprite = (() => {
   requestAnimationFrame(frame);
 })();
 
-/* ---------- the three seals (1-bit wax seals) ---------- */
+/* ---------- verdict marks: the same three glyphs as in the extension ---------- */
+/* Clean = one dot alone · Watch = a dot under a ring · Bundled = three dots together */
+const GLYPH = {
+  ok: ['.......', '..XXX..', '.XXXXX.', '.XXXXX.', '.XXXXX.', '..XXX..', '.......'],
+  wa: ['..XXX..', '.X...X.', 'X..X..X', 'X.XXX.X', 'X..X..X', '.X...X.', '..XXX..'],
+  bad: ['..XX...', '..XX...', '.......', 'XX...XX', 'XX...XX', '.......', '.......']
+};
+const WORD = { ok: 'Clean', wa: 'Watch', bad: 'Bundled' };
+const pixelText = (txt, size) => {
+  const c = document.createElement('canvas'), x = c.getContext('2d');
+  x.font = '500 ' + size + 'px "Martian Mono", monospace';
+  const w = Math.ceil(x.measureText(txt).width) + 2; c.width = w; c.height = size + 4;
+  x.font = '500 ' + size + 'px "Martian Mono", monospace'; x.fillStyle = '#fff'; x.textBaseline = 'middle'; x.fillText(txt, 1, (size + 4) / 2 + 0.5);
+  const d = x.getImageData(0, 0, c.width, c.height).data, out = [];
+  for (let y = 0; y < c.height; y++) { let row = ''; for (let i = 0; i < w; i++) row += d[(y * w + i) * 4 + 3] > 120 ? 'X' : '.'; out.push(row); }
+  return out;
+};
 const drawSeal = (cv, kind, k) => {
-  const x = cv.getContext('2d'), N = cv.width, c = N / 2, col = COL[kind];
-  x.clearRect(0, 0, N, N);
-  for (let py = 0; py < N; py++) for (let px = 0; px < N; px++) {
-    const dx = px - c + 0.5, dy = py - c + 0.5, d = Math.hypot(dx, dy) / c;
-    const wob = 1 + 0.04 * Math.sin(Math.atan2(dy, dx) * 9 + kind.length * 1.7);
-    if (d > 0.96 * wob * k) continue;
-    let v = d > 0.8 * wob ? 0.95 : d > 0.74 * wob ? 0.22 : 0.64 - d * 0.36;
-    const ux = dx / (c * 0.5), uy = dy / (c * 0.5) + 0.3;
-    if (uy > -0.6 && uy < 0.8 && Math.abs(ux) < (0.8 - uy) * 0.7 && Math.abs(ux) > (0.3 - uy) * 0.5) v = 0.1;
-    x.fillStyle = v > bay(px, py) ? col : '#150F1B';
-    x.fillRect(px, py, 1, 1);
+  // Le badge prend la largeur de son mot, comme dans l'extension : « Bundled » ne déborde plus `[F-092]`
+  const t = pixelText(WORD[kind], 11), need = 20 + t[0].length + 10;
+  if (cv.width !== need) cv.width = need;
+  cv.style.width = need * (innerWidth < 700 ? 2.6 : 4) + 'px';
+  const x = cv.getContext('2d'), W = cv.width, H = cv.height, col = COL[kind];
+  x.clearRect(0, 0, W, H);
+  const R = H / 2 - 1, reveal = W * k;
+  const inPill = (px, py) => { const cx = Math.min(Math.max(px, R + 1), W - R - 2); return Math.hypot(px - cx, py - H / 2 + 0.5) <= R; };
+  for (let py = 0; py < H; py++) for (let px = 0; px < W; px++) {
+    if (px > reveal || !inPill(px, py)) continue;
+    const edge = !inPill(px - 2, py) || !inPill(px + 2, py) || !inPill(px, py - 2) || !inPill(px, py + 2);
+    if (edge) { x.fillStyle = col; x.fillRect(px, py, 1, 1); continue; }
+    if (0.16 > bay(px, py)) { x.globalAlpha = 0.55; x.fillStyle = col; x.fillRect(px, py, 1, 1); x.globalAlpha = 1; }
+  }
+  const g = GLYPH[kind], gx = 9, gy = Math.round(H / 2 - 3.5);
+  g.forEach((row, y) => [...row].forEach((ch, i) => { if (ch === 'X' && gx + i < reveal) { x.fillStyle = col; x.fillRect(gx + i, gy + y, 1, 1); } }));
+  const tx = 20, ty = Math.round(H / 2 - t.length / 2);
+  t.forEach((row, y) => [...row].forEach((ch, i) => { if (ch === 'X' && tx + i < reveal) { x.fillStyle = '#F3EEF9'; x.fillRect(tx + i, ty + y, 1, 1); } }));
+};
+document.fonts.ready.then(() => $$('[data-seal]').forEach((cv) => { if (!cv.__anim) drawSeal(cv, cv.dataset.seal, 1); }));
+/* ---------- the six pixel icons, alive (16 x 16, drawn by hand in code) ---------- */
+const ICON = {
+  clock: (x, t) => {
+    const c = 7.5, r = 6.5;
+    for (let a = 0; a < 64; a++) { const an = a / 64 * 6.283; x.fillRect(Math.round(c + Math.cos(an) * r), Math.round(c + Math.sin(an) * r), 1, 1); }
+    x.fillRect(7, 1, 2, 1); x.fillRect(7, 14, 2, 1);
+    const an = t * 1.6 - 1.57; for (let i = 0; i <= 5; i++) x.fillRect(Math.round(c + Math.cos(an) * i), Math.round(c + Math.sin(an) * i), 1, 1);
+    const am = t * 0.13 - 1.57; for (let i = 0; i <= 3; i++) x.fillRect(Math.round(c + Math.cos(am) * i), Math.round(c + Math.sin(am) * i), 1, 1);
+  },
+  tree: (x, t) => {
+    x.fillRect(6, 1, 4, 3);
+    const leaves = [[1, 12], [6, 12], [11, 12]];
+    for (const [lx] of leaves) { const sx = 8, sy = 4; for (let i = 0; i <= 7; i++) x.fillRect(Math.round(sx + (lx + 2 - sx) * i / 7), sy + i, 1, 1); }
+    for (const [lx, ly] of leaves) x.fillRect(lx, ly, 4, 3);
+    const k = (t * 0.9) % 1; x.globalAlpha = 1; x.fillStyle = '#F3EEF9';
+    for (const [lx] of leaves) x.fillRect(Math.round(8 + (lx + 2 - 8) * k), 4 + Math.round(7 * k), 1, 1);
+    x.fillStyle = '#BE80FF';
+  },
+  mask: (x, t) => {
+    for (let i = 2; i <= 13; i++) x.fillRect(i, 2, 1, 1);
+    x.fillRect(1, 3, 1, 6); x.fillRect(14, 3, 1, 6);
+    for (let i = 0; i < 6; i++) { x.fillRect(2 + i, 9 + Math.floor(i / 2), 1, 1); x.fillRect(13 - i, 9 + Math.floor(i / 2), 1, 1); }
+    x.fillRect(7, 12, 2, 1);
+    const blink = (t % 3.2) < 0.16;
+    if (blink) { x.fillRect(4, 6, 3, 1); x.fillRect(9, 6, 3, 1); }
+    else { const look = Math.round(Math.sin(t * 0.8)); x.fillRect(4 + look, 5, 2, 2); x.fillRect(10 + look, 5, 2, 2); }
+  },
+  stack: (x, t) => {
+    const bars = [11, 8, 6, 4, 3, 2];
+    bars.forEach((b, i) => { const w = Math.max(1, Math.round(b + Math.sin(t * 2.2 + i * 0.9) * (i < 2 ? 1.5 : 1))); x.fillRect(1, 2 + i * 2, w, 1); });
+  },
+  key: (x, t) => {
+    const k = Math.round((Math.sin(t * 2) * 0.5 + 0.5) * 3);
+    x.fillRect(13, 4, 2, 8);
+    const ox = k;
+    x.fillRect(ox + 0, 6, 1, 4); x.fillRect(ox + 1, 5, 3, 1); x.fillRect(ox + 1, 10, 3, 1); x.fillRect(ox + 4, 6, 1, 4);
+    x.fillRect(ox + 5, 7, 7, 1); x.fillRect(ox + 8, 8, 1, 2); x.fillRect(ox + 10, 8, 1, 1);
+  },
+  door: (x, t) => {
+    x.fillRect(1, 1, 8, 1); x.fillRect(1, 14, 8, 1); x.fillRect(1, 1, 1, 14); x.fillRect(8, 1, 1, 14);
+    const k = (t * 0.5) % 1, open = Math.min(1, k * 3), panel = Math.round(6 - open * 4);
+    x.globalAlpha = 0.45; x.fillRect(2, 2, panel, 12); x.globalAlpha = 1;
+    const wx = 4 + Math.round(Math.max(0, k * 3 - 0.6) * 4);
+    if (wx < 16) { x.fillRect(wx, 6, 1, 1); x.fillRect(wx - 1, 7, 3, 3); x.fillRect(wx - 1, 10, 1, 2); x.fillRect(wx + 1, 10, 1, 2); }
+    x.fillRect(11, 7, 4, 1); x.fillRect(13, 6, 1, 1); x.fillRect(13, 8, 1, 1);
   }
 };
-$$('[data-seal]').forEach((cv) => drawSeal(cv, cv.dataset.seal, 1));
-
-/* ---------- 1-bit glyphs ---------- */
-const GL = {
-  clock: ['...XXXXXXXX...', '..X........X..', '.X..........X.', '.X....X.....X.', '.X....X.....X.', '.X....X.....X.', '.X....XXXX..X.', '.X..........X.', '.X..........X.', '..X........X..', '...XXXXXXXX...', '..............', '..............', '..............'],
-  tree: ['......XX......', '......XX......', '......XX......', '...XXXXXXXX...', '...X......X...', '..XX......XX..', '..XX......XX..', '..............', '.XX...XX...XX.', '.XX...XX...XX.', '..............', '..............', '..............', '..............'],
-  mask: ['..............', '.XXXXXXXXXXXX.', 'X............X', 'X..XX....XX..X', 'X..XX....XX..X', 'X............X', '.X....XX....X.', '..X........X..', '...XX....XX...', '.....XXXX.....', '..............', '..............', '..............', '..............'],
-  stack: ['..............', 'XXXXXXXXXXXX..', '..............', 'XXXXXXXX......', '..............', 'XXXXX.........', '..............', 'XXX...........', '..............', 'XX............', '..............', 'X.............', '..............', '..............'],
-  key: ['..............', '..............', '.XXXX.........', 'X....X........', 'X....XXXXXXXXX', 'X....X....X.X.', '.XXXX.....X.X.', '..............', '..............', '..............', '..............', '..............', '..............', '..............'],
-  door: ['XXXXXXXX......', 'X......X......', 'X......X......', 'X......X..X...', 'X....X.X...X..', 'X......XXXXXXX', 'X......X...X..', 'X......X..X...', 'X......X......', 'X......X......', 'XXXXXXXX......', '..............', '..............', '..............']
+const icons = $$('[data-glyph]').map((cv) => ({ x: cv.getContext('2d'), name: cv.dataset.glyph, cv }));
+icons.forEach((ic) => { ic.cv.width = 16; ic.cv.height = 16; });
+let iconOn = true;
+const drawIcons = (now) => {
+  if (iconOn) for (const ic of icons) { ic.x.clearRect(0, 0, 16, 16); ic.x.fillStyle = '#BE80FF'; ic.x.globalAlpha = 1; ICON[ic.name](ic.x, reduce ? 1.2 : Math.floor(now / 110) * 0.11); }
+  if (!reduce) requestAnimationFrame(drawIcons);
 };
-$$('[data-glyph]').forEach((cv) => { const x = cv.getContext('2d'), g = GL[cv.dataset.glyph]; x.fillStyle = '#BE80FF'; g.forEach((row, y) => [...row].forEach((ch, i) => { if (ch === 'X') x.fillRect(i, y, 1, 1); })); });
+const grid = $('.reads-grid'); if (grid) new IntersectionObserver((e) => { iconOn = e[0].isIntersecting; }).observe(grid);
+requestAnimationFrame(drawIcons);
 if (!touch) for (const el of $$('.read')) el.addEventListener('pointermove', (e) => { const r = el.getBoundingClientRect(); el.style.setProperty('--x', (e.clientX - r.left) + 'px'); el.style.setProperty('--y', (e.clientY - r.top) + 'px'); });
 
-/* ---------- the night shift: abstract terminal rows, lit and sealed one by one ---------- */
+/* ---------- the night shift: real tokens, read and stamped one by one ---------- */
 const rowsCv = $('#rows'), rx = rowsCv.getContext('2d');
-const ROWS = (() => { seed = 5; return ['ok', 'bad', 'ok', 'wa', 'ok', 'bad', 'wa'].map((v) => ({ v, name: 50 + ((rnd() * 70) | 0), sub: 40 + ((rnd() * 90) | 0), mc: 30 + ((rnd() * 36) | 0), hue: rnd() })); })();
+const LOGO = {"MINELIUS": "data:image/webp;base64,UklGRogCAABXRUJQVlA4IHwCAABQDgCdASpgAGAAPpVCnkslo6KhpzQKSLASiWIAcA7XuzNG/uq+gzbF+YDnpfUA6UD0AOlNX4K0FBZbzGUMGT83XXigzCtWXq+qQHbY3/sCNHo7aOyh0ZP+Jc4P2gvneIs/Fw9gIm3q7+jTbH6uOU6n6HIf0acVrX5NuAAA/vrXgI7ExqboRaoOzeI03uOu32DmRf+9QyFj/7Pjs5PepaCOgvPjiHdiVuX5ju6MTsllQJpLK8OLQZX1qvpojmYnAbXT/soU/6/5YffWa+55D/0BROvDL65Df7PKlQ08DkEN/OYD64E5+n7PtNmAXTcY1bUkDXIJfriTYeIMA87wZgKSJRcgPFWC4ok7r6LTYCQdJy9KvcFQ5RpMTDq3xaaNTPqX9vU+APRS6oI1VRPnGRWfjUsanYwtyPvUvdG/HWmrGEnZ4Kx6G09VLGr9/jFT/oX9f0oUIsj3TmqyaLJ49BzPAXRDA0s3BKhroqQJ9S1tWnPSwwkOODKLMxMDXaVGqDeduiYE6ossUChRb4gDRqXhE7dmXJHAMFAGXt1PI2lJJ2LbwEngomMAim6WYb3Ad9436L0euLNxLK8rudX9b4PsvWoLlOPsqLHCFXD5r9Vn9CmCbeCysUlVRzIZX9T3oH2wM3eAgJNcIidhajaZen/JYiIMUi0AaN3YWynwQG83ZUI4x2HCILQWebg8VLa3m2+G3unk/nkYnfOz6zi6dqGLfPDdmU/rLx3cEVMJeyNb5ETRYZCU6gcNnpm6RbrW5SizMT0wBmlpCpIZ+oOYX8oRodobuzfyW/I53+o69iuvs/BROmko0F+g6e5j4K+fEvbW3Jmfr56wQAAAAAA=", "COPIUM": "data:image/webp;base64,UklGRiQFAABXRUJQVlA4IBgFAABQFwCdASpgAGAAPpVGnUqlo6KhplbbULASiUAZ+pSw1jxNunz3fR/5MH5GdNM/HcRRmvjd5O3efbQZc/2Pq3zO1Vk0vyE/VnsG/rT1rP3AYn9rfPGI9MHwjUBk4mcgQ5Ok5A/12owW5p4vNfF00XN32WZWzWjbYNxItTR4BTrBo44PdJTrXIg4FUzmBXwAVD3/Jm12GMmUxSw4S/uBolYEPN4UCSXYqG5e3Ev5fdcSFSt9672EH59lSGHff0jNQ9sgBAAA/vu4qbUlV/4VqARLb1dbIEydTBN7gN9ZmBEMWrKQggJi3ZcXvsR2aMGwDJp/dl/HJAT+0HeVNMz9oXwm7FfjlgbbZRe532oS6fw5eozRejMrDU9efq/8Q1JeBg0mc4gyxWnv3DcT4FQgbFLrRn0jiSusSlh2sX0zd/Dl9mfe+u7pGTvq95aboifGRWWKnjHYAQk4bmvB+eRSnQzEePq6bwZ090HtHv0W9N8Bbwd6zhB9TOfN/ezXlBcnDpqK86E/b0WbRp8yjH+Lst3dHAglKnG7wF0EZcBMFTppf1x3HN5jlf/zgnChSVh9FN3AGaCZaqgporXkOvDTpfhKWPcRrqlL1Debjc9bCszKaJsK54t+z0nJ96K3jsKVJwiM2lfed+29T6eHGpxNSbZhIf8cFS968S9N97x+fw0/F7qJj3oMZXcMr0CV2e5mUd9+wxvnjWuHVxo96lyKRcH5anMNmuRpquvczsqyUgANbQnmV/pdtO3/5YSiTyY0zQyD6xIc/Ufa+NlNnreNLBi7AQ2B4Js8UkB6CsIQ/K61LuisG38ixUfR9bO8yXv+abcXJKdMbyNenPW44QEoOg7howUT9dZ6ixQrttEHUNzShHbPJMqQHAwdOuLGnYCXmLyrf8DUDGXQEbEARgF6qddtBH1TQy/ocY7RE1C2RimXgcaVsaCxWPYjmMz5fPvbWPEVqt+P0JH6DqK1g1rRDUqb+GLYisP6ji8LIP4xRHZD9Xnu45ctKyBylxj1yp5bqkoWbd8tuT1IQuh3R5ZdfrDw5aIAu8ysgFIwac/RzG2k0wUqsUWswU8FMNgVw5rGpdtEG7qzvuJpiTYI18eJC29B+IzA20FSNdsBZuhumKbsLofjEHZmnueQ24LCT80jpBC8ESFHRBv9G3uYXhNp8WVA7f0BIDOrmifcCnaz7nfyxlaM/3N3iDBhCSdnskScVO0v2VGdSh7xNuj4+X2B//7e3H5BG+jt/hKo9ahAt1Z6+0cAigWNV4ZgWJFLnv/Kt0367VdWs9e9iH6nhBaPirUxHsnVaLXRWuWVR95R8x6Ovf/Y3pxL+xj5KJofu4pyfhL0/b+IqtX6yPh18tD8qQTGoD7K3yomztS1MMVXqeptBJASm+wNOF6YNSxVb6iL1iQeFbqivqLB0ainXMc7UoHOjSBoiziYqp9bk4SLjiiH7lCpgClumMwVLQ09UY+79rUeIdmytBLPH427bjuXDtJUJYLZQmhX9JepQrfyIxr3BpuL2BTHIr+mP/LReZ8eb5Q8y5rpaP8IEf+hBytgmdQ87bgd09zXX2vA9Ip/pKZEGk7N2BeQVyRoKUWCUt9L3xsh4/yqCIdy/MioCGtrT6HvHwT3+ec1qCAHiTPFT9wQEvugofiJAjw/mlrbYnVhhL1EaD/a3MknBUAwXXbqyb17wGSsa74pimN5Y4MKRB2a51XYfUTNseGf4RBAqar7vEOPB4dP8SAAAA==", "BRUH": "data:image/webp;base64,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", "HOGE": "data:image/webp;base64,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", "DESSA": "data:image/webp;base64,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", "JENSEN": "data:image/webp;base64,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", "JOB": "data:image/webp;base64,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"};
+const ROWS = [
+  { s: 'MINELIUS', a: 'E9rW…pump', mc: '$103K', v: 'bad', why: '3 wallets took 80% of supply in the first 10 s' },
+  { s: 'COPIUM', a: 'BAKs…pump', mc: '$793K', v: 'ok', why: 'Biggest wallet 0.5%, dev and holders look normal' },
+  { s: 'BRUH', a: 'PgFt…pump', mc: '$7.93M', v: 'wa', why: 'Liquidity is only 2.8% of market cap' },
+  { s: 'HOGE', a: 'FVzq…pump', mc: '$560K', v: 'bad', why: 'Serial dev: this wallet launched 542 tokens' },
+  { s: 'DESSA', a: 'CWpP…pump', mc: '$2.43M', v: 'ok', why: 'Biggest wallet 0.8%, nothing unusual at launch' },
+  { s: 'JENSEN', a: 'HKiM…pump', mc: '$1.28M', v: 'bad', why: 'Serial dev: 37 tokens, same wallet as MINELIUS' },
+  { s: 'JOB', a: 'BjRp…pump', mc: '$1.87M', v: 'ok', why: 'Biggest wallet 1.0%, dev and holders look normal' }
+];
+const imgs = {}; for (const r of ROWS) { const im = new Image(); im.src = LOGO[r.s]; imgs[r.s] = im; }
+const glyphAt = (x, kind, gx, gy, sz) => { GLYPH[kind].forEach((row, y) => [...row].forEach((ch, i) => { if (ch === 'X') x.fillRect(gx + i * sz, gy + y * sz, sz, sz); })); };
 const drawRows = (p) => {
-  const w = rowsCv.width, h = rowsCv.height, rh = h / ROWS.length, n = ROWS.length + 1.5;
+  const w = rowsCv.width, h = rowsCv.height, rh = h / ROWS.length, n = ROWS.length + 1.5, S = 2;
   rx.fillStyle = '#120E17'; rx.fillRect(0, 0, w, h);
   ROWS.forEach((r, i) => {
-    const y = i * rh, scan = clamp01(p * n - i - 0.3), seal = clamp01((p * n - i - 0.9) * 3);
-    rx.fillStyle = 'rgba(42,30,52,.9)'; rx.fillRect(0, y + rh - 1, w, 1);
-    for (let py = 0; py < 32; py += 3) for (let px = 0; px < 32; px += 3) {
-      const d = Math.hypot(px - 15, py - 15) / 16;
-      if (d < 1 && (0.75 - d * 0.4) * (0.3 + scan * 0.7) > bay(px / 3, py / 3)) { rx.fillStyle = scan > 0.5 ? 'hsl(' + (255 + r.hue * 90) + ',70%,72%)' : '#BE80FF'; rx.fillRect(26 + px, y + rh / 2 - 16 + py, 2.5, 2.5); }
-    }
-    rx.fillStyle = 'rgba(243,238,249,' + (0.22 + scan * 0.6) + ')'; rx.fillRect(78, y + rh / 2 - 13, r.name, 11);
-    rx.fillStyle = 'rgba(154,139,174,' + (0.18 + scan * 0.4) + ')'; rx.fillRect(78, y + rh / 2 + 6, r.sub, 7);
-    rx.fillStyle = 'rgba(243,238,249,' + (0.18 + scan * 0.4) + ')'; rx.fillRect(w - 44 - r.mc, y + rh / 2 - 5, r.mc, 11);
-    if (scan > 0 && scan < 1) { rx.fillStyle = 'rgba(190,128,255,' + (0.3 * (1 - Math.abs(scan - 0.5) * 2)) + ')'; rx.fillRect(0, y, w * scan, rh - 1); }
+    const y = i * rh, mid = y + rh / 2, scan = clamp01(p * n - i - 0.3), seal = clamp01((p * n - i - 0.9) * 3);
+    rx.fillStyle = 'rgba(42,30,52,.9)'; rx.fillRect(0, y + rh - 2, w, 2);
+    if (scan > 0 && scan < 1) { rx.fillStyle = 'rgba(190,128,255,' + (0.22 * (1 - Math.abs(scan - 0.5) * 2)) + ')'; rx.fillRect(0, y, w * scan, rh - 2); }
+    const im = imgs[r.s], lx = 40, ls = 76;
+    rx.save(); rx.beginPath(); rx.arc(lx + ls / 2, mid, ls / 2, 0, 7); rx.clip();
+    if (im.complete && im.naturalWidth) { rx.globalAlpha = 0.35 + 0.65 * Math.max(scan, 0.15); rx.drawImage(im, lx, mid - ls / 2, ls, ls); }
+    rx.restore(); rx.globalAlpha = 1;
+    rx.fillStyle = 'rgba(243,238,249,' + (0.45 + 0.55 * Math.max(scan, 0.2)) + ')'; rx.font = '600 32px "Hanken Grotesk", sans-serif'; rx.textBaseline = 'alphabetic'; rx.fillText(r.s, 140, mid - 6);
+    const nameW = rx.measureText(r.s).width;
+    rx.font = '400 21px "Martian Mono", monospace'; rx.fillStyle = 'rgba(154,139,174,.9)';
+    if (seal > 0.6) { rx.fillStyle = 'rgba(243,238,249,' + ((seal - 0.6) / 0.4 * 0.85) + ')'; rx.font = '400 22px "Hanken Grotesk", sans-serif'; rx.fillText(r.why, 140, mid + 30); }
+    else rx.fillText(r.a, 140, mid + 30);
+    rx.fillStyle = 'rgba(243,238,249,.85)'; rx.font = '500 26px "Martian Mono", monospace'; rx.textAlign = 'right'; rx.fillText(r.mc, w - 44, mid + 8); rx.textAlign = 'left';
+    /* the badge, exactly as the extension draws it: glyph + word, right after the name */
+    const bx = 140 + nameW + 22, by = mid - 31, col = COL[r.v];
     if (seal > 0) {
-      const col = COL[r.v], sx = 88 + r.name + 46, sy = y + rh / 2 - 4, s = 1 + (1 - ease(seal)) * 0.6;
-      rx.save(); rx.translate(sx, sy); rx.scale(s, s); rx.globalAlpha = ease(seal);
-      rx.strokeStyle = col; rx.lineWidth = 1.5; rx.fillStyle = col + '1f';
-      rx.beginPath(); rx.roundRect(-42, -12, 84, 24, 12); rx.fill(); rx.stroke();
-      rx.fillStyle = col; rx.font = '500 11px "Martian Mono", monospace'; rx.textAlign = 'center'; rx.textBaseline = 'middle';
-      rx.fillText(r.v === 'ok' ? 'Clean' : r.v === 'wa' ? 'Watch' : 'Bundled', 5, 1);
-      rx.beginPath(); rx.arc(-29, 0, 3, 0, 7); rx.fill();
+      const sc = 1 + (1 - ease(seal)) * 0.5, word = WORD[r.v];
+      rx.save(); rx.translate(bx, by + 17); rx.scale(sc, sc); rx.globalAlpha = ease(seal);
+      rx.font = '500 21px "Martian Mono", monospace'; const tw = rx.measureText(word).width, bw = tw + 62;
+      rx.fillStyle = col + '1f'; rx.strokeStyle = col; rx.lineWidth = 2.5; rx.beginPath(); rx.roundRect(0, -19, bw, 38, 19); rx.fill(); rx.stroke();
+      rx.fillStyle = col; glyphAt(rx, r.v, 16, -10, 3);
+      rx.fillText(word, 46, 7.5);
       rx.restore();
+    } else if (scan > 0) {
+      rx.globalAlpha = 0.6; rx.fillStyle = '#BE80FF'; rx.font = '400 20px "Martian Mono", monospace'; rx.fillText('reading…', bx, mid - 10); rx.globalAlpha = 1;
     }
   });
   $('#extV').classList.toggle('lit', p > 0.04);
   const idx = p < 0.22 ? 0 : p < 0.55 ? 1 : 2; $$('.shift-step').forEach((s, j) => s.classList.toggle('on', j <= idx));
 };
-drawRows(reduce ? 1 : 0);
-
+let lastRowsP = reduce ? 1 : 0;
+const drawRowsP = (p) => { lastRowsP = p; drawRows(p); };
+document.fonts.ready.then(() => drawRows(lastRowsP));
+Promise.all(Object.values(imgs).map((im) => new Promise((r) => { if (im.complete) r(); else { im.onload = r; im.onerror = r; } }))).then(() => drawRows(lastRowsP));
+drawRows(lastRowsP);
 /* ---------- dither dividers ---------- */
 const dividers = $$('[data-dv]').map((cv) => {
   const cx = cv.getContext('2d'); let k = reduce ? 1 : 0;
@@ -442,15 +532,15 @@ if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && !redu
   gsap.from('.hero-side', { y: 26, opacity: 0, duration: 1.1, ease: 'expo.out', delay: 1.1 });
   for (const h of $$('main h2')) { h.innerHTML = '<span style="display:block;overflow:hidden;padding-bottom:.08em"><span style="display:block">' + h.innerHTML + '</span></span>'; gsap.from(h.firstChild.firstChild, { yPercent: 110, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: h, start: 'top 88%' } }); }
   for (const el of $$('main .lead:not(.hero-side .lead), main .mark, .oath-list span, .isteps li')) gsap.from(el, { y: 26, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 92%' } });
-  $$('[data-seal]').forEach((cv, i) => { const st = { k: 0.001 }; drawSeal(cv, cv.dataset.seal, st.k); ScrollTrigger.create({ trigger: cv, start: 'top 85%', once: true, onEnter: () => gsap.to(st, { k: 1, duration: 0.9, delay: i * 0.2, ease: 'back.out(1.8)', onUpdate: () => drawSeal(cv, cv.dataset.seal, st.k) }) }); });
+  $$('[data-seal]').forEach((cv, i) => { cv.__anim = true; const st = { k: 0 }; document.fonts.ready.then(() => drawSeal(cv, cv.dataset.seal, 0)); ScrollTrigger.create({ trigger: cv, start: 'top 85%', once: true, onEnter: () => document.fonts.ready.then(() => { gsap.fromTo(cv, { scale: 1.25 }, { scale: 1, duration: 0.7, delay: i * 0.22 + 0.5, ease: 'back.out(2.4)' }); gsap.to(st, { k: 1, duration: 0.7, delay: i * 0.22, ease: 'power2.out', onUpdate: () => drawSeal(cv, cv.dataset.seal, st.k) }); }) }); });
   gsap.from('.read', { y: 40, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.08, scrollTrigger: { trigger: '.reads-grid', start: 'top 85%' } });
   gsap.from('.install-card', { y: 60, opacity: 0, scale: 0.97, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: '.install-card', start: 'top 85%' } });
   for (const d of dividers) ScrollTrigger.create({ trigger: d.cv, start: 'top 95%', end: 'top 45%', scrub: true, onUpdate: (s) => d.set(s.progress) });
   const spread = [[-280, -150, -16], [-120, 180, 10], [20, -200, -7], [150, 160, 13], [290, -80, -11]];
   $$('#word span').forEach((l, i) => gsap.fromTo(l, { x: spread[i][0], y: spread[i][1], rotate: spread[i][2], opacity: 0.2 }, { x: 0, y: 0, rotate: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: '#final', start: 'top 90%', end: 'center 60%', scrub: true } }));
   ScrollTrigger.matchMedia({
-    '(min-width: 1001px)': () => { const s = ScrollTrigger.create({ trigger: '#shiftPin', start: 'top top', end: '+=1500', pin: true, scrub: true, onUpdate: (st) => drawRows(st.progress) }); return () => s.kill(); },
-    '(max-width: 1000px)': () => { ScrollTrigger.create({ trigger: '#rows', start: 'top 80%', once: true, onEnter: () => { const st = { p: 0 }; gsap.to(st, { p: 1, duration: 4, ease: 'power1.inOut', onUpdate: () => drawRows(st.p) }); } }); }
+    '(min-width: 1001px)': () => { const s = ScrollTrigger.create({ trigger: '#shiftPin', start: 'top top', end: '+=1500', pin: true, scrub: true, onUpdate: (st) => drawRowsP(st.progress) }); return () => s.kill(); },
+    '(max-width: 1000px)': () => { ScrollTrigger.create({ trigger: '#rows', start: 'top 80%', once: true, onEnter: () => { const st = { p: 0 }; gsap.to(st, { p: 1, duration: 4, ease: 'power1.inOut', onUpdate: () => drawRowsP(st.p) }); } }); }
   });
 } else { dividers.forEach((d) => d.set(1)); }
 }

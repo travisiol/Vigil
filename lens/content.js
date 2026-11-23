@@ -10,6 +10,18 @@
   const IS_B58 = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
   const host = location.hostname.replace(/^www\./, "");
   const LABEL = { clean: "Clean", watch: "Watch", bundled: "Bundled" };
+  // Le symbole de chaque verdict, en pixels, identique à celui du site : un point seul, un point cerclé, trois points groupés `[F-092]`
+  const GLYPH = {
+    clean: [".......", "..XXX..", ".XXXXX.", ".XXXXX.", ".XXXXX.", "..XXX..", "......."],
+    watch: ["..XXX..", ".X...X.", "X..X..X", "X.XXX.X", "X..X..X", ".X...X.", "..XXX.."],
+    bundled: ["..XX...", "..XX...", ".......", "XX...XX", "XX...XX", ".......", "......."],
+    scan: [".......", ".......", "..XXX..", "..XXX..", "..XXX..", ".......", "......."],
+  };
+  const glyphSvg = (k) => {
+    let r = "";
+    GLYPH[k].forEach((row, y) => [...row].forEach((c, x) => { if (c === "X") r += `<rect x="${x}" y="${y}" width="1" height="1"/>`; }));
+    return `<svg class="vgl-g" viewBox="0 0 7 7" aria-hidden="true">${r}</svg>`;
+  };
 
   // --- transport : extension (service worker) ou test direct dans une page ---
   const hasExt = typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.id;
@@ -77,14 +89,11 @@
   .vgl-b{all:initial;display:inline-flex!important;align-items:center;gap:4px;height:18px;padding:0 7px;margin:0 0 0 6px;flex:none;align-self:center;width:max-content!important;border-radius:999px;
     font:600 10.5px/1 Inter,system-ui,sans-serif!important;letter-spacing:.01em;vertical-align:middle;cursor:help;white-space:nowrap;
     border:1px solid rgba(255,255,255,.12);background:#0B0A0F;color:#A6A1B8;z-index:2147483000;position:relative}
-  .vgl-b i{all:initial;width:6px;height:6px;border-radius:50%;background:#6E6880;display:inline-block}
-  .vgl-b.vgl-clean{color:#07E7C3;border-color:rgba(7,231,195,.4);background:rgba(7,231,195,.1)}
-  .vgl-b.vgl-clean i{background:#07E7C3}
+  .vgl-b .vgl-g{all:initial;color:inherit;display:inline-block;width:8px;height:8px;fill:currentColor;shape-rendering:crispEdges;flex:none}
+  .vgl-b.vgl-clean{color:#2EF0C8;border-color:rgba(46,240,200,.4);background:rgba(46,240,200,.1)}
   .vgl-b.vgl-watch{color:#FFB21F;border-color:rgba(255,178,31,.4);background:rgba(255,178,31,.1)}
-  .vgl-b.vgl-watch i{background:#FFB21F}
-  .vgl-b.vgl-bundled{color:#FF6B6B;border-color:rgba(255,69,69,.45);background:rgba(255,69,69,.12)}
-  .vgl-b.vgl-bundled i{background:#FF4545}
-  .vgl-b.vgl-scan i{animation:vglp 1s infinite}
+  .vgl-b.vgl-bundled{color:#FF4D4D;border-color:rgba(255,69,69,.45);background:rgba(255,69,69,.12)}
+  .vgl-b.vgl-scan .vgl-g{animation:vglp 1s infinite}
   .vgl-b.vgl-abs{position:absolute!important;top:6px;right:6px;margin:0}
   @keyframes vglp{50%{opacity:.25}}
   .vgl-tip{all:initial;position:fixed;z-index:2147483647;max-width:280px;padding:10px 12px;border-radius:12px;background:#0B0A0F;border:1px solid #24212E;
@@ -136,14 +145,14 @@
     }
     const v = d.verdict;
     el.className = `vgl-b ${v ? "vgl-" + v : "vgl-scan"}${el.classList.contains("vgl-abs") ? " vgl-abs" : ""}`;
-    el.innerHTML = `<i></i>${v ? LABEL[v] : "Scanning"}`;
+    el.innerHTML = `${glyphSvg(v || "scan")}${v ? LABEL[v] : "Scanning"}`;
     el.dataset.reason = d.reason || "";
   }
 
   function makeBadge(addr) {
     const el = document.createElement("span");
     el.className = "vgl-b vgl-scan";
-    el.innerHTML = "<i></i>Vigil";
+    el.innerHTML = `${glyphSvg("scan")}Vigil`;
     el.dataset.vglAddr = addr;
     el.addEventListener("mouseenter", () => showTip(el));
     el.addEventListener("mouseleave", hideTip);
@@ -172,7 +181,7 @@
     }
     const v = d?.verdict;
     tip.innerHTML = v
-      ? `<b style="color:${v === "clean" ? "#07E7C3" : v === "watch" ? "#FFB21F" : "#FF6B6B"}">Vigil · ${LABEL[v]}</b><span class="m">${escapeHtml(d.reason || "")}</span><span class="m">Click to open the full scan and the exit radar.</span>`
+      ? `<b style="color:${v === "clean" ? "#2EF0C8" : v === "watch" ? "#FFB21F" : "#FF4D4D"}">Vigil · ${LABEL[v]}</b><span class="m">${escapeHtml(d.reason || "")}</span><span class="m">Click to open the full scan and the exit radar.</span>`
       : `<b>Vigil is scanning this token…</b><span class="m">Launch wallets, dev history, funding links.</span>`;
     const r = el.getBoundingClientRect();
     tip.style.left = Math.min(window.innerWidth - 300, Math.max(8, r.left)) + "px";
@@ -392,7 +401,7 @@
   async function renderPanel(d) {
     if (!panelRoot) return;
     const v = d?.verdict;
-    const col = v === "clean" ? "#07E7C3" : v === "watch" ? "#FFB21F" : v === "bundled" ? "#FF4545" : "#B57BFF";
+    const col = v === "clean" ? "#2EF0C8" : v === "watch" ? "#FFB21F" : v === "bundled" ? "#FF4545" : "#B57BFF";
     const collapsed = sessionStorage.getItem("vgl-min") === "1";
     panelRoot.innerHTML = `
       <style>
@@ -407,12 +416,13 @@
         a.o{display:block;margin-top:12px;text-align:center;padding:9px;border-radius:10px;color:#fff;text-decoration:none;font-weight:700;
            background:linear-gradient(135deg,#9232F1,#BC33C9 50%,#F22C7B)}
         svg{width:16px;height:14px}
+        .v svg{width:8px;height:8px;fill:currentColor;shape-rendering:crispEdges}
       </style>
       <div class="p">
         <div class="h">
           <svg viewBox="0 0 100 84"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9232F1"/><stop offset="1" stop-color="#F22C7B"/></linearGradient></defs><path d="M0 0 L50 84 L100 0 C80 9 60 27 50 50 C40 27 20 9 0 0 Z" fill="url(#g)"/></svg>
           <b>Vigil</b>
-          ${v ? `<span class="v">● ${LABEL[v]}</span>` : `<span class="v">Scanning…</span>`}
+          ${v ? `<span class="v">${glyphSvg(v)}${LABEL[v]}</span>` : `<span class="v">${glyphSvg("scan")}Scanning…</span>`}
           <button class="x" title="${collapsed ? "Expand" : "Minimize"}">${collapsed ? "▴" : "▾"}</button>
         </div>
         ${collapsed ? "" : `
