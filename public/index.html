@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RugTrace · Tracker de ruggers pump.fun</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <a class="brand" href="#/">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e05cf0"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+        <circle cx="17" cy="17" r="16" fill="url(#lg)"/>
+        <circle cx="15.5" cy="15.5" r="6" fill="none" stroke="#fff" stroke-width="2.4"/>
+        <path d="M20 20l5 5" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>
+      <span>RugTrace</span>
+    </a>
+
+    <nav class="nav">
+      <a class="nav-item" data-view="trace" href="#/">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="M13.5 13.5L17 17"/></svg>
+        <span>Traque</span>
+      </a>
+      <a class="nav-item" data-view="scan" href="#/recherche">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3"/><path d="M10 10L15 5"/></svg>
+        <span>Chasse aux ruggers</span>
+      </a>
+      <a class="nav-item" data-view="list" href="#/enquetes">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M4 10h12M4 15h12"/></svg>
+        <span>Enquêtes</span>
+        <span class="nav-count" id="inv-count" hidden>0</span>
+      </a>
+      <a class="nav-item" data-view="wallet" href="#/wallet">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="5" width="14" height="11" rx="2"/><path d="M13 10.5h4"/><circle cx="7" cy="10.5" r="1"/></svg>
+        <span>Wallet tracker</span>
+      </a>
+      <a class="nav-item" data-view="real" href="#/bilan">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 16h14M5 13l4-4 3 3 5-6"/></svg>
+        <span>Bilan réel</span>
+      </a>
+      <a class="nav-item" data-view="watch" href="#/exchange">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 10s3-5.5 8-5.5S18 10 18 10s-3 5.5-8 5.5S2 10 2 10z"/><circle cx="10" cy="10" r="2.5"/></svg>
+        <span>Snipe exchange</span>
+        <span class="nav-count hot" id="watch-count" hidden>0</span>
+      </a>
+      <div class="nav-section">Référence</div>
+      <a class="nav-item" data-view="labels" href="#/adresses">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10V4h6l8 8-6 6z"/><circle cx="7" cy="7" r="1"/></svg>
+        <span>Adresses connues</span>
+      </a>
+    </nav>
+
+    <div class="side-foot">
+      <div class="side-row"><span>RPC</span><span class="side-val" id="rpc-side"><i class="dot"></i>…</span></div>
+      <div class="side-row"><span>Débit</span><span class="side-val" id="rps-side">…</span></div>
+      <div class="side-row"><span>Plateforme</span><span class="side-val">pump.fun</span></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="crumb" id="crumb"><span>Traque</span></div>
+      <div class="rpc-pill" id="rpc-pill"><i class="dot"></i><span>…</span></div>
+    </header>
+
+    <div class="content">
+      <!-- Traque -->
+      <section id="view-trace" class="view">
+        <div class="card search-card">
+          <div class="eyebrow">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="M13.5 13.5L17 17"/></svg>
+            Nouvelle traque
+          </div>
+          <p class="sub">Colle l'adresse d'un wallet de dev pump.fun. On remonte son financement, puis on redescend sur tous les wallets liés.</p>
+          <form id="trace-form" class="search-row" autocomplete="off">
+            <input id="address" type="text" spellcheck="false" placeholder="Adresse du wallet ou du token (ex. DJnD6YMA…UTA6)" aria-label="Adresse du wallet">
+            <div class="seg" id="preset-seg" role="group" aria-label="Profondeur de la traque">
+              <button type="button" data-preset="rapide">Rapide</button>
+              <button type="button" data-preset="normal" class="on">Normale</button>
+              <button type="button" data-preset="profond">Profonde</button>
+            </div>
+            <button class="btn primary" id="trace-btn" type="submit">Tracer</button>
+          </form>
+          <div class="preset-hint" id="preset-hint"></div>
+          <div class="form-error" id="form-error" hidden></div>
+        </div>
+
+        <div class="card notice" id="rpc-notice" hidden>
+          <i class="dot amber"></i>
+          <div>
+            <strong>RPC public : environ 1 transaction lue par seconde.</strong>
+            <span>Une traque normale peut prendre plusieurs minutes. Avec une clé Helius gratuite dans le fichier <code>.env</code>, c'est environ 10 fois plus rapide.</span>
+          </div>
+        </div>
+
+        <div class="card progress-card" id="progress" hidden>
+          <div class="progress-head">
+            <div class="spinner" aria-hidden="true"></div>
+            <div>
+              <div class="progress-title" id="progress-title">Traque en cours</div>
+              <div class="sub" id="progress-sub">Démarrage…</div>
+            </div>
+          </div>
+          <div class="bar"><div class="bar-fill" id="bar-fill"></div></div>
+          <ol class="log" id="log"></ol>
+        </div>
+
+        <div id="result"></div>
+      </section>
+
+      <!-- Chasse aux ruggers -->
+      <section id="view-scan" class="view" hidden>
+        <div class="card search-card hunt-card">
+          <div class="eyebrow">Chasse aux ruggers</div>
+          <p class="sub">Mets tes critères : l’outil passe en revue les tokens pump.fun des dernières heures (nouveaux, Final Stretch, migrés) et te sort tout de suite ceux qui collent. Ensuite, clique « Tracer » sur celui qui t’intéresse : l’outil retrouve le dev à partir du token. Laisse vide un critère que tu ne veux pas utiliser.</p>
+          <div class="presets-bar"><span class="presets-label">Mes presets</span><div id="fh-presets" class="presets"></div>
+            <div class="preset-new"><input id="fh-preset-name" type="text" maxlength="40" placeholder="Nom du preset (ex. Rugs rapides)"><button class="btn sm" id="fh-preset-save" type="button">Enregistrer</button></div></div>
+          <form id="fhunt-form" autocomplete="off">
+            <div class="fgrid">
+              <label class="field"><span>Tokens créés sur les dernières</span><div class="unit"><input id="fh-hours" type="number" min="0" step="any" inputmode="decimal" placeholder="" value="3"><i>heures</i></div></label>
+              <div class="field"><span>Volume 24 h</span><div class="frange"><div class="unit"><input id="fh-vol-min" type="number" min="0" step="any" inputmode="decimal" placeholder="min" value="15000"><i>$</i></div><div class="unit"><input id="fh-vol-max" type="number" min="0" step="any" inputmode="decimal" placeholder="max" value=""><i>$</i></div></div></div>
+              <div class="field"><span>Market cap actuelle</span><div class="frange"><div class="unit"><input id="fh-mc-min" type="number" min="0" step="any" inputmode="decimal" placeholder="min" value=""><i>$</i></div><div class="unit"><input id="fh-mc-max" type="number" min="0" step="any" inputmode="decimal" placeholder="max" value=""><i>$</i></div></div></div>
+              <div class="field"><span>Market cap max atteinte (plus haut)</span><div class="frange"><div class="unit"><input id="fh-ath-min" type="number" min="0" step="any" inputmode="decimal" placeholder="min" value=""><i>$</i></div><div class="unit"><input id="fh-ath-max" type="number" min="0" step="any" inputmode="decimal" placeholder="max" value=""><i>$</i></div></div></div>
+              <label class="field"><span>Market cap max à la 1re bougie</span><div class="unit"><input id="fh-entry-max" type="number" min="0" step="any" inputmode="decimal" placeholder="ex. 10000" value=""><i>$</i></div></label>
+              <label class="field"><span>% atteint depuis la 1re bougie, au moins</span><div class="unit"><input id="fh-peak" type="number" min="0" step="any" inputmode="decimal" placeholder="ex. 100" value=""><i>%</i></div></label>
+              <div class="field"><span>Le rug : au moins</span><div class="frange"><div class="unit"><input id="fh-rug" type="number" min="0" max="100" step="any" placeholder="ex. 70"><i>% de chute</i></div><div class="unit"><input id="fh-rug-sec" type="number" min="1" step="1" value="60"><i>s au plus</i></div></div></div>
+              <div class="field"><span>Temps entre le lancement et le rug</span><div class="frange"><div class="unit"><input id="fh-rugafter-min" type="number" min="0" step="any" inputmode="decimal" placeholder="min" value=""><i>s</i></div><div class="unit"><input id="fh-rugafter-max" type="number" min="0" step="any" inputmode="decimal" placeholder="max" value=""><i>s</i></div></div></div>
+              <div class="field"><span>Wallets dans le bundle</span><div class="frange"><div class="unit"><input id="fh-bundle-min" type="number" min="0" step="any" inputmode="decimal" placeholder="min" value=""><i>wallets</i></div><div class="unit"><input id="fh-bundle-max" type="number" min="0" step="any" inputmode="decimal" placeholder="max" value=""><i>wallets</i></div></div></div>
+              <div class="field"><span>Supply prise par le bundle</span><div class="frange"><div class="unit"><input id="fh-bpct-min" type="number" min="0" step="any" inputmode="decimal" placeholder="min" value=""><i>%</i></div><div class="unit"><input id="fh-bpct-max" type="number" min="0" step="any" inputmode="decimal" placeholder="max" value=""><i>%</i></div></div></div>
+              <div class="field"><span>Migré</span><select id="fh-migrated" class="fsel"><option value="any">Peu importe</option><option value="no">Pas migré</option><option value="yes">Migré</option></select></div>
+              <div class="field"><span>Dev</span><label class="chk"><input id="fh-single" type="checkbox" checked> 1 seul token créé (pas un lanceur en série)</label><label class="chk" title="Écarte les devs financés par un mélangeur, un service, ou un wallet déjà très utilisé"><input id="fh-source" type="checkbox"> Source traquable seulement (vert ou jaune)</label></div>
+              <div class="field"><span>Analyse</span><label class="chk" title="Après la recherche, trace chaque dev trouvé et calcule sa rentabilité (1 à 2 minutes chacun, sauf source rouge)"><input id="fh-analyse" type="checkbox" checked> Analyser chaque résultat (traque + rentabilité, 1 à 2 min chacun)</label></div>
+              <label class="field"><span>Arrêter après</span><div class="unit"><input id="fh-max" type="number" min="0" step="any" inputmode="decimal" placeholder="" value="50"><i>résultats</i></div></label>
+            </div>
+            <div class="fbtns"><button class="btn primary" id="fhunt-btn" type="submit">Lancer la recherche</button><button class="btn" id="fhunt-stop" type="button" hidden>Arrêter</button></div>
+          </form>
+          <p class="sub" id="fhunt-status"></p>
+          <div id="fhunt-result"></div>
+        </div>
+      </section>
+
+      <!-- Enquêtes -->
+      <section id="view-list" class="view" hidden>
+        <div class="page-head">
+          <h1>Enquêtes</h1>
+          <p class="sub">Toutes les traques terminées, enregistrées sur ta machine.</p>
+        </div>
+        <div id="list-body"></div>
+      </section>
+
+      <!-- Adresses connues -->
+      <section id="view-wallet" class="view" hidden>
+        <div class="card search-card">
+          <div class="eyebrow">Chasse aux wallets</div>
+          <p class="sub">Cherche les <b>wallets du rug</b> (pas le dev) : sur les coins qui ont rug ces dernières heures (−70 % en quelques secondes, ou en moins d’une minute), on prend <b>tout le bundle</b> (même bloc que la création) et les <b>3 ou 4 premiers acheteurs</b> juste après le dev. On garde les wallets à <b>3 à 30 trades par jour</b>, puis on rejoue leurs trades autour du rug : touchent-ils <b>+100 %</b> en entrant sous <b>10 000 $</b> de market cap ? Avec leur PnL sur 30 jours. Retenus : au moins 1 SOL pour 10 achats copiés à +100 %. Compte 1 à 2 minutes par wallet.</p>
+          <form id="whunt-form" class="scan-row" autocomplete="off">
+            <label class="field"><span>Combien de wallets veux-tu ?</span><div class="unit"><input id="whunt-target" type="number" min="1" max="20" step="1" value="3" inputmode="numeric"><i>bénéf pour toi</i></div></label>
+            <label class="field"><span>Coins rug des dernières</span><div class="unit"><input id="whunt-hours" type="number" min="1" max="12" step="1" value="3" inputmode="numeric"><i>heures</i></div></label>
+            <label class="field"><span>Volume minimum du coin</span><div class="unit"><input id="whunt-vol" type="number" min="0" step="1000" value="15000" inputmode="numeric"><i>$</i></div></label>
+            <button class="btn primary" id="whunt-btn" type="submit">Lancer la chasse</button>
+            <button class="btn" id="whunt-stop" type="button" hidden>Arrêter</button>
+          </form>
+          <p class="sub" id="whunt-status"></p>
+          <div id="whunt-result"></div>
+        </div>
+        <div class="card search-card">
+          <div class="eyebrow">Wallet tracker</div>
+          <p class="sub">Colle un wallet à copier (pas un dev). On rejoue ses achats des 3 derniers jours (30 au plus) comme ton bot : un achat par projet, vente de tout à +100 %. Un achat ne compte que s’il entre sous 10 000 $ de market cap. On regarde aussi son PnL sur 30 jours et son rythme (3 à 30 trades par jour).</p>
+          <form id="wallet-form" class="scan-row" autocomplete="off">
+            <label class="field" style="flex:2"><span>Wallet à vérifier</span><input id="wallet-addr" type="text" spellcheck="false" placeholder="Adresse du wallet"></label>
+            <button class="btn primary" id="wallet-btn" type="submit">Analyser</button>
+          </form>
+          <p class="sub" id="wallet-status"></p>
+        </div>
+        <div id="wallet-result"></div>
+      </section>
+
+      <section id="view-real" class="view" hidden>
+        <div class="card search-card">
+          <div class="eyebrow">Bilan réel</div>
+          <p class="sub">Tes vrais trades, lus sur la chaîne depuis ton wallet F Project : ce que tu as vraiment gagné ou perdu, rugger par rugger, comparé à ce que l’outil avait prévu. Sert à savoir quel rugger garder, lequel couper, et si les prévisions tiennent.</p>
+          <form id="real-form" class="scan-row" autocomplete="off">
+            <label class="field" style="flex:2"><span>Ton wallet F Project</span><input id="real-wallet" type="text" spellcheck="false" placeholder="Adresse de ton wallet"></label>
+            <label class="field"><span>Sur les derniers</span><div class="unit"><input id="real-days" type="number" min="1" max="30" step="1" value="7" inputmode="numeric"><i>jours</i></div></label>
+            <button class="btn primary" id="real-btn" type="submit">Faire le bilan</button>
+          </form>
+          <p class="sub" id="real-status"></p>
+        </div>
+        <div id="real-result"></div>
+      </section>
+
+      <section id="view-watch" class="view" hidden>
+        <div class="page-head">
+          <h1>Snipe exchange</h1>
+          <p class="sub">Les ruggers retirés d’un exchange (Binance, Coinbase…). RugTrace cherche son montant exact partout, passe son bundle au crible pour savoir s’il s’auto-snipe, remonte ses anciens tokens, puis le surveille toutes les 3 min.</p>
+        </div>
+        <div id="watch-body"></div>
+      </section>
+      <section id="view-labels" class="view" hidden>
+        <div class="page-head">
+          <h1>Adresses connues</h1>
+          <p class="sub">Quand la remontée tombe sur une de ces adresses, elle s'arrête. Ajoute les tiennes dans <code>data/labels.local.json</code>.</p>
+        </div>
+        <div id="labels-body"></div>
+      </section>
+    </div>
+  </main>
+</div>
+<div class="tip" id="tip" hidden></div>
+<div class="toast" id="toast" hidden></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

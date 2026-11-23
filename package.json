@@ -1,0 +1,14 @@
+{
+  "name": "rugtrace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Tracker de ruggers pump.fun : remonte le financement d'un wallet Solana et cartographie son cluster.",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/tracer.test.js"
+  },
+  "engines": {
+    "node": ">=22.5"
+  }
+}

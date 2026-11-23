@@ -1,0 +1,170 @@
+{
+  "5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9": {
+    "name": "Binance",
+    "type": "exchange"
+  },
+  "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM": {
+    "name": "Binance",
+    "type": "exchange"
+  },
+  "2ojv9BAiHUrvsm9gxDe7fJSzbNZSJcxZvf8dqmWGHG8S": {
+    "name": "Binance",
+    "type": "exchange"
+  },
+  "H8sMJSCQxfKiFTCfDR3DUMLPwcRbM61LGFJ8N4dK3WjS": {
+    "name": "Coinbase",
+    "type": "exchange"
+  },
+  "GJRs4FwHtemZ5ZE9x3FNvJ8TMwitKTh21yxdRPqn7npE": {
+    "name": "Coinbase",
+    "type": "exchange"
+  },
+  "2AQdpHJ2JpcEgPiATUXjQxA8QmafFegfQwSLWSprPicm": {
+    "name": "Coinbase",
+    "type": "exchange"
+  },
+  "5VCwKtCXgCJ6kit5FybXjvriW3xELsFDhYrPSqtJNmcD": {
+    "name": "OKX",
+    "type": "exchange"
+  },
+  "is6MTRHEgyFLNTfYcuV4QBWLjrZBfmhVNYR6ccgr8KV": {
+    "name": "OKX",
+    "type": "exchange"
+  },
+  "AC5RDfQFmDS1deWZos921JfqscXdByf8BKHs5ACWjtW2": {
+    "name": "Bybit",
+    "type": "exchange"
+  },
+  "FWznbcNXWQuHTawe9RxvQ2LdCENssh12dsznf4RiouN5": {
+    "name": "Kraken",
+    "type": "exchange"
+  },
+  "BmFdpraQhkiDQE6SnfG5omcA1VwzqfXrwtNYBwWTymy6": {
+    "name": "KuCoin",
+    "type": "exchange"
+  },
+  "u6PJ8DtQuPFnfmwHbGFULQ4u4EgjDiyYKjVEsynXq2w": {
+    "name": "Gate",
+    "type": "exchange"
+  },
+  "ASTyfSima4LLAdDgoFGkgqoKowG1LZFDr9fAQrg7iaJZ": {
+    "name": "MEXC",
+    "type": "exchange"
+  },
+  "A77HErqtfN1hLLpvZ9pCtu66FEtM8BveoaKbbMoZ4RiR": {
+    "name": "Bitget",
+    "type": "exchange"
+  },
+  "6FEVkH17P9y8Q9aCkDdPcMDjvj7SVxrTETaYEm8f51Jy": {
+    "name": "Crypto.com",
+    "type": "exchange"
+  },
+  "AobVSwdW9BbpMdJvTqeCN4hPAmh4rHm7vwLnQ5ATSyrS": {
+    "name": "Crypto.com",
+    "type": "exchange"
+  },
+  "G2YxRa6wt1qePMwfJzdXZG62ej4qaTC7YURzuh2Lwd3t": {
+    "name": "ChangeNOW",
+    "type": "swap"
+  },
+  "96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5": {
+    "name": "Jito tip",
+    "type": "infra"
+  },
+  "HFqU5x63VTqvQss8hp11i4wVV8bD44PvwucfZ2bU7gRe": {
+    "name": "Jito tip",
+    "type": "infra"
+  },
+  "Cw8CFyM9FkoMi7K7Crf6HNQqf4uEMzpKw6QNghXLvLkY": {
+    "name": "Jito tip",
+    "type": "infra"
+  },
+  "ADaUMid9yfUytqMBgopwjb2DTLSokTSzL1zt6iGPaS49": {
+    "name": "Jito tip",
+    "type": "infra"
+  },
+  "DfXygSm4jCyNCybVYYK6DwvWqjKee8pbDmJGcLWNDXjh": {
+    "name": "Jito tip",
+    "type": "infra"
+  },
+  "ADuUkR4vqLUMWXxW9gh6D6L8pMSawimctcNZ5pGwDcEt": {
+    "name": "Jito tip",
+    "type": "infra"
+  },
+  "DttWaMuVvTiduZRnguLF7jNxTgiMBZ1hyAumKUiL2KRL": {
+    "name": "Jito tip",
+    "type": "infra"
+  },
+  "3AVi9Tg9Uo68tJfuvoKvqKNWKkC5wPdSSdeBnizKZ6jT": {
+    "name": "Jito tip",
+    "type": "infra"
+  },
+  "DQ5JWbJyWdJeyBxZuuyu36sUBud6L6wo3aN1QC1bRmsR": {
+    "name": "HitBTC",
+    "type": "exchange"
+  },
+  "Biw4eeaiYYYq6xSqEd7GzdwsrrndxA8mqdxfAtG3PTUU": {
+    "name": "Revolut",
+    "type": "exchange"
+  },
+  "Cc3bpPzUvgAzdW9Nv7dUQ8cpap8Xa7ujJgLdpqGrTCu6": {
+    "name": "MoonPay",
+    "type": "exchange"
+  },
+  "B48kNVXs4YK4amkBCH2XokQiv1SeiVQGHDR17xDeKAAn": {
+    "name": "ChangeNow",
+    "type": "exchange"
+  },
+  "5F1seMKUqSNhv45f6FhB2cFmgJbk8U1avJw7M6TexUq1": {
+    "name": "MoonPay",
+    "type": "exchange"
+  },
+  "5ndLnEYqSFiA5yUFHo6LVZ1eWc6Rhh11K5CfJNkoHEPs": {
+    "name": "FixedFloat",
+    "type": "exchange"
+  },
+  "6LY1JzAFVZsP2a2xKrtU6znQMQ5h4i7tocWdgrkZzkzF": {
+    "name": "Kraken",
+    "type": "exchange"
+  },
+  "HoW3NxPk5NakaMvdiEMojRiewchajqPgdiHTgCzmFUaQ": {
+    "name": "Exchange",
+    "type": "exchange"
+  },
+  "CSEncqtqbmNRjve42sNnbs5cCSmrjUNsAEwc17XY2RCs": {
+    "name": "CoinSpot",
+    "type": "exchange"
+  },
+  "DPqsobysNf5iA9w7zrQM8HLzCKZEDMkZsWbiidsAt1xo": {
+    "name": "Coinbase",
+    "type": "exchange"
+  },
+  "8DfHuYFv7VQ6wgcGtVDN2vtFn5ezF52hHNtPWYcqm8hU": {
+    "name": "Binance",
+    "type": "exchange"
+  },
+  "FpwQQhQQoEaVu3WU2qZMfF1hx48YyfwsLoRgXG83E99Q": {
+    "name": "Coinbase",
+    "type": "exchange"
+  },
+  "iGdFcQoyR2MwbXMHQskhmNsqddZ6rinsipHc4TNSdwu": {
+    "name": "Bybit",
+    "type": "exchange"
+  },
+  "3yFwqXBfZY4jBVUafQ1YEXw189y2dN3V5KQq9uzBDy1E": {
+    "name": "Binance",
+    "type": "exchange"
+  },
+  "C68a6RCGLiPskbPYtAcsCjhG8tfTWYcoB4JjCrXFdqyo": {
+    "name": "OKX",
+    "type": "exchange"
+  },
+  "9un5wqE3q4oCjyrDkwsdD48KteCJitQX5978Vh7KKxHo": {
+    "name": "OKX",
+    "type": "exchange"
+  },
+  "BY4StcU9Y2BpgH8quZzorg31EGE4L1rjomN8FNsCBEcx": {
+    "name": "HTX",
+    "type": "exchange"
+  }
+}

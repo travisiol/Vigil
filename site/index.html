@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vigil landing page</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE  a trading terminal that never sleeps: calm, sharp, a little dangerous
+   IDEA   a night watch: everything is black until Vigil's light passes over it and reveals the truth
+   PICTURE the live terminal with a scan line and a travelling border light; then a wiring diagram where every venue's data flows into the V
+   COLOUR pure black (from the logo), the logo gradient #9232F1 > #BC33C9 > #F22C7B as the only brand light; teal / amber / red only for risk
+   TYPE   Sora titles, Inter text, JetBrains Mono numbers
+   LAYOUT laptop: title left, terminal right; pinned diagram; bento; card; flywheel. phone: one column, sticky CA bar */
+@property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
+:root{color-scheme:dark;--bg:#000;--s1:#0B0A0F;--s2:#13111A;--line:#24212E;--ink:#F5F3FA;--mut:#A6A1B8;--v:#9232F1;--m:#BC33C9;--p:#F22C7B;--vt:#B57BFF;--ok:#07E7C3;--wa:#FFB21F;--bad:#FF4545;--grad:linear-gradient(135deg,#9232F1 0%,#BC33C9 50%,#F22C7B 100%);--ease:cubic-bezier(.22,1,.36,1)}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;letter-spacing:-.03em;line-height:1.05;margin:0;text-wrap:balance}
+h2{font-size:clamp(32px,4.4vw,52px)}
+h3{font-size:19px;letter-spacing:-.01em}
+p{margin:0}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(5vw,16px);padding-right:max(5vw,16px)}
+.band{padding-top:clamp(64px,9vw,128px);padding-bottom:clamp(64px,9vw,128px)}
+.lead{color:var(--mut);font-size:17px;max-width:58ch}
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 22px;border-radius:12px;font:600 15px/1 Inter,sans-serif;border:1px solid transparent;cursor:pointer;transition:transform .2s var(--ease),box-shadow .2s,border-color .2s;white-space:nowrap}
+.btn:focus-visible,.copy:focus-visible,summary:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid var(--vt);outline-offset:3px}
+.btn-main{background:var(--grad);color:#fff;box-shadow:0 10px 34px -12px rgba(188,51,201,.8)}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 16px 44px -12px rgba(242,44,123,.85)}
+.btn-ghost{background:rgba(255,255,255,.02);color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--vt)}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ca{display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 6px 0 12px;border:1px solid var(--line);border-radius:10px;background:var(--s1);font-size:13px;color:var(--mut)}
+.ca b{color:var(--ink);font-weight:500}
+.copy{height:30px;padding:0 10px;border-radius:7px;border:0;background:var(--s2);color:var(--ink);font:500 12px/1 Inter,sans-serif;cursor:pointer}
+.copy:hover{background:var(--line)}
+/* progress + header */
+#prog{position:fixed;left:0;top:0;height:2px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--grad);z-index:80}
+header{position:sticky;top:0;z-index:50;background:rgba(0,0,0,.7);backdrop-filter:saturate(140%) blur(14px);-webkit-backdrop-filter:saturate(140%) blur(14px);border-bottom:1px solid rgba(36,33,46,.7)}
+.nav{display:flex;align-items:center;gap:28px;height:68px}
+.logo{display:flex;align-items:center;gap:10px;font:700 21px/1 Sora,sans-serif;letter-spacing:-.03em}
+.logo svg{width:30px;height:26px}
+.nav nav{display:flex;gap:24px;font-size:14px;color:var(--mut)}
+.nav nav a{transition:color .2s}
+.nav nav a:hover,.nav nav a.on{color:var(--ink)}
+.nav .right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.nav .btn{height:40px;padding:0 16px;font-size:14px}
+/* hero */
+.hero{position:relative;overflow:hidden;isolation:isolate}
+#beams{position:absolute;inset:0;width:100%;height:100%;z-index:-2;opacity:.9}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(70% 60% at 70% 45%,transparent 0%,rgba(0,0,0,.55) 60%,#000 100%),linear-gradient(transparent 70%,#000)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(32px,5vw,72px);align-items:center;padding-top:clamp(48px,7vw,104px);padding-bottom:clamp(36px,4vw,56px)}
+.hero h1{font-size:clamp(52px,7.4vw,100px);letter-spacing:-.05em}
+.hero h1 .w{display:inline-block;will-change:transform,filter,opacity}
+.hero .lead{margin-top:22px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.hero .ca{margin-top:22px}
+/* terminal + border beam (adapted from 21st.dev Border Beam) */
+.term{position:relative;border:1px solid var(--line);border-radius:18px;background:rgba(11,10,15,.86);box-shadow:0 40px 120px -40px rgba(146,50,241,.6);overflow:hidden;isolation:isolate}
+.beam-border::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:conic-gradient(from var(--a),transparent 0 72%,#9232F1 82%,#F22C7B 90%,transparent 96%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);animation:spin 6s linear infinite;pointer-events:none;z-index:3}
+@keyframes spin{to{--a:360deg}}
+.term-h{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);font-size:13px;color:var(--mut)}
+.term-h b{color:var(--ink);font-weight:600}
+.live{display:inline-flex;align-items:center;gap:8px;color:var(--vt);font-weight:500}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--grad);box-shadow:0 0 12px var(--p);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font:500 12px/1 Inter,sans-serif;color:var(--mut);padding:12px 18px}
+.tbl th.r,.tbl td.r{text-align:right}
+.tbl td{padding:13px 18px;border-top:1px solid var(--line);white-space:nowrap;position:relative}
+.tok b{display:block;font-weight:600;font-size:14px}
+.tok span{font-size:12px;color:var(--mut)}
+.up{color:var(--ok)}.dn{color:var(--bad)}
+.pill{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font:600 12px/1 Inter,sans-serif;border:1px solid;white-space:nowrap}
+.pill svg{width:11px;height:11px}
+.p-ok{color:var(--ok);background:rgba(7,231,195,.1);border-color:rgba(7,231,195,.3)}
+.p-wa{color:var(--wa);background:rgba(255,178,31,.1);border-color:rgba(255,178,31,.3)}
+.p-bad{color:var(--bad);background:rgba(255,69,69,.1);border-color:rgba(255,69,69,.32)}
+.p-scan{color:var(--vt);background:rgba(146,50,241,.12);border-color:rgba(181,123,255,.3)}
+.buy{height:32px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--s2);color:var(--ink);font:600 12px/1 'JetBrains Mono',monospace;cursor:pointer;transition:border-color .2s}
+.buy:hover{border-color:var(--vt)}
+tr.new{animation:rowin .55s var(--ease)}
+@keyframes rowin{from{opacity:0;transform:translateY(-10px)}}
+.flash{animation:flash 1.2s ease-out}
+@keyframes flash{from{background:rgba(146,50,241,.24)}}
+.scan{position:absolute;left:0;right:0;height:2px;top:48px;background:var(--grad);box-shadow:0 0 18px 2px rgba(188,51,201,.75);pointer-events:none}
+.scan::before{content:"";position:absolute;left:0;right:0;bottom:2px;height:46px;background:linear-gradient(transparent,rgba(146,50,241,.15))}
+.note{padding:12px 18px;border-top:1px dashed rgba(181,123,255,.35);font-size:13px;color:var(--mut);min-height:44px}
+.note b{color:var(--ink);font-weight:600}
+.sample{font-size:12px;color:var(--mut);margin-top:10px;text-align:right}
+/* marquee */
+.venues{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0;overflow:hidden;-webkit-mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.track{display:flex;gap:56px;width:max-content;animation:mq 32s linear infinite}
+.venues:hover .track{animation-play-state:paused}
+.track span{font:600 18px/1 Sora,sans-serif;color:var(--mut);letter-spacing:-.02em;white-space:nowrap;display:flex;align-items:center;gap:10px}
+.track span i{width:8px;height:8px;border-radius:2px;background:var(--grad);transform:rotate(45deg)}
+@keyframes mq{to{transform:translateX(-50%)}}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.stat{padding:32px 24px;border-left:1px solid var(--line)}
+.stat:first-child{border-left:0;padding-left:0}
+.stat .n{font:600 clamp(28px,3.4vw,44px)/1 Sora,sans-serif;letter-spacing:-.03em}
+.stat .l{color:var(--mut);font-size:14px;margin-top:10px}
+/* pinned diagram (Animated Beam, adapted from 21st.dev) */
+.how{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(32px,5vw,72px);align-items:center;min-height:min(100svh,860px)}
+.how h2{font-size:clamp(32px,3.7vw,48px)}
+.steps{margin-top:36px;display:grid;gap:10px}
+.step{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;padding:16px;border-radius:14px;border:1px solid transparent;transition:background .4s,border-color .4s,opacity .4s;opacity:.45}
+.step.on{opacity:1;background:var(--s1);border-color:var(--line)}
+.step .k{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--s2);font:600 15px/1 Sora,sans-serif;color:var(--mut)}
+.step.on .k{background:var(--grad);color:#fff}
+.step p{color:var(--mut);font-size:15px;margin-top:4px}
+.diagram{position:relative;height:460px;border:1px solid var(--line);border-radius:22px;background:radial-gradient(60% 60% at 60% 50%,rgba(146,50,241,.14),transparent 70%),var(--s1);overflow:hidden}
+.diagram svg.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.node{position:absolute;z-index:2;display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:#000;font:600 13px/1 Inter,sans-serif;white-space:nowrap;transform:translate(-50%,-50%);transition:border-color .4s,box-shadow .4s}
+.node i{width:8px;height:8px;border-radius:50%;background:var(--vt)}
+.node.lit{border-color:rgba(181,123,255,.6);box-shadow:0 0 24px -6px rgba(146,50,241,.8)}
+.core{position:absolute;z-index:3;left:62%;top:50%;width:112px;height:112px;transform:translate(-50%,-50%);border-radius:28px;background:#000;border:1px solid rgba(181,123,255,.45);display:grid;place-items:center;box-shadow:0 0 60px -10px rgba(188,51,201,.8),inset 0 0 30px rgba(146,50,241,.25)}
+.core svg{width:58px;height:50px}
+.core::after{content:"";position:absolute;inset:-14px;border-radius:36px;border:1px solid rgba(146,50,241,.35);animation:ring 2.4s ease-out infinite}
+@keyframes ring{from{opacity:.9;transform:scale(.92)}to{opacity:0;transform:scale(1.18)}}
+.verdict{position:absolute;z-index:3;left:88%;top:50%;transform:translate(-50%,-50%);display:grid;gap:8px;justify-items:center}
+.verdict .lbl{font-size:12px;color:var(--mut)}
+.verdict{transition:opacity .2s}
+.core{transition:box-shadow .3s,border-color .3s}
+.core.scanning{border-color:rgba(242,44,123,.7);box-shadow:0 0 90px -4px rgba(242,44,123,.85),inset 0 0 40px rgba(146,50,241,.35)}
+.core.done{border-color:rgba(255,69,69,.6);box-shadow:0 0 70px -10px rgba(255,69,69,.7)}
+.core::before{content:"";position:absolute;left:12px;right:12px;height:2px;top:calc(12px + var(--scan,0) * (100% - 24px));background:var(--grad);box-shadow:0 0 14px 2px rgba(188,51,201,.8);opacity:0;transition:opacity .2s}
+.core.scanning::before{opacity:1}
+/* bento with spotlight (adapted from 21st.dev Spotlight) */
+.bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}
+.cell{position:relative;isolation:isolate;border:1px solid var(--line);border-radius:20px;background:var(--s1);padding:26px;overflow:hidden}
+.cell::before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .3s;background:radial-gradient(340px circle at var(--x,50%) var(--y,50%),rgba(146,50,241,.16),transparent 70%)}
+.cell::after{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;opacity:0;transition:opacity .3s;background:radial-gradient(260px circle at var(--x,50%) var(--y,50%),rgba(242,44,123,.6),transparent 60%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none}
+.cell:hover::before,.cell:hover::after{opacity:1}
+.cell p{color:var(--mut);font-size:15px;margin-top:8px;max-width:44ch}
+.c-scan{grid-column:span 4}
+.c-buy{grid-column:span 2}
+.c-alert{grid-column:span 2}
+.c-chart{grid-column:span 2}
+.c-keys{grid-column:span 2}
+.meters{margin-top:22px;display:grid;gap:14px}
+.meter .top{display:flex;justify-content:space-between;font-size:13px;color:var(--mut)}
+.meter .top b{color:var(--ink);font-weight:600}
+.meter .bar{height:8px;border-radius:99px;background:var(--s2);margin-top:8px;overflow:hidden}
+.meter .bar span{display:block;height:100%;border-radius:inherit;background:var(--grad);width:0;transition:width 1.4s var(--ease)}
+.meter .bar span.r{background:linear-gradient(90deg,#FF8A3D,#FF4545)}
+.amounts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:20px 0 12px}
+.amounts button{height:44px;border-radius:10px;border:1px solid var(--line);background:var(--s2);color:var(--ink);font:500 14px/1 'JetBrains Mono',monospace;cursor:pointer}
+.amounts button[aria-pressed=true]{border-color:var(--vt);background:rgba(146,50,241,.18)}
+.fee{display:flex;justify-content:space-between;font-size:13px;color:var(--mut);margin-bottom:14px}
+.fee b{color:var(--ink);font-weight:500}
+.alerts{margin-top:18px;display:grid;gap:8px}
+.alerts div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:#000;border:1px solid var(--line);font-size:13px}
+.alerts div span:first-child{color:var(--mut)}
+.alerts div.in{animation:rowin .5s var(--ease)}
+#spark{width:100%;height:120px;margin-top:16px;display:block}
+.lock{margin-top:18px;display:flex;align-items:center;gap:12px;padding:14px;border-radius:12px;background:#000;border:1px solid var(--line);font-size:13px;color:var(--mut)}
+.lock svg{width:34px;height:34px;flex:none}
+/* holo PnL card (adapted from 21st.dev Holographic Foil Card) */
+.share{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,80px);align-items:center}
+.stage{perspective:1200px;display:grid;place-items:center;padding:20px 0}
+.holo{position:relative;width:min(340px,82vw);aspect-ratio:3/4;border-radius:24px;transform-style:preserve-3d;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));cursor:grab;touch-action:pan-y}
+.holo .edge{position:absolute;inset:0;border-radius:inherit;padding:2px;background:linear-gradient(135deg,#9232F1,#BC33C9,#F22C7B,#9232F1)}
+.holo .face{position:relative;height:100%;border-radius:22px;background:#07060B;overflow:hidden;padding:26px;display:flex;flex-direction:column}
+.holo .face>.mid{position:relative;margin-top:44px}
+.holo .face>.meta{margin-top:auto}
+.holo .foil{position:absolute;inset:0;mix-blend-mode:screen;opacity:.6;background:linear-gradient(calc(var(--fx,0)*80deg + 120deg),transparent 20%,rgba(146,50,241,.32) 44%,rgba(242,44,123,.28) 58%,transparent 80%),radial-gradient(circle at var(--gx,50%) var(--gy,30%),rgba(255,255,255,.28),transparent 42%);pointer-events:none}
+.holo .row1{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--mut);position:relative}
+.holo .row1 svg{width:34px;height:30px}
+.holo .big{position:relative;font:700 clamp(56px,7vw,78px)/1 Sora,sans-serif;letter-spacing:-.05em}
+.holo .tk{position:relative;font:600 20px/1 Sora,sans-serif;margin-top:10px}
+.holo .meta{position:relative;display:flex;justify-content:space-between;font-size:12px;color:var(--mut)}
+.holo .curve{position:absolute;left:0;bottom:0;width:100%;height:46%;opacity:.9}
+.chk{display:grid;gap:12px;margin-top:28px}
+.chk div{display:flex;gap:12px;align-items:flex-start;color:var(--mut)}
+.chk svg{width:18px;height:18px;flex:none;margin-top:3px;color:var(--ok)}
+/* flywheel */
+.fly{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,80px);align-items:center}
+.wheel{position:relative;max-width:460px;width:100%;aspect-ratio:1;margin:0 auto}
+.wheel svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.wnode{position:absolute;transform:translate(-50%,-50%);display:grid;justify-items:center;gap:6px;text-align:center}
+.wnode b{display:grid;place-items:center;width:64px;height:64px;border-radius:18px;background:#000;border:1px solid var(--line);font:600 13px/1 Sora,sans-serif;transition:border-color .3s,box-shadow .3s}
+.wnode.hot b{border-color:rgba(242,44,123,.7);box-shadow:0 0 30px -6px rgba(242,44,123,.8)}
+.wnode span{font-size:13px;color:var(--mut);white-space:nowrap;background:#000;padding:2px 6px;border-radius:6px}
+.wcenter{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center}
+.wcenter .n{font:700 34px/1 Sora,sans-serif;letter-spacing:-.04em}
+.wcenter .l{font-size:13px;color:var(--mut);margin-top:6px}
+.dash{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:28px}
+.dash>div{background:var(--s1);padding:20px 22px}
+.dash .n{font:600 26px/1 Sora,sans-serif;letter-spacing:-.03em}
+.dash .l{color:var(--mut);font-size:13px;margin-top:8px}
+/* faq */
+.faq{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(32px,5vw,72px)}
+details{border-bottom:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;padding:22px 0;font-weight:600;font-size:17px;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--vt);font-size:22px;line-height:1;transition:transform .3s var(--ease)}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--mut);padding:0 0 22px;max-width:62ch}
+/* final */
+.final{text-align:center;position:relative;overflow:hidden;isolation:isolate}
+.final h2{font-size:clamp(44px,7vw,92px);letter-spacing:-.05em}
+.final .cta{justify-content:center}
+.final .halo{position:absolute;left:50%;top:52%;width:min(980px,130vw);height:520px;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(146,50,241,.38),rgba(242,44,123,.12) 55%,transparent);z-index:-1}
+.final .bigv{width:clamp(90px,10vw,128px);height:auto;filter:drop-shadow(0 0 30px rgba(188,51,201,.7));animation:breathe 4s ease-in-out infinite;margin-bottom:26px}
+@keyframes breathe{50%{transform:translateY(-6px)}}
+footer{border-top:1px solid var(--line);padding:32px 0 calc(32px + env(safe-area-inset-bottom,0px));color:var(--mut);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+footer nav{display:flex;gap:22px;flex-wrap:wrap}
+.mbar{display:none}
+.rv{will-change:transform,opacity}
+@media(max-width:1000px){.hero-grid,.how,.share,.fly,.faq{grid-template-columns:minmax(0,1fr)}.how{min-height:0}.nav nav{display:none}.bento{grid-template-columns:repeat(2,minmax(0,1fr))}.c-scan{grid-column:span 2}.c-buy,.c-alert,.c-chart,.c-keys{grid-column:span 1}}
+@media(max-width:700px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat{padding:24px 16px}.stat:nth-child(odd){border-left:0;padding-left:0}.stat:nth-child(n+3){border-top:1px solid var(--line)}.bento{grid-template-columns:minmax(0,1fr)}.c-scan,.c-buy,.c-alert,.c-chart,.c-keys{grid-column:span 1}.dash{grid-template-columns:minmax(0,1fr)}.diagram{height:420px}.node{font-size:12px;height:34px;padding:0 10px}.core{width:88px;height:88px;left:58%}.core svg{width:44px;height:38px}.verdict{left:84%}}
+@media(max-width:600px){.nav .ca,.nav .right .btn{display:none}.tbl .hide{display:none}.tbl td,.tbl th{padding:11px 12px}.hero .ca{display:none}.mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;gap:10px;align-items:center;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(0,0,0,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line)}.mbar .ca{flex:1;height:44px}.mbar .btn{height:44px;padding:0 18px}body{padding-bottom:72px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.scan{display:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="vg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9232F1"/><stop offset=".55" stop-color="#BC33C9"/><stop offset="1" stop-color="#F22C7B"/></linearGradient>
+    <linearGradient id="hg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9232F1"/><stop offset=".5" stop-color="#BC33C9"/><stop offset="1" stop-color="#F22C7B"/></linearGradient>
+    <symbol id="vmark" viewBox="0 0 100 84"><path d="M0 0 L50 84 L100 0 C80 9 60 27 50 50 C40 27 20 9 0 0 Z" fill="url(#vg)"/></symbol>
+    <symbol id="g-ok" viewBox="0 0 12 12"><path d="M2.5 6.5 5 9l4.5-5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="g-wa" viewBox="0 0 12 12"><path d="M6 1.5 11 10.5H1z" fill="currentColor"/></symbol>
+    <symbol id="g-bad" viewBox="0 0 12 12"><path d="M3 3l6 6M9 3l-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="g-scan" viewBox="0 0 12 12"><circle cx="6" cy="6" r="2.6" fill="currentColor"/><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".45"/></symbol>
+  </defs>
+</svg>
+<div id="prog" aria-hidden="true"></div>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="Vigil home"><svg aria-hidden="true"><use href="#vmark"/></svg>Vigil</a>
+    <nav aria-label="Main"><a href="#terminal">Terminal</a><a href="#scan">Scan</a><a href="#tools">Tools</a><a href="#share">Rewards</a><a href="#token">$VIGIL</a><a href="#faq">Docs</a></nav>
+    <div class="right">
+      <span class="ca mono">$VIGIL <b>7xKX…9fQa</b><button class="copy" data-copy type="button">Copy</button></span>
+      <a class="btn btn-main" href="#terminal">Start trading</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero" id="terminal">
+  <canvas id="beams" aria-hidden="true"></canvas>
+  <div class="wrap hero-grid">
+    <div>
+      <h1 id="headline" aria-label="Always on watch."><span class="w">Always</span><br><span class="w grad-text">on</span> <span class="w grad-text">watch.</span></h1>
+      <p class="lead rv">The Solana memecoin terminal that watches every token for you. One-click buys, and every bundle, insider and serial dev flagged before you click.</p>
+      <div class="cta rv"><a class="btn btn-main" href="#tools">Start trading</a><a class="btn btn-ghost" href="#scan">How Vigil watches</a></div>
+      <span class="ca mono rv">$VIGIL <b>7xKX…9fQa</b><button class="copy" data-copy type="button">Copy</button></span>
+    </div>
+    <div class="rv">
+      <div class="term beam-border" id="term">
+        <div class="term-h"><b>Trending · pump.fun</b><span class="live"><i></i>Watching</span></div>
+        <div style="position:relative">
+          <table class="tbl" aria-label="Live tokens with Vigil scan">
+            <thead><tr><th>Token</th><th class="r">MCap</th><th class="r hide">1h</th><th>Scan</th><th class="r hide"></th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+          <div class="scan" id="scanline" aria-hidden="true"></div>
+        </div>
+        <p class="note" id="note"><b>GLIMMER</b> · 3 wallets took 79% of supply in the first 10 s</p>
+      </div>
+      <p class="sample">Sample data for this preview</p>
+    </div>
+  </div>
+  <div class="venues" aria-label="Venues covered"><div class="track" id="track"></div></div>
+</section>
+
+<div class="wrap">
+  <div class="stats">
+    <div class="stat rv"><div class="n mono" data-count="12480">12,480</div><div class="l">tokens watched today</div></div>
+    <div class="stat rv"><div class="n mono grad-text" data-count="3912">3,912</div><div class="l">bundles flagged</div></div>
+    <div class="stat rv"><div class="n mono" data-count="1.8" data-prefix="$" data-suffix="M" data-dec="1">$1.8M</div><div class="l">traded on Vigil</div></div>
+    <div class="stat rv"><div class="n mono" data-count="0.5" data-suffix="%" data-dec="1">0.5%</div><div class="l">per trade, half the usual 1%</div></div>
+  </div>
+</div>
+
+<section class="band" id="scan">
+  <div class="wrap how" id="how">
+    <div>
+      <h2>Every venue flows<br>into one <span class="grad-text">verdict.</span></h2>
+      <div class="steps" id="steps">
+        <div class="step on" data-i="0"><span class="k">1</span><div><h3>A token launches</h3><p>Vigil sees it the moment it trades on pump.fun, PumpSwap, Raydium or Meteora.</p></div></div>
+        <div class="step" data-i="1"><span class="k">2</span><div><h3>Vigil scans it</h3><p>First 10 seconds, top wallets, insiders still holding, coordinated sells, the dev's past launches.</p></div></div>
+        <div class="step" data-i="2"><span class="k">3</span><div><h3>You see the truth</h3><p>One verdict on every row: Clean, Watch or Bundled, with the reason one hover away.</p></div></div>
+      </div>
+    </div>
+    <div class="diagram" id="diagram">
+      <svg class="wires" id="wires" aria-hidden="true"></svg>
+      <div class="node" data-n style="left:16%;top:16%"><i></i>pump.fun</div>
+      <div class="node" data-n style="left:13%;top:38%"><i></i>PumpSwap</div>
+      <div class="node" data-n style="left:13%;top:62%"><i></i>Raydium</div>
+      <div class="node" data-n style="left:16%;top:84%"><i></i>Meteora</div>
+      <div class="node" data-n style="left:42%;top:12%"><i></i>Helius</div>
+      <div class="node" data-n style="left:42%;top:88%"><i></i>Jupiter</div>
+      <div class="core" id="core"><svg aria-hidden="true"><use href="#vmark"/></svg></div>
+      <div class="verdict"><span id="vpill"></span><span class="lbl mono" id="vtok">GLIMMER</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="tools" style="padding-top:0">
+  <div class="wrap">
+    <div style="display:flex;justify-content:space-between;align-items:end;gap:32px;flex-wrap:wrap;margin-bottom:40px">
+      <h2 class="rv">See the rug.<br>Catch the <span class="grad-text">runner.</span></h2>
+      <p class="lead rv" style="max-width:42ch">Everything a trader opens four tabs for, in one screen, before the move is gone.</p>
+    </div>
+    <div class="bento" id="bento">
+      <div class="cell c-scan rv"><h3>The scan panel</h3><p>What Vigil found on GLIMMER, 12 seconds after launch.</p>
+        <div class="meters">
+          <div class="meter"><div class="top"><span>Supply taken in the first 10 s</span><b class="mono">79.3%</b></div><div class="bar"><span class="r" data-w="79.3"></span></div></div>
+          <div class="meter"><div class="top"><span>Biggest single wallet</span><b class="mono">50.0%</b></div><div class="bar"><span class="r" data-w="50"></span></div></div>
+          <div class="meter"><div class="top"><span>Insiders still holding</span><b class="mono">1.0%</b></div><div class="bar"><span data-w="1"></span></div></div>
+          <div class="meter"><div class="top"><span>Dev's past launches</span><b class="mono">52</b></div><div class="bar"><span class="r" data-w="92"></span></div></div>
+        </div>
+      </div>
+      <div class="cell c-buy rv"><h3>One-click buys</h3><p>Pick a size, buy from the list.</p>
+        <div class="amounts" role="group" aria-label="Amount in SOL"><button type="button" aria-pressed="false">0.1</button><button type="button" aria-pressed="true">0.5</button><button type="button" aria-pressed="false">1</button><button type="button" aria-pressed="false">2</button></div>
+        <div class="fee mono"><span>Fee 0.5%</span><b id="fee">0.0025 SOL</b></div>
+        <a class="btn btn-main" style="width:100%" href="#terminal">Buy MOCHI</a>
+      </div>
+      <div class="cell c-alert rv"><h3>Alerts that matter</h3><p>Only when something changes.</p><div class="alerts" id="alerts"></div></div>
+      <div class="cell c-chart rv"><h3>Live price</h3><p class="mono" style="color:var(--ink);margin-top:10px">MOCHI <span id="px">$0.000412</span> <span class="up" id="pxc">+38.2%</span></p><canvas id="spark" aria-label="Live MOCHI price chart"></canvas></div>
+      <div class="cell c-keys rv"><h3>Your keys stay yours</h3><p>Non-custodial. You sign every trade in your own wallet.</p>
+        <div class="lock"><svg viewBox="0 0 34 34" aria-hidden="true"><rect x="7" y="15" width="20" height="14" rx="4" fill="url(#hg)"/><path d="M11 15v-4a6 6 0 0 1 12 0v4" fill="none" stroke="url(#hg)" stroke-width="2.6"/></svg><span>Vigil never sees your private key. 0.5% fee, shown before every trade.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="share" style="padding-top:0">
+  <div class="wrap share">
+    <div class="stage">
+      <div class="holo" id="holo" tabindex="0" aria-label="Shareable PnL card, tilt to see the foil">
+        <div class="edge"><div class="face">
+          <div class="foil"></div>
+          <div class="row1"><svg aria-hidden="true"><use href="#vmark"/></svg><span class="mono">VIGIL · PNL CARD</span></div>
+          <svg class="curve" viewBox="0 0 300 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 110 C40 104 60 96 90 90 C120 84 130 60 160 58 C190 56 200 34 230 26 C255 20 275 12 300 8" fill="none" stroke="url(#hg)" stroke-width="3"/><path d="M0 110 C40 104 60 96 90 90 C120 84 130 60 160 58 C190 56 200 34 230 26 C255 20 275 12 300 8 L300 120 L0 120Z" fill="url(#hg)" opacity=".12"/></svg>
+          <div class="mid"><div class="big grad-text">+248%</div><div class="tk">$MOCHI · 0.5 SOL in</div></div>
+          <div class="meta mono"><span>Scan: Clean</span><span>Held 3h 12m</span></div>
+        </div></div>
+      </div>
+    </div>
+    <div>
+      <h2 class="rv">Rewards from<br><span class="grad-text">day one.</span></h2>
+      <p class="lead rv" style="margin-top:18px">Not "coming soon". Every trade earns, and every win gets a card worth posting.</p>
+      <div class="chk">
+        <div class="rv"><svg viewBox="0 0 12 12"><use href="#g-ok"/></svg><span><b style="color:var(--ink)">25% of your fees back</b> in SOL, every day.</span></div>
+        <div class="rv"><svg viewBox="0 0 12 12"><use href="#g-ok"/></svg><span><b style="color:var(--ink)">Real cost 0.375%</b> per trade after cashback.</span></div>
+        <div class="rv"><svg viewBox="0 0 12 12"><use href="#g-ok"/></svg><span><b style="color:var(--ink)">Referrals</b> paid on-chain, visible to everyone.</span></div>
+        <div class="rv"><svg viewBox="0 0 12 12"><use href="#g-ok"/></svg><span><b style="color:var(--ink)">PnL cards</b> generated for every closed trade.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="token" style="padding-top:0">
+  <div class="wrap fly">
+    <div>
+      <h2 class="rv">Every trade feeds<br><span class="grad-text">$VIGIL.</span></h2>
+      <p class="lead rv" style="margin-top:18px">Half of every fee buys $VIGIL on the open market, and half of that is burned. 75% of all fees go back to traders and holders.</p>
+      <div class="dash rv">
+        <div><div class="n mono">$48,210</div><div class="l">fees collected</div></div>
+        <div><div class="n mono grad-text">2.4M</div><div class="l">$VIGIL bought back</div></div>
+        <div><div class="n mono">1.1M</div><div class="l">$VIGIL burned</div></div>
+      </div>
+      <p class="sample" style="text-align:left">Sample figures for this preview</p>
+      <span class="ca mono" style="margin-top:18px">$VIGIL <b>7xKX…9fQa</b><button class="copy" data-copy type="button">Copy</button></span>
+    </div>
+    <div class="wheel" id="wheel">
+      <svg viewBox="0 0 400 400" aria-hidden="true">
+        <circle cx="200" cy="200" r="150" fill="none" stroke="#24212E" stroke-width="2"/>
+        <circle id="arc" cx="200" cy="200" r="150" fill="none" stroke="url(#hg)" stroke-width="3" stroke-linecap="round" stroke-dasharray="120 822" transform="rotate(-90 200 200)"/>
+        <circle id="dot" r="7" fill="#F22C7B" cx="200" cy="50"><animate attributeName="opacity" values="1;.5;1" dur="1.4s" repeatCount="indefinite"/></circle>
+      </svg>
+      <div class="wnode" data-w style="left:50%;top:12.5%"><b>Trade</b><span>you buy or sell</span></div>
+      <div class="wnode" data-w style="left:87.5%;top:50%"><b>Fee</b><span>0.5% per trade</span></div>
+      <div class="wnode" data-w style="left:50%;top:87.5%"><b>Buy</b><span>$VIGIL bought back</span></div>
+      <div class="wnode" data-w style="left:12.5%;top:50%"><b>Burn</b><span>supply goes down</span></div>
+      <div class="wcenter"><div class="n grad-text mono" id="loops">1,284</div><div class="l">buybacks so far</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="faq" style="padding-top:0">
+  <div class="wrap faq">
+    <div><h2 class="rv">Questions</h2><p class="lead rv" style="margin-top:18px">Facts, not financial advice. Vigil shows what happened on-chain; the decision stays yours.</p></div>
+    <div>
+      <details open><summary>What does Vigil scan?</summary><p>For every token: the share of supply taken in the first 10 seconds, the biggest wallet, what insiders still hold, coordinated sells in the same block, the dev's past launches and the real liquidity behind the market cap.</p></details>
+      <details><summary>Is Vigil custodial?</summary><p>No. You trade from your own wallet. Vigil never holds your keys or your funds.</p></details>
+      <details><summary>What are the fees?</summary><p>0.5% per trade, half of what most Solana terminals charge, shown before you confirm. 75% of it comes back: 25% to you as daily SOL cashback, 50% buys $VIGIL (half burned). Your real cost is 0.375%.</p></details>
+      <details><summary>What does $VIGIL do?</summary><p>Fees buy it back, holders pay lower fees and get early access to new tools.</p></details>
+      <details><summary>Which tokens are covered?</summary><p>Tokens on the pump.fun curve, PumpSwap, Raydium and Meteora at launch, more venues next.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="band final">
+  <div class="halo" aria-hidden="true"></div>
+  <div class="wrap">
+    <svg class="bigv" viewBox="0 0 100 84" aria-hidden="true"><use href="#vmark"/></svg>
+    <h2>Always <span class="grad-text">on watch.</span></h2>
+    <p class="lead" style="margin:18px auto 0">Open the terminal. Vigil is already scanning.</p>
+    <div class="cta"><a class="btn btn-main" href="#terminal">Start trading</a><a class="btn btn-ghost" href="#scan">How Vigil watches</a></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="logo" href="#top" style="font-size:18px"><svg aria-hidden="true" style="width:24px;height:21px"><use href="#vmark"/></svg>Vigil</a>
+    <nav aria-label="Footer"><a href="#terminal">Terminal</a><a href="#scan">Scan</a><a href="#token">$VIGIL</a><a href="https://x.com/vigiltrade">X</a></nav>
+    <span>Not financial advice. Memecoins can lose all their value.</span>
+  </div>
+</footer>
+
+<div class="mbar"><span class="ca mono">$VIGIL <b>7xKX…9fQa</b><button class="copy" data-copy type="button">Copy</button></span><a class="btn btn-main" href="#terminal">Trade</a></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+{
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const touch = matchMedia('(hover: none)').matches;
+const CA = '7xKXvigiLDemo0000000000000000000000009fQa';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const clamp01 = (k) => Math.max(0, Math.min(1, k));
+const ease = (k) => 1 - (1 - k) ** 3;
+
+/* copy */
+for (const b of $$('[data-copy]')) b.addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(CA); b.textContent = 'Copied'; } catch (e) { b.textContent = 'Select'; }
+  setTimeout(() => { b.textContent = 'Copy'; }, 1400);
+});
+
+/* venues marquee */
+const venues = ['pump.fun', 'PumpSwap', 'Raydium', 'Meteora', 'Jupiter', 'Helius', 'Phantom', 'Solflare', 'Backpack'];
+$('#track').innerHTML = [...venues, ...venues].map(v => '<span><i></i>' + v + '</span>').join('');
+
+/* beams background (21st.dev Beams Background, recoloured) */
+const cv = $('#beams'), cx = cv.getContext('2d');
+let W = 0, H = 0, bt = 0, beamsOn = true;
+const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+const noise = (x, t) => (Math.sin(x * 0.01 + t) + Math.sin(x * 0.03 + t * 2) * 0.5 + Math.sin(x * 0.1 + t * 4) * 0.25) / 1.75;
+const sizeB = () => { W = cv.clientWidth; H = cv.clientHeight; cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+const beam = (x, t, col, wm, d) => {
+  const bh = H * (0.55 + noise(x, t * 0.5) * 0.35), bw = (W / d) * wm;
+  const g = cx.createLinearGradient(x, H, x, H - bh); g.addColorStop(0, col); g.addColorStop(1, 'rgba(0,0,0,0)');
+  cx.fillStyle = g; cx.beginPath(); cx.moveTo(x - bw / 2, H); cx.lineTo(x + bw / 2, H); cx.lineTo(x + bw, H - bh); cx.lineTo(x - bw, H - bh); cx.fill();
+};
+const drawB = () => {
+  cx.clearRect(0, 0, W, H); cx.globalCompositeOperation = 'screen';
+  const d = W < 700 ? 9 : 16, st = W / d;
+  for (let i = 0; i <= d; i++) {
+    const x = i * st;
+    beam(x - 3, bt + i * 0.1, 'rgba(146,50,241,' + ((0.5 + 0.5 * Math.cos(i * 0.5 + bt)) * 0.36).toFixed(3) + ')', 1.6, d);
+    beam(x + 3, bt + i * 0.12 + 10, 'rgba(242,44,123,' + ((0.5 + 0.5 * Math.sin(i * 0.6 + bt * 1.1)) * 0.28).toFixed(3) + ')', 1.6, d);
+    beam(x, bt + i * 0.1 + 5, 'rgba(230,200,255,' + ((0.6 + 0.4 * Math.sin(i * 0.3 - bt)) * 0.08).toFixed(3) + ')', 0.7, d);
+  }
+};
+const roB = new ResizeObserver(() => { sizeB(); drawB(); }); roB.observe(cv);
+const ioB = new IntersectionObserver((e) => { beamsOn = e[0].isIntersecting && !reduce; }); ioB.observe(cv);
+sizeB(); drawB();
+const loopB = () => { if (beamsOn) { bt += 0.008; drawB(); } requestAnimationFrame(loopB); };
+if (!reduce) requestAnimationFrame(loopB);
+
+/* live terminal (21st.dev Streaming Data Rows, vanilla) + scan line */
+const verdicts = { ok: ['p-ok', 'g-ok', 'Clean'], wa: ['p-wa', 'g-wa', 'Watch'], bad: ['p-bad', 'g-bad', 'Bundled'], scan: ['p-scan', 'g-scan', 'Scanning'] };
+const pill = (k) => { const v = verdicts[k]; return '<span class="pill ' + v[0] + '"><svg aria-hidden="true"><use href="#' + v[1] + '"/></svg>' + v[2] + '</span>'; };
+const pool = [
+  { s: 'MOCHI', a: '4mQ1…pump', m: 412000, c: 38.2, v: 'ok', why: '28 early buyers, biggest wallet 4.1%, first launch from this dev' },
+  { s: 'ORBIT', a: '9Hc2…pump', m: 1200000, c: 12.4, v: 'wa', why: 'insiders still hold 18% of supply' },
+  { s: 'GLIMMER', a: 'Fa7k…pump', m: 2910000, c: -9.1, v: 'bad', why: '3 wallets took 79% of supply in the first 10 s' },
+  { s: 'DUSK', a: '2pLx…pump', m: 86000, c: 4.7, v: 'ok', why: 'clean launch, 41 holders over 0.2 SOL' },
+  { s: 'PIXEL', a: '7tQe…pump', m: 154000, c: 21.6, v: 'wa', why: 'dev wallet sold 6% in the same block' },
+  { s: 'NOVA', a: 'Bq3r…pump', m: 640000, c: -3.2, v: 'ok', why: 'liquidity 12% of market cap, no bundle' },
+  { s: 'HOLLOW', a: 'Kd8m…pump', m: 1730000, c: -14.8, v: 'bad', why: 'dev: 52 launches, exits in 38 s on average' }
+];
+let rows = pool.slice(0, 4).map(r => ({ ...r, shown: r.m, st: 'scan' })), next = 4;
+const tb = $('#rows'), note = $('#note'), sl = $('#scanline');
+const fmt = (n) => n >= 1e6 ? '$' + (n / 1e6).toFixed(2) + 'M' : '$' + Math.round(n / 1e3) + 'K';
+const render = (newId) => {
+  tb.innerHTML = rows.map(r => '<tr' + (r.s === newId ? ' class="new"' : '') + '><td class="tok"><b>' + r.s + '</b><span class="mono">' + r.a + '</span></td><td class="r mono" data-m>' + fmt(r.shown) + '</td><td class="r mono hide ' + (r.c >= 0 ? 'up' : 'dn') + '">' + (r.c >= 0 ? '+' : '') + r.c.toFixed(1) + '%</td><td data-v>' + pill(r.st) + '</td><td class="r hide"><button class="buy" type="button">Buy 0.5</button></td></tr>').join('');
+};
+render();
+const reveal = (i) => {
+  const r = rows[i]; if (!r || r.st !== 'scan') return;
+  r.st = r.v;
+  const cell = tb.rows[i] && tb.rows[i].querySelector('[data-v]');
+  if (cell) { cell.innerHTML = pill(r.st); cell.classList.remove('flash'); void cell.offsetWidth; cell.classList.add('flash'); }
+  if (r.v !== 'ok') note.innerHTML = '<b>' + r.s + '</b> · ' + r.why;
+};
+const sweep = () => {
+  if (reduce) { rows.forEach((_, i) => reveal(i)); return; }
+  const head = tb.parentElement.querySelector('thead').offsetHeight, total = tb.offsetHeight, start = performance.now(), dur = 2600;
+  const f = () => {
+    const k = clamp01((performance.now() - start) / dur), y = head + k * total;
+    sl.style.top = y + 'px';
+    let acc = head;
+    for (let i = 0; i < tb.rows.length; i++) { const h = tb.rows[i].offsetHeight; acc += h; if (y >= acc - h / 2) reveal(i); }
+    if (k < 1) requestAnimationFrame(f); else sl.style.top = head + 'px';
+  };
+  requestAnimationFrame(f);
+  setTimeout(() => rows.forEach((_, i) => reveal(i)), dur + 400);
+};
+const tween = () => rows.forEach((r, i) => {
+  const target = r.m * (1 + (Math.random() - 0.48) * 0.05); r.m = target;
+  const from = r.shown, t0 = performance.now(), cell = tb.rows[i] && tb.rows[i].querySelector('[data-m]');
+  if (reduce) { r.shown = target; if (cell) cell.textContent = fmt(target); return; }
+  const a = () => { const k = clamp01((performance.now() - t0) / 700); r.shown = from + (target - from) * ease(k); if (cell) cell.textContent = fmt(r.shown); if (k < 1) requestAnimationFrame(a); };
+  requestAnimationFrame(a);
+});
+setTimeout(sweep, 900);
+setInterval(tween, 2400);
+setInterval(() => {
+  const n = pool[next % pool.length]; next++;
+  rows = [{ ...n, shown: n.m, st: 'scan' }].concat(rows.filter(r => r.s !== n.s)).slice(0, 4);
+  render(n.s); setTimeout(sweep, 350);
+}, 6400);
+
+/* spotlight on cells + terminal (21st.dev Spotlight, vanilla) */
+if (!touch) for (const el of [...$$('.cell'), $('#term')]) el.addEventListener('pointermove', (e) => {
+  const r = el.getBoundingClientRect(); el.style.setProperty('--x', (e.clientX - r.left) + 'px'); el.style.setProperty('--y', (e.clientY - r.top) + 'px');
+});
+
+/* animated beams diagram (21st.dev Animated Beam, vanilla SVG) */
+const dg = $('#diagram'), wires = $('#wires'), core = $('#core'), nodes = $$('[data-n]', dg);
+let beamAnims = [];
+let scrubbing = false, lastP = 0;
+const drawWires = () => {
+  const R = dg.getBoundingClientRect(), C = core.getBoundingClientRect();
+  const cxp = C.left - R.left + C.width / 2, cyp = C.top - R.top + C.height / 2;
+  wires.setAttribute('viewBox', '0 0 ' + R.width + ' ' + R.height);
+  beamAnims.forEach(a => a.cancel()); beamAnims = [];
+  let html = '';
+  nodes.forEach((n, i) => {
+    const b = n.getBoundingClientRect(), x = b.left - R.left + b.width / 2, y = b.top - R.top + b.height / 2;
+    const mx = (x + cxp) / 2, my = (y + cyp) / 2 - (y < cyp ? 40 : -40) * (Math.abs(y - cyp) / R.height);
+    const d = 'M' + x.toFixed(1) + ' ' + y.toFixed(1) + ' Q' + mx.toFixed(1) + ' ' + my.toFixed(1) + ' ' + cxp.toFixed(1) + ' ' + cyp.toFixed(1);
+    html += '<path d="' + d + '" stroke="#24212E" stroke-width="2" fill="none"/><path class="lit" data-i="' + i + '" d="' + d + '" stroke="url(#hg)" stroke-width="2.5" stroke-linecap="round" fill="none"/>';
+  });
+  const out = $('.verdict', dg).getBoundingClientRect(), ox = out.left - R.left + 10, oy = cyp;
+  html += '<path d="M' + cxp.toFixed(1) + ' ' + cyp.toFixed(1) + ' L' + ox.toFixed(1) + ' ' + oy.toFixed(1) + '" stroke="#24212E" stroke-width="2" fill="none"/><path class="lit" data-i="out" d="M' + cxp.toFixed(1) + ' ' + cyp.toFixed(1) + ' L' + ox.toFixed(1) + ' ' + oy.toFixed(1) + '" stroke="url(#hg)" stroke-width="2.5" stroke-linecap="round" fill="none"/>';
+  wires.innerHTML = html;
+  for (const p of $$('path.lit', wires)) {
+    const L = p.getTotalLength(), seg = Math.max(30, L * 0.22);
+    p.style.strokeDasharray = seg + ' ' + (L + seg);
+    if (reduce) { p.style.strokeDashoffset = 0; continue; }
+    if (scrubbing) continue;
+    const i = p.dataset.i === 'out' ? 6 : +p.dataset.i;
+    beamAnims.push(p.animate([{ strokeDashoffset: seg }, { strokeDashoffset: -L }], { duration: 2200 + (i % 3) * 400, delay: i * 260, iterations: Infinity, easing: 'cubic-bezier(.16,1,.3,1)' }));
+  }
+};
+const roD = new ResizeObserver(() => { drawWires(); if (scrubbing) scrubDiagram(lastP); }); roD.observe(dg);
+const vCycle = [['GLIMMER', 'bad'], ['MOCHI', 'ok'], ['ORBIT', 'wa'], ['HOLLOW', 'bad'], ['DUSK', 'ok']];
+let vi = 0;
+const setVerdict = () => { const [t, k] = vCycle[vi % vCycle.length]; $('#vpill').innerHTML = pill(k); $('#vtok').textContent = t; nodes.forEach((n, j) => n.classList.toggle('lit', j === vi % nodes.length)); vi++; };
+setVerdict(); let vTimer = reduce ? null : setInterval(setVerdict, 2200);
+/* piloté par la molette : 1) la lumière part de chaque source vers le V  2) le V scanne  3) le verdict tombe */
+let lastPill = '';
+const scrubDiagram = (p) => {
+  lastP = p;
+  if (!scrubbing) { scrubbing = true; beamAnims.forEach(a => a.cancel()); beamAnims = []; clearInterval(vTimer); }
+  for (const path of wires.querySelectorAll('path.lit')) {
+    const L = path.getTotalLength(), seg = Math.max(30, L * 0.22), isOut = path.dataset.i === 'out';
+    const a = isOut ? 0.7 : 0.03 + (+path.dataset.i) * 0.045, b = a + (isOut ? 0.14 : 0.22);
+    const k = clamp01((p - a) / (b - a));
+    path.style.strokeDashoffset = (seg - k * (L + seg)).toFixed(1);
+  }
+  nodes.forEach((n, j) => { const a = 0.03 + j * 0.045; n.classList.toggle('lit', p >= a && p < a + 0.24); });
+  core.style.setProperty('--scan', clamp01((p - 0.38) / 0.3).toFixed(3));
+  core.classList.toggle('scanning', p >= 0.38 && p < 0.7);
+  core.classList.toggle('done', p >= 0.84);
+  const v = dg.querySelector('.verdict'), vk = clamp01((p - 0.82) / 0.1);
+  const want = p < 0.82 ? 'scan' : 'bad';
+  if (want !== lastPill) { document.getElementById('vpill').innerHTML = pill(want); document.getElementById('vtok').textContent = want === 'bad' ? 'GLIMMER' : 'reading...'; lastPill = want; }
+  v.style.opacity = p < 0.38 ? '0' : p < 0.82 ? '0.55' : (0.55 + 0.45 * vk).toFixed(2);
+  v.style.transform = 'translate(-50%,-50%) scale(' + (p < 0.82 ? 0.92 : 0.92 + 0.08 * vk).toFixed(3) + ')';
+};
+const steps = $$('.step');
+const setStep = (i) => steps.forEach((s, j) => s.classList.toggle('on', j === i));
+
+/* scan panel meters */
+const meters = $$('.meter .bar span');
+const fillMeters = () => meters.forEach(m => { m.style.width = m.dataset.w + '%'; });
+
+/* buy amounts */
+const amts = $$('.amounts button');
+for (const a of amts) a.addEventListener('click', () => {
+  for (const o of amts) o.setAttribute('aria-pressed', o === a ? 'true' : 'false');
+  const v = parseFloat(a.textContent); $('#fee').textContent = String(+(v * 0.005).toFixed(4)) + ' SOL';
+});
+
+/* alerts feed */
+const alertPool = [['GLIMMER', 'bad'], ['PIXEL', 'wa'], ['NOVA', 'ok'], ['HOLLOW', 'bad'], ['ORBIT', 'wa']];
+let ai = 0;
+const al = $('#alerts');
+const pushAlert = (first) => {
+  const [t, k] = alertPool[ai % alertPool.length]; ai++;
+  const d = document.createElement('div'); if (!first) d.className = 'in';
+  d.innerHTML = '<span class="mono">' + t + '</span>' + pill(k);
+  al.prepend(d); while (al.children.length > 3) al.lastChild.remove();
+};
+pushAlert(true); pushAlert(true); pushAlert(true);
+if (!reduce) setInterval(() => pushAlert(false), 3200);
+
+/* live sparkline */
+const sp = $('#spark'), sx = sp.getContext('2d');
+let pts = []; let price = 412;
+for (let i = 0; i < 60; i++) { price *= 1 + (Math.random() - 0.42) * 0.03; pts.push(price); }
+const drawSpark = () => {
+  const w = sp.clientWidth, h = sp.clientHeight; sp.width = w * dpr; sp.height = h * dpr; sx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const mn = Math.min(...pts), mx = Math.max(...pts), X = (i) => i / (pts.length - 1) * w, Y = (v) => h - 6 - (v - mn) / (mx - mn || 1) * (h - 12);
+  const g = sx.createLinearGradient(0, 0, w, 0); g.addColorStop(0, '#9232F1'); g.addColorStop(.5, '#BC33C9'); g.addColorStop(1, '#F22C7B');
+  sx.beginPath(); pts.forEach((v, i) => i ? sx.lineTo(X(i), Y(v)) : sx.moveTo(0, Y(v))); sx.strokeStyle = g; sx.lineWidth = 2.5; sx.stroke();
+  sx.lineTo(w, h); sx.lineTo(0, h); sx.closePath(); const f = sx.createLinearGradient(0, 0, 0, h); f.addColorStop(0, 'rgba(188,51,201,.25)'); f.addColorStop(1, 'rgba(188,51,201,0)'); sx.fillStyle = f; sx.fill();
+  const last = pts[pts.length - 1]; sx.beginPath(); sx.arc(X(pts.length - 1) - 3, Y(last), 4, 0, 7); sx.fillStyle = '#F22C7B'; sx.fill();
+  $('#px').textContent = '$' + (last / 1e6).toFixed(6);
+};
+const roS = new ResizeObserver(drawSpark); roS.observe(sp);
+if (!reduce) setInterval(() => { price *= 1 + (Math.random() - 0.45) * 0.025; pts.push(price); pts.shift(); drawSpark(); }, 900);
+
+/* holo PnL card tilt (21st.dev Holographic Foil Card, vanilla spring) */
+const holo = $('#holo');
+let tx = 0, ty = 0, cxv = 0, cyv = 0, holoRun = false;
+const holoTick = () => {
+  cxv += (tx - cxv) * 0.12; cyv += (ty - cyv) * 0.12;
+  holo.style.setProperty('--ry', (cxv * 30).toFixed(2) + 'deg'); holo.style.setProperty('--rx', (-cyv * 26).toFixed(2) + 'deg');
+  holo.style.setProperty('--fx', cxv.toFixed(3)); holo.style.setProperty('--gx', ((cxv + 0.5) * 100).toFixed(1) + '%'); holo.style.setProperty('--gy', ((cyv + 0.5) * 100).toFixed(1) + '%');
+  if (Math.abs(tx - cxv) > 0.001 || Math.abs(ty - cyv) > 0.001) requestAnimationFrame(holoTick); else holoRun = false;
+};
+const kick = () => { if (!holoRun && !reduce) { holoRun = true; requestAnimationFrame(holoTick); } };
+if (!touch) {
+  holo.addEventListener('pointermove', (e) => { const r = holo.getBoundingClientRect(); tx = (e.clientX - r.left) / r.width - 0.5; ty = (e.clientY - r.top) / r.height - 0.5; kick(); });
+  holo.addEventListener('pointerleave', () => { tx = 0; ty = 0; kick(); });
+}
+if (!reduce) { let ph = 0; setInterval(() => { if (!holo.matches(':hover')) { ph += 0.05; tx = Math.sin(ph) * 0.18; ty = Math.cos(ph * 0.7) * 0.1; kick(); } }, 60); }
+
+/* flywheel */
+const wn = $$('[data-w]'), dot = $('#dot'), arc = $('#arc');
+let wt = 0, loops = 1284;
+const wheelTick = () => {
+  wt += 0.006; const ang = wt % 1, a = ang * Math.PI * 2 - Math.PI / 2;
+  dot.setAttribute('cx', (200 + 150 * Math.cos(a)).toFixed(1)); dot.setAttribute('cy', (200 + 150 * Math.sin(a)).toFixed(1));
+  arc.setAttribute('stroke-dashoffset', (120 - ang * 942).toFixed(1));
+  const q = Math.floor(((ang + 0.125) % 1) * 4); wn.forEach((n, i) => n.classList.toggle('hot', i === q));
+  if (ang < 0.006) { loops++; $('#loops').textContent = loops.toLocaleString('en-US'); }
+  requestAnimationFrame(wheelTick);
+};
+if (!reduce) requestAnimationFrame(wheelTick); else wn[0].classList.add('hot');
+
+/* counters */
+const runCount = (el) => {
+  const end = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0), pre = el.dataset.prefix || '', suf = el.dataset.suffix || '';
+  const show = (v) => { el.textContent = pre + v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) + suf; };
+  if (reduce) return show(end);
+  const t0 = performance.now(); const f = () => { const k = clamp01((performance.now() - t0) / 1300); show(end * (0.6 + 0.4 * ease(k))); if (k < 1) requestAnimationFrame(f); }; requestAnimationFrame(f);
+};
+
+/* scroll-driven motion: GSAP + ScrollTrigger + Lenis when available, IntersectionObserver otherwise */
+const hasGsap = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
+const prog = $('#prog');
+const navLinks = $$('.nav nav a').filter((a) => (a.getAttribute('href') || '').startsWith('#'));
+const onScroll = () => {
+  const h = document.documentElement, k = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight);
+  prog.style.transform = 'scaleX(' + k.toFixed(4) + ')';
+  let cur = '';
+  for (const a of navLinks) { const s = $(a.getAttribute('href')); if (s && s.getBoundingClientRect().top < 140) cur = a.getAttribute('href'); }
+  navLinks.forEach(a => a.classList.toggle('on', a.getAttribute('href') === cur));
+};
+addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+const onceVisible = (el, fn, th = 0.35) => { const o = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) { fn(); o.disconnect(); } }, { threshold: th }); o.observe(el); };
+$$('[data-count]').forEach(c => onceVisible(c, () => runCount(c), 0.6));
+onceVisible($('#bento'), fillMeters, 0.2);
+
+if (hasGsap && !reduce) {
+  const gsap = window.gsap, ST = window.ScrollTrigger;
+  gsap.registerPlugin(ST);
+  if (typeof window.Lenis !== 'undefined') {
+    const lenis = new window.Lenis({ duration: 1.1, smoothWheel: true });
+    lenis.on('scroll', ST.update);
+    gsap.ticker.add((t) => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+    for (const a of $$('a[href^="#"]')) a.addEventListener('click', (e) => { const t = $(a.getAttribute('href')); if (t) { e.preventDefault(); lenis.scrollTo(t, { offset: -70 }); } });
+  }
+  /* headline: words rise out of a blur (21st.dev Text Blur Reveal idea) */
+  gsap.from('#headline .w', { yPercent: 40, opacity: 0, filter: 'blur(14px)', duration: 1.1, ease: 'expo.out', stagger: 0.12, delay: 0.1, clearProps: 'filter' });
+  gsap.from('.hero .rv', { y: 22, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.1, delay: 0.45 });
+  for (const el of $$('main .rv').filter(e => !e.closest('.hero'))) {
+    gsap.from(el, { y: 36, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
+  }
+  /* pinned diagram: steps follow the scroll on wide screens */
+  ST.matchMedia({
+    '(min-width: 1001px)': () => {
+      const t = ST.create({ trigger: '#how', start: 'top top+=70', end: '+=1100', pin: true, scrub: true, onUpdate: (s) => { setStep(Math.min(2, Math.floor(s.progress * 3))); scrubDiagram(s.progress); } });
+      return () => t.kill();
+    }
+  });
+  gsap.from('.holo', { rotateY: -40, rotateX: 18, opacity: 0, duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: '#share', start: 'top 75%' } });
+} else {
+  let si = 0; if (!reduce) setInterval(() => { si = (si + 1) % 3; setStep(si); }, 2600);
+}
+}
+</script>
+</body>
+</html>

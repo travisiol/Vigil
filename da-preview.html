@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projet 01 — Terminal · 3 directions artistiques</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #111; color: #eee; font-family: Inter, system-ui, sans-serif; }
+  .intro { padding: 48px 6vw 32px; background: #111; }
+  .intro h1 { font: 600 28px/1.2 Inter, sans-serif; letter-spacing: -0.02em; }
+  .intro p { color: #9a9a9a; margin-top: 8px; max-width: 720px; font-size: 15px; line-height: 1.6; }
+
+  section.da { padding: 56px 6vw 48px; background: var(--bg); color: var(--text); position: relative; overflow: hidden; }
+  .tag { display: inline-flex; gap: 8px; align-items: center; font: 600 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .tag b { color: var(--primary); }
+  .grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 48px; align-items: center; margin-top: 28px; }
+  .brand { display: flex; align-items: center; gap: 10px; font: 600 20px/1 var(--display); letter-spacing: -0.02em; }
+  .mark { width: 28px; height: 28px; border-radius: var(--radius); background: var(--primary); display: grid; place-items: center; color: var(--on-primary); font: 700 15px/1 var(--display); }
+  h2 { font: var(--h-weight) var(--h-size)/1.02 var(--display); letter-spacing: var(--h-track); margin-top: 28px; }
+  h2 em { font-style: var(--em-style); color: var(--primary); }
+  .lead { font: 400 17px/1.55 var(--body); color: var(--muted); margin-top: 18px; max-width: 460px; }
+  .ctas { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; align-items: center; }
+  .btn { height: 46px; padding: 0 22px; border-radius: var(--btn-radius); font: 600 15px/46px var(--body); background: var(--primary); color: var(--on-primary); border: 0; }
+  .ca { height: 46px; display: inline-flex; align-items: center; gap: 10px; padding: 0 14px; border: 1px solid var(--border); border-radius: var(--btn-radius); font: 400 13px/1 var(--mono); color: var(--muted); background: var(--surface); }
+  .ca b { color: var(--text); font-weight: 600; }
+  .stats { display: flex; gap: 28px; margin-top: 32px; }
+  .stat .n { font: 600 22px/1 var(--mono); font-variant-numeric: tabular-nums; }
+  .stat .l { font: 400 12px/1.4 var(--body); color: var(--muted); margin-top: 6px; }
+
+  .term { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
+  .term-h { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); font: 600 12px/1 var(--mono); color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+  .term-h .live { color: var(--primary); }
+  table { width: 100%; border-collapse: collapse; font: 400 13px/1 var(--mono); font-variant-numeric: tabular-nums; }
+  th { text-align: left; font-weight: 400; color: var(--muted); padding: 10px 16px; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+  td { padding: 14px 16px; border-top: 1px solid var(--border); white-space: nowrap; }
+  td.tk b { font: 600 14px/1 var(--body); color: var(--text); display: block; }
+  td.tk span { color: var(--muted); font-size: 11px; }
+  .up { color: var(--success); } .down { color: var(--danger); }
+  .badge { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: var(--btn-radius); font: 600 11px/1 var(--mono); letter-spacing: .04em; }
+  .safe { background: color-mix(in srgb, var(--success) 14%, transparent); color: var(--success); }
+  .watch { background: color-mix(in srgb, var(--warning) 16%, transparent); color: var(--warning); }
+  .bundled { background: color-mix(in srgb, var(--danger) 16%, transparent); color: var(--danger); }
+  .buy { height: 28px; padding: 0 12px; border-radius: var(--btn-radius); border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font: 600 12px/26px var(--mono); }
+  .scan-detail { margin: 0 16px 16px; padding: 12px 14px; border: 1px dashed var(--primary); border-radius: var(--radius); font: 400 12px/1.7 var(--mono); color: var(--muted); }
+  .scan-detail b { color: var(--text); }
+
+  .swatches { display: flex; gap: 8px; margin-top: 40px; flex-wrap: wrap; align-items: center; }
+  .sw { width: 64px; }
+  .sw i { display: block; height: 40px; border-radius: 8px; border: 1px solid var(--border); }
+  .sw span { display: block; font: 400 10px/1.4 var(--mono); color: var(--muted); margin-top: 6px; }
+  .fonts { margin-left: auto; font: 400 12px/1.7 var(--mono); color: var(--muted); text-align: right; }
+  .fonts b { color: var(--text); font-weight: 600; }
+  .note { font: 400 13px/1.6 var(--body); color: var(--muted); margin-top: 18px; max-width: 900px; }
+  .note b { color: var(--text); }
+
+  /* ---------- A — RAYON X ---------- */
+  #a { --bg:#07090C; --surface:#0E1217; --surface-2:#151B22; --border:#1F2731; --text:#EEF3F7; --muted:#8B98A6;
+       --primary:#6EE7F9; --on-primary:#04161A; --success:#4ADE80; --danger:#F87171; --warning:#FBBF24;
+       --display:'Space Grotesk',sans-serif; --body:Inter,sans-serif; --mono:'JetBrains Mono',monospace;
+       --h-size:clamp(48px,6vw,84px); --h-weight:600; --h-track:-0.045em; --em-style:normal;
+       --radius:8px; --radius-lg:14px; --btn-radius:8px; --shadow:0 30px 80px -40px rgba(110,231,249,.25); }
+  #a::before { content:""; position:absolute; inset:0; background: radial-gradient(60% 50% at 75% 40%, rgba(110,231,249,.07), transparent 70%); pointer-events:none; }
+  #a .term::after { content:""; position:absolute; left:0; right:0; height:70px; top:-70px;
+       background: linear-gradient(180deg, transparent, rgba(110,231,249,.18) 80%, rgba(110,231,249,.9) 100%);
+       animation: scan 3.6s cubic-bezier(.45,0,.55,1) infinite; pointer-events:none; }
+  @keyframes scan { 0% { top:-70px; } 70%,100% { top:100%; } }
+
+  /* ---------- B — AMBRE DE VEILLE ---------- */
+  #b { --bg:#0B0A08; --surface:#15130F; --surface-2:#1E1B16; --border:#2A261F; --text:#F3EEE4; --muted:#A39B8C;
+       --primary:#FFB224; --on-primary:#1A1203; --success:#5EE29A; --danger:#FF6B5E; --warning:#FFB224;
+       --display:'Bricolage Grotesque',sans-serif; --body:Geist,sans-serif; --mono:'Geist Mono',monospace;
+       --h-size:clamp(48px,6vw,84px); --h-weight:700; --h-track:-0.04em; --em-style:normal;
+       --radius:12px; --radius-lg:18px; --btn-radius:999px; --shadow:0 30px 80px -40px rgba(255,178,36,.22); }
+  #b .radar { position:relative; margin-top:32px; width:120px; height:120px; border-radius:50%; border:1px solid var(--border);
+       background: repeating-radial-gradient(circle, transparent 0 19px, rgba(255,178,36,.12) 19px 20px); pointer-events:none; }
+  #b .radar::after { content:""; position:absolute; inset:0; border-radius:50%;
+       background: conic-gradient(from 0deg, rgba(255,178,36,.55), rgba(255,178,36,0) 70deg, transparent 360deg); animation: sweep 3s linear infinite; }
+  #b .radar::before { content:""; position:absolute; width:6px; height:6px; border-radius:50%; background:var(--primary); left:78px; top:34px; box-shadow:0 0 12px var(--primary); animation: blip 3s linear infinite; }
+  @keyframes sweep { to { transform: rotate(360deg); } }
+  @keyframes blip { 0%,10% { opacity:1 } 40%,100% { opacity:.15 } }
+
+  /* ---------- C — PAPIER DE COTATION ---------- */
+  #c { --bg:#F3EFE6; --surface:#FFFFFF; --surface-2:#EAE4D8; --border:#D9D1C1; --text:#16130E; --muted:#6B6356;
+       --primary:#C93A14; --on-primary:#FFFFFF; --success:#12804A; --danger:#C42B1C; --warning:#9A5B00;
+       --display:'Instrument Serif',serif; --body:Geist,sans-serif; --mono:'Geist Mono',monospace;
+       --h-size:clamp(56px,7vw,104px); --h-weight:400; --h-track:-0.02em; --em-style:italic;
+       --radius:4px; --radius-lg:6px; --btn-radius:4px; --shadow:0 24px 60px -40px rgba(22,19,14,.35); }
+  #c .tape { margin: 40px -6vw 0; background: var(--text); color: var(--bg); overflow: hidden; position: relative; height: 44px;
+       border-top: 6px dotted var(--bg); border-bottom: 6px dotted var(--bg); }
+  #c .tape div { display: inline-flex; gap: 40px; white-space: nowrap; font: 400 14px/32px var(--mono); padding-left: 40px; animation: roll 22s linear infinite; }
+  #c .tape .up { color: #7BE3A8; } #c .tape .down { color: #FF8A73; }
+  @keyframes roll { to { transform: translateX(-50%); } }
+
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .fonts { margin-left: 0; text-align: left; width: 100%; } .term { overflow-x: auto; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <h1>Projet 01 — Terminal de trading · 3 directions artistiques</h1>
+  <p>Aperçu pour choisir la DA et le nom (en anglais, nom = logo, domaine .trade). Données d'exemple, tickers fictifs. Les noms et les DA restent interchangeables. Le vert et le rouge sont réservés aux gains / pertes dans les 3 directions. Les logos (mascottes) seront dessinés une fois le nom choisi.</p>
+</div>
+
+<!-- A — RAYON X -->
+<section class="da" id="a">
+  <div class="tag">Direction <b>A</b> · Rayon X · Ferret — logo : un furet qui sort la tête d'un terrier</div>
+  <div class="grid">
+    <div>
+      <div class="brand"><span class="mark">F</span>Ferret<span style="color:var(--muted);font-weight:500">.trade</span></div>
+      <h2>Ferret out<br>the <em>rug.</em></h2>
+      <p class="lead">The Solana memecoin terminal that digs into every token as it trades. One-click buys, and the truth about who holds the supply.</p>
+      <div class="ctas"><button class="btn">Start trading</button><span class="ca">$FERRET <b>7xKX…9fQa</b> Copy</span></div>
+      <div class="stats">
+        <div class="stat"><div class="n">12,480</div><div class="l">tokens scanned today</div></div>
+        <div class="stat"><div class="n">3,912</div><div class="l">flagged as bundled</div></div>
+        <div class="stat"><div class="n">0.8%</div><div class="l">flat fee, shown up front</div></div>
+      </div>
+    </div>
+    <div class="term">
+      <div class="term-h"><span>Trending · pump.fun</span><span class="live">● Scanning</span></div>
+      <table>
+        <tr><th>Token</th><th>MCap</th><th>1h</th><th>Scan</th><th></th></tr>
+        <tr><td class="tk"><b>MOCHI</b><span>4mQ1…pump</span></td><td>$412K</td><td class="up">+38.2%</td><td><span class="badge safe">● Clean</span></td><td><button class="buy">Buy 0.5</button></td></tr>
+        <tr><td class="tk"><b>ORBIT</b><span>9Hc2…pump</span></td><td>$1.20M</td><td class="up">+12.4%</td><td><span class="badge watch">● Watch</span></td><td><button class="buy">Buy 0.5</button></td></tr>
+        <tr><td class="tk"><b>GLIMMER</b><span>Fa7k…pump</span></td><td>$2.91M</td><td class="down">−9.1%</td><td><span class="badge bundled">● Bundled</span></td><td><button class="buy">Buy 0.5</button></td></tr>
+        <tr><td class="tk"><b>DUSK</b><span>2pLx…pump</span></td><td>$86K</td><td class="up">+4.7%</td><td><span class="badge safe">● Clean</span></td><td><button class="buy">Buy 0.5</button></td></tr>
+      </table>
+      <div class="scan-detail">GLIMMER · <b>3 wallets took 79% of supply in the first 10 s</b> · biggest 50% · dev: 52 launches, exits in 38 s</div>
+    </div>
+  </div>
+  <div class="swatches">
+    <div class="sw"><i style="background:#07090C"></i><span>bg #07090C</span></div>
+    <div class="sw"><i style="background:#0E1217"></i><span>surface</span></div>
+    <div class="sw"><i style="background:#EEF3F7"></i><span>text</span></div>
+    <div class="sw"><i style="background:#6EE7F9"></i><span>scan #6EE7F9</span></div>
+    <div class="sw"><i style="background:#4ADE80"></i><span>gain</span></div>
+    <div class="sw"><i style="background:#F87171"></i><span>perte</span></div>
+    <div class="fonts"><b>Space Grotesk</b> titres · <b>Inter</b> texte · <b>JetBrains Mono</b> chiffres</div>
+  </div>
+  <p class="note"><b>Signature :</b> une ligne de scan cyan passe sur chaque liste et chaque token, et "révèle" ce qui est caché. Le cyan n'est utilisé que pour le scan → la couleur porte le sens du produit. Ambiance : précise, technique, "on voit à travers".</p>
+</section>
+
+<!-- B — AMBRE DE VEILLE -->
+<section class="da" id="b">
+  <div class="tag">Direction <b>B</b> · Ambre de veille · Mongoose — logo : une mangouste dressée face à un serpent</div>
+  <div class="grid">
+    <div>
+      <div class="brand"><span class="mark">M</span>Mongoose<span style="color:var(--muted);font-weight:500">.trade</span></div>
+      <h2>Built to<br><em>hunt snakes.</em></h2>
+      <p class="lead">A Solana trading terminal that keeps watch on every launch: bundles, insiders and dev history, flagged before your click lands.</p>
+      <div class="ctas"><button class="btn">Open terminal</button><span class="ca">$MONGOOSE <b>7xKX…9fQa</b> Copy</span></div>
+      <div class="stats">
+        <div class="stat"><div class="n">24/7</div><div class="l">on watch</div></div>
+        <div class="stat"><div class="n">1-click</div><div class="l">priority buys</div></div>
+        <div class="stat"><div class="n">$48.2K</div><div class="l">fees → buybacks</div></div>
+      </div>
+      <div class="radar" aria-hidden="true"></div>
+    </div>
+    <div class="term">
+      <div class="term-h"><span>Live launches</span><span class="live">● On watch</span></div>
+      <table>
+        <tr><th>Token</th><th>MCap</th><th>1h</th><th>Watch</th><th></th></tr>
+        <tr><td class="tk"><b>MOCHI</b><span>4mQ1…pump</span></td><td>$412K</td><td class="up">+38.2%</td><td><span class="badge safe">● Clear</span></td><td><button class="buy">Buy 0.5</button></td></tr>
+        <tr><td class="tk"><b>ORBIT</b><span>9Hc2…pump</span></td><td>$1.20M</td><td class="up">+12.4%</td><td><span class="badge watch">● Alert</span></td><td><button class="buy">Buy 0.5</button></td></tr>
+        <tr><td class="tk"><b>GLIMMER</b><span>Fa7k…pump</span></td><td>$2.91M</td><td class="down">−9.1%</td><td><span class="badge bundled">● Bundled</span></td><td><button class="buy">Buy 0.5</button></td></tr>
+        <tr><td class="tk"><b>DUSK</b><span>2pLx…pump</span></td><td>$86K</td><td class="up">+4.7%</td><td><span class="badge safe">● Clear</span></td><td><button class="buy">Buy 0.5</button></td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="swatches">
+    <div class="sw"><i style="background:#0B0A08"></i><span>bg #0B0A08</span></div>
+    <div class="sw"><i style="background:#15130F"></i><span>surface</span></div>
+    <div class="sw"><i style="background:#F3EEE4"></i><span>text</span></div>
+    <div class="sw"><i style="background:#FFB224"></i><span>veille #FFB224</span></div>
+    <div class="sw"><i style="background:#5EE29A"></i><span>gain</span></div>
+    <div class="sw"><i style="background:#FF6B5E"></i><span>perte</span></div>
+    <div class="fonts"><b>Bricolage Grotesque</b> titres · <b>Geist</b> texte · <b>Geist Mono</b> chiffres</div>
+  </div>
+  <p class="note"><b>Signature :</b> un balayage radar ambre qui tourne en permanence ("on veille") et fait clignoter les alertes. L'ambre = vigilance, héritage des terminaux de trading historiques. Ambiance : chaude, rassurante, "quelqu'un surveille pour toi".</p>
+</section>
+
+<!-- C — PAPIER DE COTATION -->
+<section class="da" id="c">
+  <div class="tag">Direction <b>C</b> · Papier de cotation · Hound — logo : une tête de limier, truffe en avant</div>
+  <div class="grid">
+    <div>
+      <div class="brand"><span class="mark">H</span>Hound<span style="color:var(--muted);font-weight:500">.trade</span></div>
+      <h2>A nose<br>for <em>rugs.</em></h2>
+      <p class="lead">The memecoin terminal that sniffs out every launch before you click. Fast buys, and every token checked against its own history.</p>
+      <div class="ctas"><button class="btn">Start trading</button><span class="ca">$HOUND <b>7xKX…9fQa</b> Copy</span></div>
+      <div class="stats">
+        <div class="stat"><div class="n">92%</div><div class="l">of launches dead by hour two</div></div>
+        <div class="stat"><div class="n">1 click</div><div class="l">to see which</div></div>
+      </div>
+    </div>
+    <div class="term">
+      <div class="term-h"><span>The tape · pump.fun</span><span class="live">● Live</span></div>
+      <table>
+        <tr><th>Token</th><th>MCap</th><th>1h</th><th>Check</th><th></th></tr>
+        <tr><td class="tk"><b>MOCHI</b><span>4mQ1…pump</span></td><td>$412K</td><td class="up">+38.2%</td><td><span class="badge safe">● Clean</span></td><td><button class="buy">Buy 0.5</button></td></tr>
+        <tr><td class="tk"><b>ORBIT</b><span>9Hc2…pump</span></td><td>$1.20M</td><td class="up">+12.4%</td><td><span class="badge watch">● Watch</span></td><td><button class="buy">Buy 0.5</button></td></tr>
+        <tr><td class="tk"><b>GLIMMER</b><span>Fa7k…pump</span></td><td>$2.91M</td><td class="down">−9.1%</td><td><span class="badge bundled">● Bundled</span></td><td><button class="buy">Buy 0.5</button></td></tr>
+        <tr><td class="tk"><b>DUSK</b><span>2pLx…pump</span></td><td>$86K</td><td class="up">+4.7%</td><td><span class="badge safe">● Clean</span></td><td><button class="buy">Buy 0.5</button></td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="tape"><div>
+    <span>BUY 2.1 SOL · MOCHI <span class="up">+38.2%</span></span><span>SELL 0.8 SOL · ORBIT <span class="down">−2.3%</span></span><span>FLAG · GLIMMER bundled 79%</span><span>BUY 5.0 SOL · DUSK <span class="up">+4.7%</span></span><span>MIGRATED · PIXEL → PumpSwap</span><span>BUY 0.3 SOL · ORBIT <span class="up">+1.1%</span></span>
+    <span>BUY 2.1 SOL · MOCHI <span class="up">+38.2%</span></span><span>SELL 0.8 SOL · ORBIT <span class="down">−2.3%</span></span><span>FLAG · GLIMMER bundled 79%</span><span>BUY 5.0 SOL · DUSK <span class="up">+4.7%</span></span><span>MIGRATED · PIXEL → PumpSwap</span><span>BUY 0.3 SOL · ORBIT <span class="up">+1.1%</span></span>
+  </div></div>
+  <div class="swatches">
+    <div class="sw"><i style="background:#F3EFE6"></i><span>bg #F3EFE6</span></div>
+    <div class="sw"><i style="background:#FFFFFF"></i><span>surface</span></div>
+    <div class="sw"><i style="background:#16130E"></i><span>encre</span></div>
+    <div class="sw"><i style="background:#C93A14"></i><span>signal #C93A14</span></div>
+    <div class="sw"><i style="background:#12804A"></i><span>gain</span></div>
+    <div class="sw"><i style="background:#C42B1C"></i><span>perte</span></div>
+    <div class="fonts"><b>Instrument Serif</b> titres · <b>Geist</b> texte · <b>Geist Mono</b> chiffres</div>
+  </div>
+  <p class="note"><b>Signature :</b> un ruban de cotation (ticker tape) perforé qui imprime en direct les achats, les ventes, les migrations et les alertes. Thème clair à contre-courant (comme Dark Ring) — l'app peut avoir un mode sombre. Ambiance : éditoriale, intelligente, "le trader qui lit".</p>
+</section>
+
+</body>
+</html>
