@@ -312,6 +312,20 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
 @keyframes breathe{50%{transform:translateY(-6px)}}
 @media(max-width:1000px){.how{grid-template-columns:minmax(0,1fr);min-height:0}}
 @media(max-width:700px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat{padding:24px 16px}.stat:nth-child(odd){border-left:0;padding-left:0}.stat:nth-child(n+3){border-top:1px solid var(--line)}.diagram{height:420px}.node{font-size:12px;height:34px;padding:0 10px}.core{width:88px;height:88px;left:58%}.core svg{width:44px;height:38px}.verdict{left:84%}}
+/* film section (F-087) */
+.filmbox{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:#000;box-shadow:0 60px 140px -60px rgba(146,50,241,.65);aspect-ratio:16/9}
+.filmbox video{display:block;width:100%;height:100%;object-fit:cover;background:#000}
+.filmbox .play{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(closest-side,rgba(0,0,0,.25),rgba(0,0,0,.6));border:0;cursor:pointer;transition:opacity .4s}
+.filmbox .play span{display:grid;place-items:center;width:96px;height:96px;border-radius:50%;background:var(--grad);box-shadow:0 20px 60px -10px rgba(242,44,123,.8)}
+.filmbox .play svg{width:30px;height:30px;margin-left:5px}
+.filmbox.on .play{opacity:0;pointer-events:none}
+.filmmeta{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:var(--dim)}
+.filmmeta a{color:var(--vt)}
+/* section headings reveal line by line, dividers draw themselves */
+.sec-h h2 .ln{display:block;overflow:hidden;padding-bottom:.06em}
+.sec-h h2 .ln>span{display:block;will-change:transform}
+.band:not(.final):not(#how-it-works)::before{content:"";display:block;width:min(1240px,calc(100% - 2*max(5vw,16px)));height:1px;margin:0 auto clamp(48px,6vw,84px);background:linear-gradient(90deg,transparent,rgba(181,123,255,.55),rgba(242,44,123,.45),transparent);transform:scaleX(var(--dv,1));transform-origin:50% 50%;opacity:.8}
+.band[style*="padding-top:0"]::before{margin-top:0}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -328,7 +342,7 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
 <header>
   <div class="wrap nav">
     <a class="logo" href="#top" aria-label="Vigil home"><svg aria-hidden="true"><use href="#vmark"/></svg>Vigil</a>
-    <nav aria-label="Main"><a href="#demo">Demo</a><a href="#examples">Examples</a><a href="#how-it-works">How it works</a><a href="#detect">What it detects</a><a href="#trust">Privacy</a><a href="#pricing">Pricing</a><a href="#install">Install</a></nav>
+    <nav aria-label="Main"><a href="#film">Film</a><a href="#examples">Examples</a><a href="#how-it-works">How it works</a><a href="#detect">What it detects</a><a href="#trust">Privacy</a><a href="#pricing">Pricing</a><a href="#install">Install</a></nav>
     <div class="right">
       <span class="ca mono">$VIGIL <b>7xKX…9fQa</b><button class="copy" data-copy type="button">Copy</button></span>
       <a class="btn btn-main" href="#install">Get the extension</a>
@@ -344,7 +358,7 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
       <h1 id="headline" aria-label="See the rug before you click."><span class="w">See</span> <span class="w">the</span> <span class="w">rug</span> <span class="w">before</span> <span class="w">you</span> <span class="w">click.</span></h1>
       <div>
         <p class="lead">Vigil is a free browser extension for Solana traders. It flags rugs inside the sites you already use (Axiom, GMGN, pump.fun, DexScreener, X) and tells you why, in one sentence, before you put money in.</p>
-        <div class="cta"><a class="btn btn-main" href="/vigil-lens.zip" download>Download the extension</a><a class="btn btn-ghost" href="#demo">Watch the demo</a></div>
+        <div class="cta"><a class="btn btn-main" href="/vigil-lens.zip" download>Download the extension</a><a class="btn btn-ghost" href="#film">Watch the film</a></div>
         <p class="facts">Free plan · no wallet · no account · Chrome, Brave, Edge, Arc, Opera</p>
         <p class="mob-note">On a phone? Extensions run on a computer. Open this page on your desktop to install it, or <a href="/app">scan a token on the web</a>.</p>
       </div>
@@ -416,6 +430,20 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
     </div>
     <div class="ex" id="exGrid"></div>
     <p class="small" style="margin-top:14px">Snapshot of 23 Nov 2026. A verdict can change as wallets move. Facts from the chain, not financial advice.</p>
+  </div>
+</section>
+
+<section class="band" id="film" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-h">
+      <h2>Watch it catch one.</h2>
+      <p class="lead">Thirty seconds on Axiom with Vigil on: the trending board, the badges, the hover, and MINELIUS from launch to the dump.</p>
+    </div>
+    <div class="filmbox" id="filmbox">
+      <video id="filmv" src="vigil-film.mp4" muted playsinline loop preload="metadata" aria-label="Vigil on Axiom, a 30-second film"></video>
+      <button class="play" id="filmplay" type="button" aria-label="Play the film with sound off"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" fill="#fff"/></svg></span></button>
+    </div>
+    <div class="filmmeta"><span>Real tokens and logos, MINELIUS's real chart (GMGN data). Recorded from Vigil's own motion page.</span><a href="#install">Get the extension</a></div>
   </div>
 </section>
 
@@ -574,7 +602,7 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
       <div class="dl">
         <h3>Vigil for your browser</h3>
         <p>One small file. Nothing to sign up for, nothing to connect.</p>
-        <div class="file"><svg aria-hidden="true"><use href="#vmark"/></svg><div><b>vigil-lens.zip</b><span>Version 0.2.0 · 24 KB · Chrome, Brave, Edge, Arc, Opera</span></div></div>
+        <div class="file"><svg aria-hidden="true"><use href="#vmark"/></svg><div><b>vigil-lens.zip</b><span>Version 0.3.0 · 25 KB · Chrome, Brave, Edge, Arc, Opera</span></div></div>
         <a class="btn btn-main" href="/vigil-lens.zip" download>Download the extension</a>
         <small>Firefox and Safari aren't supported yet. Extensions don't run on phones: on mobile, use the <a href="/app" style="color:var(--vt)">web scanner</a>.</small>
       </div>
@@ -598,7 +626,7 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
       <details open><summary>What is Vigil?</summary><p>A free browser extension that detects rugs on Solana memecoins. It doesn't trade and it doesn't replace your terminal: it sits on top of the sites you already use and puts a Clean, Watch or Bundled verdict next to every token.</p></details>
       <details><summary>Which sites does it work on?</summary><p>Axiom, GMGN, pump.fun, DexScreener and X today. Padre, Photon and BullX are in beta: badges show up on their token pages and links.</p></details>
       <details><summary>How fast is a verdict?</summary><p>A few seconds for a token nobody has checked yet, instantly after that: verdicts are shared, so the next trader who sees the token gets it straight away.</p></details>
-      <details><summary>Does it see my wallet or my funds?</summary><p>No. Vigil never asks to connect a wallet and never signs anything. The only thing it sends is the token addresses shown on your screen.</p></details>
+      <details><summary>Does it see my wallet or my funds?</summary><p>No. Vigil never asks to connect a wallet and never signs anything. The only thing it sends is the token addresses shown on your screen. The full <a href="/privacy">privacy policy</a> is one page.</p></details>
       <details><summary>Is it free?</summary><p>The free plan is, for good: badges, reasons and the token panel on every supported site. Pro adds funding traces, the live exit radar and alerts for $29 a month, paid in SOL, or is included when you hold at least $20 of $VIGIL. During the beta, everything that exists is open to everyone.</p></details>
       <details><summary>Why isn't it on the Chrome Web Store yet?</summary><p>The listing is in review. Until it's live, you install the same extension by hand in four steps. Once it's on the store, it will install in one click and update itself.</p></details>
       <details><summary>Is a Clean verdict a buy signal?</summary><p>No. A verdict is a fact about how the token launched and who holds it, not a prediction. A clean token can still go to zero.</p></details>
@@ -622,7 +650,7 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
 <footer>
   <div class="wrap">
     <a class="logo" href="#top" style="font-size:18px"><svg aria-hidden="true" style="width:24px;height:21px"><use href="#vmark"/></svg>Vigil</a>
-    <nav aria-label="Footer"><a href="#demo">Demo</a><a href="#install">Install</a><a href="/app">Web scanner</a><a href="/docs">Docs</a><a href="https://github.com/travisiol/Vigil/tree/main/lens">Code</a><a href="https://x.com/vigiltrade">X</a></nav>
+    <nav aria-label="Footer"><a href="#demo">Demo</a><a href="#install">Install</a><a href="/app">Web scanner</a><a href="/docs">Docs</a><a href="/privacy">Privacy</a><a href="https://github.com/travisiol/Vigil/tree/main/lens">Code</a><a href="https://x.com/vigiltrade">X</a></nav>
     <span>Not financial advice. Memecoins can lose all their value.</span>
   </div>
 </footer>
@@ -817,6 +845,19 @@ const onScroll = () => {
 };
 addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
+/* film: plays muted when on screen, pauses when it leaves */
+const fv = $('#filmv'), fbox = $('#filmbox');
+const startFilm = () => { fv.play().then(() => fbox.classList.add('on')).catch(() => {}); };
+$('#filmplay').addEventListener('click', () => { fv.controls = true; startFilm(); });
+fv.addEventListener('play', () => fbox.classList.add('on'));
+if (!reduce) new IntersectionObserver((es) => { for (const e of es) { if (e.isIntersecting) startFilm(); else fv.pause(); } }, { threshold: 0.55 }).observe(fbox);
+
+/* section headings: split into lines that rise from a mask */
+for (const h of $$('.sec-h h2')) {
+  const parts = h.innerHTML.split(/<br\s*\/?>/i);
+  h.innerHTML = parts.map(p => '<span class="ln"><span>' + p + '</span></span>').join('');
+}
+
 /* ===== motion layer (F-085) ===== */
 const touch = matchMedia('(hover: none)').matches;
 const dpr2 = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -937,8 +978,12 @@ if (typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undef
   gsap.from('.hero-top > div > *', { y: 22, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.08, delay: 0.4 });
   /* the demo window tilts up into place as you scroll to it */
   gsap.fromTo('.win', { rotateX: 16, scale: 0.94, y: 30 }, { rotateX: 0, scale: 1, y: 0, ease: 'none', scrollTrigger: { trigger: '#demo', start: 'top 92%', end: 'top 30%', scrub: true } });
+  /* headings rise line by line, dividers draw from the centre */
+  for (const h of $$('.sec-h h2')) gsap.from(h.querySelectorAll('.ln > span'), { yPercent: 105, duration: 1.1, ease: 'expo.out', stagger: 0.09, scrollTrigger: { trigger: h, start: 'top 88%' } });
+  for (const b of $$('.band:not(.final):not(#how-it-works)')) gsap.fromTo(b, { '--dv': 0 }, { '--dv': 1, duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: b, start: 'top 92%' } });
+  gsap.from('.filmbox', { scale: 0.92, opacity: 0, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: '.filmbox', start: 'top 85%' } });
   /* sections */
-  for (const el of $$('.sec-h, .stats, .sites, .code, .after, .beta')) gsap.from(el, { y: 36, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
+  for (const el of $$('.sec-h .lead, .stats, .sites, .code, .after, .beta, .filmmeta')) gsap.from(el, { y: 36, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
   const group = (sel, extra) => { const els = $$(sel); if (!els.length) return; gsap.from(els, Object.assign({ y: 44, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.1, scrollTrigger: { trigger: els[0].parentElement, start: 'top 85%' } }, extra || {})); };
   group('.exc', { onComplete: () => $$('.exc .pill').forEach((p, i) => setTimeout(() => p.classList.add('flash'), i * 120)) });
   group('.cell'); group('.verds .vcard', { rotateX: -12, transformOrigin: '50% 0' }); group('.signals > div'); group('.tcard'); group('.plan', { y: 60 }); group('.istep', { x: 30, y: 0 });

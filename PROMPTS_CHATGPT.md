@@ -532,3 +532,39 @@ Output: 1536x1024.
 1. Je les range dans `projets/Vigil/design/` et je les note sur les 12 critères + le test "si on retire le logo, on reconnaît encore le projet ?".
 2. Je note ton avis (FEEDBACK.md), et je mets à jour la palette et le DESIGN.md de la direction choisie.
 3. Je cherche les composants sur 21st.dev et je code le site à partir de la maquette validée.
+
+---
+
+# Vigil (extension) : visuels du Chrome Web Store et icône `[F-087]` — 23 nov. 2026
+
+Le logo V est validé (`design/logo-vigil-final-v1.png`) : on ne le redessine pas, on le décline. Les visuels de la fiche du store doivent montrer **l'extension en situation** (`[F-083]`, `[F-084]`) : jamais un token inventé, jamais d'icônes « IA ». Pour les captures du store (1280×800), le mieux reste de **vraies captures** une fois l'extension installée (voir plus bas). ChatGPT sert ici pour l'icône et les tuiles promo.
+
+## S1. Icône de l'extension (barre d'outils + store), 128×128
+
+```
+Redraw this exact logo as a browser-extension icon, 1024x1024 PNG with a transparent background: a bold V letterform made of a single sharp chevron with an inner curved notch, filled with a vertical gradient from #9232F1 (top) through #BC33C9 to #F22C7B (bottom). Keep the exact silhouette of the attached logo. Center it with 12% padding on every side. No background shape, no rounded square, no glow, no outline, no shadow, no text, no 3D. It must stay readable at 16x16 pixels: thick strokes, no thin details.
+```
+Joindre `design/logo-vigil-final-v1.png`. Ensuite je génère les tailles 16/32/48/128 et je vérifie la lisibilité à 16 px.
+
+## S2. Petite tuile promo du store, 440×280
+
+```
+Design a 440x280 promotional tile for a Chrome extension called "Vigil". Pure black background (#000000). On the left, the attached V logo (gradient #9232F1 to #BC33C9 to #F22C7B), about 110 px tall. On the right, two lines of text in the font Sora Bold, white #F5F3FA: "See the rug" on line one and "before you click." on line two, around 38 px. Under it, in Inter Medium 16 px, color #A6A1B8: "Solana rug detector". Bottom-left corner: three small rounded pills side by side reading "Clean" (text #07E7C3, 10% teal fill), "Watch" (text #FFB21F, 10% amber fill), "Bundled" (text #FF6B6B, 12% red fill). A very soft purple light (#9232F1 at 20% opacity) behind the logo only. No other decoration: no icons, no sparkles, no particles, no gradients on the text, no mockup of a phone or laptop. Flat, crisp, high contrast.
+```
+
+## S3. Grande tuile promo (marquee), 1400×560
+
+```
+Design a 1400x560 banner for the Chrome Web Store, pure black background (#000000). Left 45%: the attached V logo (gradient #9232F1 > #BC33C9 > #F22C7B), 160 px tall, above the headline "See the rug before you click." in Sora Bold, 64 px, white #F5F3FA, on two lines, and the line "A verdict next to every Solana token on Axiom, GMGN, pump.fun and X." in Inter 22 px, color #A6A1B8. Right 55%: a dark, slightly tilted (8 degrees, perspective) browser window with a thin #24212E border and 16 px radius, showing a crypto token list with 4 rows; each row has a round token picture, a ticker in white, a market cap in a monospace font, and on the right a small rounded pill: "Bundled" (red #FF6B6B), "Clean" (teal #07E7C3), "Watch" (amber #FFB21F), "Bundled". One soft beam of purple-pink light (#9232F1 to #F22C7B, 25% opacity) behind the window. No real exchange logo, no fake brand names, no icons, no sparkles, no particles.
+```
+Remarque : les photos de tokens de la maquette seront remplacées par de vraies captures dans la fiche finale.
+
+## Captures du store (1280×800) : vraies captures, pas de ChatGPT
+
+Une fois l'extension installée et poussée en ligne, prends ces 5 captures en 1280×800 (fenêtre Chrome à cette taille, Win+Maj+S) :
+1. **pump.fun**, liste « Coins » : les badges après les noms (déjà testé en vrai, rendu propre).
+2. **GMGN Trenches** : les badges après les noms.
+3. **Une page token Axiom** avec le panneau Vigil ouvert.
+4. **Le survol** d'un badge Bundled avec l'infobulle (la raison).
+5. **Un tweet** avec un CA et son badge.
+Je les recadre et j'ajoute une légende en haut si tu veux.

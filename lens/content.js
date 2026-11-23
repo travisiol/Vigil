@@ -15,7 +15,15 @@
   const hasExt = typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.id;
   const TEST_API = window.__VIGIL_API || "https://vigil-eight-ecru.vercel.app";
   function send(msg) {
-    if (hasExt) return new Promise((res) => chrome.runtime.sendMessage(msg, (r) => res(r || {})));
+    if (hasExt)
+      return new Promise((res) => {
+        // extension rechargée ou mise à jour pendant que la page est ouverte : on ne casse rien, on renvoie du vide
+        try {
+          chrome.runtime.sendMessage(msg, (r) => res(chrome.runtime.lastError ? {} : r || {}));
+        } catch {
+          res({});
+        }
+      });
     if (msg.type === "verdicts")
       return fetch(`${TEST_API}/api/lens?a=${msg.addrs.join(",")}`).then((r) => r.json()).then((j) => j.results || {}).catch(() => ({}));
     if (msg.type === "detail")
@@ -66,7 +74,7 @@
 
   // --- styles (badges dans la page, isolés par le préfixe vgl-) ---
   const css = `
-  .vgl-b{all:initial;display:inline-flex!important;align-items:center;gap:4px;height:18px;padding:0 7px;margin:0 0 0 6px;border-radius:999px;
+  .vgl-b{all:initial;display:inline-flex!important;align-items:center;gap:4px;height:18px;padding:0 7px;margin:0 0 0 6px;flex:none;align-self:center;width:max-content!important;border-radius:999px;
     font:600 10.5px/1 Inter,system-ui,sans-serif!important;letter-spacing:.01em;vertical-align:middle;cursor:help;white-space:nowrap;
     border:1px solid rgba(255,255,255,.12);background:#0B0A0F;color:#A6A1B8;z-index:2147483000;position:relative}
   .vgl-b i{all:initial;width:6px;height:6px;border-radius:50%;background:#6E6880;display:inline-block}
@@ -91,6 +99,7 @@
   const state = new Map(); // adresse -> donnée de l'API
   const badges = new Map(); // adresse -> Set<HTMLElement>
   const wanted = new Set();
+  const tries = new Map(); // adresse -> nombre de relances "pending"
   let flushTimer = null;
   function want(a) {
     if (state.has(a) && !state.get(a).pending) return;
@@ -107,8 +116,14 @@
       const d = res[a];
       if (!d) continue;
       state.set(a, d);
-      (badges.get(a) || []).forEach((el) => paint(el, d));
-      if (d.pending) setTimeout(() => want(a), 4500); // scan en cours : on redemande
+      const set = badges.get(a);
+      if (set) for (const el of [...set]) { if (el.isConnected) paint(el, d); else set.delete(el); }
+      // scan en cours : on redemande, 12 fois au plus (un token illisible ne tourne pas en boucle)
+      if (d.pending) {
+        const n = (tries.get(a) || 0) + 1;
+        tries.set(a, n);
+        if (n <= 12) setTimeout(() => want(a), n < 4 ? 4000 : 8000);
+      }
     }
     if (panelAddr && res[panelAddr]) renderPanel(res[panelAddr]);
     if (wanted.size) flushTimer = setTimeout(flush, 350);
@@ -170,6 +185,48 @@
   const escapeHtml = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
   // --- parcours de la page ---
+  const linkBadge = new WeakMap(); // lien -> son badge (pour le remettre si le site redessine la ligne)
+  // Le nom du token dans une ligne ou une carte : on pose le badge juste après (lisible, ne cache aucun chiffre)
+  function nameIn(box) {
+    if (!box) return null;
+    const leaf = (el) => {
+      if (!el.childElementCount) return el;
+      for (const x of el.querySelectorAll("*")) if (!x.childElementCount && x.textContent.trim()) return x;
+      return el;
+    };
+    for (const sel of ["[data-coin-symbol]", "[data-coin-name]", "[data-testid*='symbol']", "[data-testid*='name']"]) {
+      const el = box.querySelector(sel);
+      if (el) return leaf(el);
+    }
+    for (const el of box.querySelectorAll("span, b, strong, p, div, h3, h4")) {
+      if (el.childElementCount || el.closest(".vgl-b")) continue;
+      const t = el.textContent.trim();
+      // pas un prix, un pourcentage, une durée ("12m") ni une adresse abrégée ("GXVF...pump")
+      if (t.length >= 1 && t.length <= 40 && !/^[$\d.,%+\-−~<>KMB ]+$/.test(t) && !/^\d+\s?[smhdw]$/.test(t) && !/\.\.\.|…/.test(t)) return el;
+    }
+    return null;
+  }
+  function placeBadge(a, badge) {
+    const big = a.offsetHeight >= 40 && a.offsetWidth > 140;
+    if (!big) return a.insertAdjacentElement("afterend", badge);
+    // ligne ou carte entière cliquable : après le nom du token, sinon en haut à droite
+    const empty = !a.textContent.trim() && !a.querySelector("img");
+    const name = nameIn(a) || (empty ? nameIn(a.parentElement) : null);
+    if (name) {
+      badge.classList.remove("vgl-abs");
+      name.insertAdjacentElement("afterend", badge);
+      return;
+    }
+    if (getComputedStyle(a).position === "static") a.style.position = "relative";
+    badge.classList.add("vgl-abs");
+    a.appendChild(badge);
+  }
+  function repairLinks() {
+    for (const a of document.querySelectorAll("a[data-vgl]")) {
+      const b = linkBadge.get(a);
+      if (b && !b.isConnected && a.isConnected) placeBadge(a, b);
+    }
+  }
   function scanLinks(root) {
     const links = root.querySelectorAll ? root.querySelectorAll("a[href]:not([data-vgl])") : [];
     for (const a of links) {
@@ -178,16 +235,52 @@
       if (!addr) continue;
       // pas de badge sur le lien de la page en cours (le panneau s'en charge), ni sur les liens d'icône vides
       if (addr === panelAddr && !a.closest("table, [role=row], li")) continue;
-      if (!a.textContent.trim() && !a.querySelector("img")) continue;
+      // liens vides : on ignore les petites icônes, mais on garde les liens posés sur toute une ligne (listes pump.fun)
+      if (!a.textContent.trim() && !a.querySelector("img") && !(a.offsetHeight >= 40 && a.offsetWidth > 140)) continue;
       const badge = makeBadge(addr);
-      const big = a.offsetHeight > 56 && a.offsetWidth > 140;
-      if (big) {
-        // carte entière cliquable (listes pump.fun, axiom…) : badge en haut à droite de la carte
-        if (getComputedStyle(a).position === "static") a.style.position = "relative";
+      linkBadge.set(a, badge);
+      placeBadge(a, badge);
+    }
+  }
+
+  // Terminaux dont les lignes ne sont pas des liens (Axiom Pulse…) : l'adresse du token est souvent dans l'URL de son image.
+  // On pose alors le badge sur la ligne qui contient l'image.
+  const IMG_HOSTS = /(axiom\.trade|padre\.gg|tinyastro\.io|bullx\.io)$/;
+  function scanImages(root) {
+    if (!IMG_HOSTS.test(host) && !window.__VIGIL_API) return;
+    const imgs = root.querySelectorAll ? root.querySelectorAll("img[src]:not([data-vgl])") : [];
+    for (const img of imgs) {
+      img.setAttribute("data-vgl", "1");
+      const m = (img.getAttribute("src") || "").match(/[1-9A-HJ-NP-Za-km-z]{32,44}/);
+      if (!m || !IS_B58.test(m[0]) || img.closest("a[data-vgl]")) continue;
+      if (img.width && img.width > 120) continue; // pas les grandes images (bannières)
+      let row = img.parentElement;
+      for (let i = 0; i < 6 && row && row.offsetHeight < 48; i++) row = row.parentElement;
+      if (!row || row === document.body || row.offsetHeight > 260 || row.querySelector(".vgl-b")) continue;
+      const badge = makeBadge(m[0]);
+      if (getComputedStyle(row).position === "static") row.style.position = "relative";
+      badge.classList.add("vgl-abs");
+      row.appendChild(badge);
+    }
+  }
+
+  // Lignes qui portent l'adresse du token dans un attribut (GMGN Trenches : data-trenches-token-address, etc.)
+  const ATTR_SEL = "[data-trenches-token-address],[data-token-address],[data-mint],[data-ca],[data-address]";
+  function scanAttrRows(root) {
+    const rows = root.querySelectorAll ? root.querySelectorAll(ATTR_SEL) : [];
+    for (const row of rows) {
+      if (row.hasAttribute("data-vgl")) continue;
+      row.setAttribute("data-vgl", "1");
+      const v = row.getAttribute("data-trenches-token-address") || row.getAttribute("data-token-address") || row.getAttribute("data-mint") || row.getAttribute("data-ca") || row.getAttribute("data-address") || "";
+      if (!IS_B58.test(v) || row.offsetHeight < 24 || row.querySelector(".vgl-b") || row.closest("a[data-vgl]")) continue;
+      // une adresse de wallet sera écartée par le serveur (ce n'est pas un token) et le badge retiré
+      const badge = makeBadge(v);
+      const name = nameIn(row);
+      if (name) name.insertAdjacentElement("afterend", badge);
+      else {
+        if (getComputedStyle(row).position === "static") row.style.position = "relative";
         badge.classList.add("vgl-abs");
-        a.appendChild(badge);
-      } else {
-        a.insertAdjacentElement("afterend", badge);
+        row.appendChild(badge);
       }
     }
   }
@@ -209,11 +302,16 @@
     scanTimer = setTimeout(() => {
       scanTimer = null;
       scanLinks(document);
+      scanAttrRows(document);
+      scanImages(document);
       scanTweets(document);
+      repairLinks();
       checkPage();
     }, 400);
   }
   new MutationObserver(scheduleScan).observe(document.documentElement, { childList: true, subtree: true });
+  // navigation interne des sites (pushState) sans changement visible du DOM
+  setInterval(() => { if (location.pathname + location.search !== lastPath) scheduleScan(); }, 1000);
 
   // --- panneau flottant sur la page d'un token ---
   let panelAddr = null;
@@ -264,7 +362,7 @@
       <div class="p">
         <div class="h">
           <svg viewBox="0 0 100 84"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9232F1"/><stop offset="1" stop-color="#F22C7B"/></linearGradient></defs><path d="M0 0 L50 84 L100 0 C80 9 60 27 50 50 C40 27 20 9 0 0 Z" fill="url(#g)"/></svg>
-          <b>Vigil Lens</b>
+          <b>Vigil</b>
           ${v ? `<span class="v">● ${LABEL[v]}</span>` : `<span class="v">Scanning…</span>`}
           <button class="x" title="${collapsed ? "Expand" : "Minimize"}">${collapsed ? "▴" : "▾"}</button>
         </div>
@@ -282,24 +380,39 @@
     const open = panelRoot.getElementById("open");
     if (open) open.href = `${base}/token/${d.mint}`;
     // Détail (radar de sortie + chiffres du scan) : une seule fois par token affiché
-    if (detailFor === d.mint && panelRoot.__det) return fillDetail(panelRoot.__det);
-    detailFor = d.mint;
+    const key = d.mint + ":" + (d.verdict || "pending");
+    if (detailFor === key && panelRoot.__det && Date.now() - panelRoot.__detAt < 20000) return fillDetail(panelRoot.__det);
+    detailFor = key;
     const det = await send({ type: "detail", mint: d.mint });
+    if (panelAddr && (state.get(panelAddr) || {}).mint !== d.mint) return; // on a changé de page entre-temps
     panelRoot.__det = det;
+    panelRoot.__detAt = Date.now();
     fillDetail(det);
   }
+  // le radar de sortie bouge : on relit le détail toutes les 20 s tant que le panneau est ouvert
+  setInterval(() => {
+    if (!panelAddr || !panelHost || panelHost.style.display === "none" || document.hidden) return;
+    const d = state.get(panelAddr);
+    if (d && d.mint && sessionStorage.getItem("vgl-min") !== "1") renderPanel(d);
+  }, 20000);
   function fillDetail(det) {
     const box = panelRoot && panelRoot.getElementById("det");
     if (!box || !det) return;
     const r = det.radar, s = det.scan;
     const pct = (x) => (x == null ? "–" : `${(x * 100).toFixed(x < 0.01 ? 2 : 1)}%`);
     const sig = s?.signals || {};
+    const g = sig.gmgn || {};
+    const launches = g.devLaunches ?? sig.devMemory?.launches7d;
+    // Les 10 premières secondes ne sont tracées qu'au scan complet : en attendant, le plus gros wallet
+    const first = sig.early10s?.traced
+      ? `<div><span>Bought in first 10 s</span><strong>${pct(sig.early10s.pct)}</strong></div>`
+      : `<div><span>Biggest wallet</span><strong>${pct(sig.topWallet?.pct)}</strong></div>`;
     box.innerHTML = `
       <div class="g">
-        <div><span>Bought in first 10 s</span><strong>${pct(sig.early10s?.pct)}</strong></div>
+        ${first}
+        <div><span>Dev's past launches</span><strong>${launches == null ? "–" : launches}</strong></div>
         <div><span>Top 10 wallets</span><strong>${pct(sig.top10Pct)}</strong></div>
-        <div><span>Launch wallets still hold</span><strong>${r?.stillHeldShare == null ? "–" : Math.round(r.stillHeldShare * 100) + "% of buy"}</strong></div>
-        <div><span>Dev sold</span><strong>${r?.devSoldShare == null ? "–" : Math.round(r.devSoldShare * 100) + "% of bag"}</strong></div>
+        <div><span>Launch wallets still hold</span><strong>${r?.stillHeldShare == null ? "reading…" : Math.round(r.stillHeldShare * 100) + "% of buy"}</strong></div>
       </div>
       ${r?.headline ? `<div class="ra"><b>Exit radar</b> · ${escapeHtml(r.headline)}</div>` : ""}`;
   }
