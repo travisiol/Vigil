@@ -3,212 +3,121 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vigil · See the rug before you buy</title>
-<meta name="description" content="Vigil is a browser extension that puts a Clean, Watch or Bundled verdict next to every Solana token on Axiom, GMGN, pump.fun, Terminal (Padre), DexScreener and X.">
+<title>Vigil · A lantern for the trenches</title>
+<meta name="description" content="Vigil is a Chrome extension that lights up every Solana token you scroll past and stamps it Clean, Watch or Bundled, with the reason.">
 <link rel="icon" href="/brand/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@400;500;600&family=Martian+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* VOICE   a night watch for memecoin traders: quiet, exact, a little solemn; one red seal when it matters
-   IDEA    Lantern: the market is a night of dithered noise, Vigil's V is a cone of light that shows the real screen underneath
-   PICTURE real captures rendered as lilac 1-bit dither, revealed in full colour inside the moving V beam, real badges inside
-   COLOUR  night #07060B, plum lines #2A1E34, lilac light #BE80FF; teal / amber / red only where there is a verdict; logo gradient only on the V
-   TYPE    Marcellus for titles, Hanken Grotesk for text, Martian Mono for numbers, addresses and clocks (normal case)
-   LAYOUT  hero 5/7, facts band, pinned token story, pinned deck of real captures, film, proof, verdicts, plans, privacy, install, FAQ, V-I-G-I-L */
-:root{color-scheme:dark;--bg:#07060B;--s1:#151019;--s2:#1C1622;--line:#2A1E34;--ink:#F3EEF9;--mut:#9A8BAE;--glow:#BE80FF;--ok:#2EF0C8;--wa:#FFB21F;--bad:#FF4D4D;--ease:cubic-bezier(.22,1,.36,1)}
+/* VOICE   a night watchman's notebook: few words, exact, a little solemn; one red seal when it matters
+   IDEA    Lantern: the trenches are a night of dithered noise; Vigil is a pixel lantern whose V-shaped beam turns noise into verdicts
+   PICTURE a hanging 1-bit lantern swinging over an endless field of token tiles; wherever the beam falls, tiles resolve and get sealed
+   COLOUR  night #07060B, plum #2A1E34, lilac light #BE80FF; teal / amber / red only on a seal; the logo gradient only on the V
+   TYPE    Marcellus (titles), Hanken Grotesk (text), Martian Mono (small marks, normal case)
+   LAYOUT  desktop first; one promise per screen: lantern hero, the three seals, the night shift (pinned), what the light reads, read-only, install, the word */
+:root{color-scheme:dark;--bg:#07060B;--s1:#120E17;--line:#2A1E34;--ink:#F3EEF9;--mut:#9A8BAE;--glow:#BE80FF;--ok:#2EF0C8;--wa:#FFB21F;--bad:#FF4D4D;--ease:cubic-bezier(.22,1,.36,1)}
 *{box-sizing:border-box;min-width:0}
-html{scroll-padding-top:84px}
-body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 'Hanken Grotesk',system-ui,sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased}
+html{scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 'Hanken Grotesk',system-ui,sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-h1,h2,h3{font-family:Marcellus,Georgia,serif;font-weight:400;letter-spacing:-.01em;line-height:1.04;margin:0;text-wrap:balance}
-h2{font-size:clamp(40px,5.2vw,64px)}
-h3{font-size:28px;line-height:1.15}
+h1,h2,h3{font-family:Marcellus,Georgia,serif;font-weight:400;line-height:1.02;letter-spacing:-.015em;margin:0;text-wrap:balance}
+h2{font-size:clamp(44px,6.2vw,88px)}
 p{margin:0}
-.mono{font-family:'Martian Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-code{font:400 .85em 'Martian Mono',monospace;padding:2px 7px;border-radius:6px;background:var(--s2);border:1px solid var(--line)}
-.wrap{max-width:1240px;margin:0 auto;padding-left:max(5vw,18px);padding-right:max(5vw,18px)}
-.band{padding:clamp(72px,9vw,132px) 0}
-.lead{color:var(--mut);font-size:20px;line-height:1.55;max-width:52ch}
-.small{font-size:13px;color:var(--mut)}
-.sec-h{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:24px 56px;align-items:end;margin-bottom:48px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 24px;border-radius:12px;font:600 16px/1 'Hanken Grotesk',sans-serif;border:1px solid transparent;cursor:pointer;transition:transform .25s var(--ease),box-shadow .3s,background .3s,border-color .3s;white-space:nowrap}
-.btn:focus-visible,a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--glow);outline-offset:3px}
-.btn-main{background:var(--glow);color:var(--bg);box-shadow:0 0 0 0 rgba(190,128,255,.0),0 18px 50px -18px rgba(190,128,255,.75);animation:candle 3.4s ease-in-out infinite}
+.wrap{max-width:1280px;margin:0 auto;padding-left:max(5vw,18px);padding-right:max(5vw,18px)}
+.lead{color:var(--mut);font-size:clamp(18px,1.6vw,21px);line-height:1.55;max-width:46ch}
+.mark{display:inline-block;font:400 12px 'Martian Mono',monospace;color:var(--glow)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;height:56px;padding:0 28px;border-radius:999px;font:600 16px/1 'Hanken Grotesk',sans-serif;border:1px solid transparent;cursor:pointer;white-space:nowrap;transition:transform .3s var(--ease),border-color .3s}
+.btn:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid var(--glow);outline-offset:4px}
+.btn-main{background:var(--glow);color:var(--bg);animation:candle 3.2s ease-in-out infinite}
 .btn-main:hover{transform:translateY(-2px)}
-@keyframes candle{0%,100%{box-shadow:0 18px 50px -18px rgba(190,128,255,.72)}40%{box-shadow:0 18px 54px -16px rgba(190,128,255,.85)}70%{box-shadow:0 18px 46px -20px rgba(190,128,255,.66)}}
-.btn-line{color:var(--ink);border-color:var(--line);background:rgba(255,255,255,.015)}
-.btn-line:hover{border-color:var(--glow)}
-.vgrad{background:linear-gradient(180deg,#9232F1,#BC33C9 55%,#F22C7B)}
-.pill{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;font:500 12px/1 'Martian Mono',monospace;border:1px solid;white-space:nowrap}
-.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
-.p-ok{color:var(--ok);border-color:rgba(46,240,200,.4);background:rgba(46,240,200,.08)}
-.p-wa{color:var(--wa);border-color:rgba(255,178,31,.4);background:rgba(255,178,31,.08)}
-.p-bad{color:var(--bad);border-color:rgba(255,77,77,.45);background:rgba(255,77,77,.1)}
+.btn-main svg{width:20px;height:20px}
+@keyframes candle{0%,100%{box-shadow:0 0 0 1px rgba(190,128,255,.2),0 18px 60px -14px rgba(190,128,255,.75)}45%{box-shadow:0 0 0 1px rgba(190,128,255,.3),0 18px 70px -10px rgba(190,128,255,.9)}75%{box-shadow:0 0 0 1px rgba(190,128,255,.15),0 18px 52px -18px rgba(190,128,255,.6)}}
 /* header */
-header{position:sticky;top:0;z-index:50;background:rgba(7,6,11,.74);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);border-bottom:1px solid rgba(42,30,52,.8)}
-.nav{display:flex;align-items:center;gap:32px;height:72px}
-.logo{display:flex;align-items:center;gap:12px;font:400 26px/1 Marcellus,serif}
+header{position:fixed;left:0;right:0;top:0;z-index:50;transition:background .4s,border-color .4s;border-bottom:1px solid transparent}
+header.solid{background:rgba(7,6,11,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:rgba(42,30,52,.8)}
+.nav{display:flex;align-items:center;gap:30px;height:76px}
+.logo{display:flex;align-items:center;gap:12px;font:400 27px/1 Marcellus,serif}
 .logo svg{width:30px;height:26px}
-.nav nav{display:flex;gap:26px;font-size:15px;color:var(--mut)}
-.nav nav a:hover,.nav nav a.on{color:var(--ink)}
-.nav .btn{margin-left:auto;height:44px;padding:0 18px;font-size:15px}
-#prog{position:fixed;left:0;top:0;height:2px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--glow);z-index:80}
-/* hero */
-.hero{position:relative;isolation:isolate;overflow:hidden;padding:clamp(44px,6vw,88px) 0 clamp(48px,6vw,80px)}
-#dither-bg{position:absolute;inset:0;width:100%;height:100%;z-index:-1;opacity:.9}
-.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 70% at 70% 40%,transparent,rgba(7,6,11,.6) 70%,var(--bg)),linear-gradient(transparent 75%,var(--bg))}
-.hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(32px,4vw,64px);align-items:center}
-.hero h1{font-size:clamp(52px,6.4vw,92px);letter-spacing:-.015em}
+.nav nav{display:flex;gap:28px;font-size:15px;color:var(--mut);margin-left:auto}
+.nav nav a:hover{color:var(--ink)}
+.nav .btn{height:44px;padding:0 20px;font-size:15px}
+/* hero: the lantern over the trenches */
+.hero{position:relative;height:100svh;min-height:720px;overflow:hidden;isolation:isolate}
+#field{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:crosshair}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(7,6,11,0) 45%,rgba(7,6,11,.8) 80%,var(--bg))}
+.hero-copy{position:absolute;left:0;right:0;bottom:clamp(40px,8vh,88px);z-index:2;pointer-events:none}
+.hero-copy .wrap{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);gap:24px 64px;align-items:end}
+.hero h1{font-size:clamp(60px,8.6vw,136px);letter-spacing:-.025em}
 .hero h1 .w{display:inline-block;will-change:transform,filter,opacity}
-.hero .lead{margin-top:26px}
-.cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:34px}
-.cta .plan-link{font-size:15px;color:var(--mut);border-bottom:1px dashed var(--line);padding-bottom:2px}
-.cta .plan-link:hover{color:var(--ink);border-color:var(--glow)}
-.trust{margin-top:28px;font-size:13px;color:var(--mut)}
-.lantern-box{position:relative}
-.lantern{position:relative;border-radius:14px;border:1px solid var(--line);background:var(--s1);overflow:hidden;aspect-ratio:1340/760;box-shadow:0 60px 140px -60px rgba(190,128,255,.45)}
-.lantern canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:none}
-.lantern-cap{display:flex;justify-content:space-between;gap:12px;margin-top:14px;font-size:12px;color:var(--mut)}
-.mob-note{display:none}
-/* facts */
-.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.fact{padding:30px 26px;border-left:1px solid var(--line)}
-.fact:first-child{border-left:0}
-.fact .n{font:400 clamp(30px,3.2vw,44px)/1 'Martian Mono',monospace;letter-spacing:-.04em}
-.fact .l{margin-top:12px;font-size:15px;color:var(--mut)}
-.sites-line{display:flex;flex-wrap:wrap;gap:10px 28px;justify-content:center;padding:26px 0 0;font:400 13px 'Martian Mono',monospace;color:var(--mut)}
-.sites-line span b{color:var(--ink);font-weight:500}
-/* dither divider */
-.dv{display:block;width:100%;height:56px}
-/* token story */
-.story{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:40px;align-items:start;min-height:min(100svh,880px);padding-top:20px}
-.story-chart{position:relative;border:1px solid var(--line);border-radius:14px;background:var(--s1);overflow:hidden}
-.story-top{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid var(--line)}
-.story-top img{width:40px;height:40px;border-radius:50%}
-.story-top b{font:400 22px Marcellus,serif}
-.story-top .clock{margin-left:auto;text-align:right;font-size:13px;color:var(--mut)}
-.story-top .clock span{display:block;color:var(--ink);font-size:18px}
-#storyChart{display:block;width:100%;height:clamp(280px,34vw,430px)}
-.seal{position:absolute;left:22px;top:84px;z-index:3;transform-origin:30% 50%}
-.seal .pill{height:34px;font-size:15px;padding:0 14px}
-#splash{position:absolute;left:0;top:60px;width:240px;height:110px;pointer-events:none;z-index:2}
-.log{list-style:none;margin:0;padding:0;border-left:1px dashed var(--line)}
-.log li{position:relative;padding:0 0 26px 26px;opacity:.28;transition:opacity .5s}
-.log li.on{opacity:1}
-.log li::before{content:"";position:absolute;left:-5px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--line);transition:background .5s,box-shadow .5s}
-.log li.on::before{background:var(--glow);box-shadow:0 0 14px var(--glow)}
-.log li.on.red::before{background:var(--bad);box-shadow:0 0 14px var(--bad)}
-.log time{display:block;font:400 12px 'Martian Mono',monospace;color:var(--mut)}
-.log p{margin-top:4px;font-size:16px;line-height:1.5}
-.log p b{font-weight:600}
-/* deck of real captures (adapted from 21st.dev Scroll Stacking Cards) */
-.deck-wrap{position:relative}
-.deck{position:relative;height:min(76vh,700px);perspective:1800px}
-.card{position:absolute;left:0;right:0;top:0;margin:0 auto;width:min(100%,1060px);border-radius:16px;border:1px solid var(--line);background:var(--s1);overflow:hidden;transform-origin:50% 100%;box-shadow:0 50px 120px -50px #000}
-.card img{display:block;width:100%;height:auto}
-.card .cut{position:absolute;right:0;bottom:0;display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--bg);border-top-left-radius:16px;border-top:1px solid var(--line);border-left:1px solid var(--line);font-size:14px}
-.card .cut b{font:400 18px Marcellus,serif}
-.card .cut span{color:var(--mut);font-size:13px}
-/* film */
-.filmbox{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#000;aspect-ratio:16/9}
-.filmbox video{display:block;width:100%;height:100%;object-fit:cover}
-.filmbox .play{position:absolute;inset:0;display:grid;place-items:center;background:rgba(7,6,11,.45);border:0;cursor:pointer;transition:opacity .4s}
-.filmbox .play span{display:grid;place-items:center;width:92px;height:92px;border-radius:50%;background:var(--glow);box-shadow:0 20px 60px -12px rgba(190,128,255,.8)}
-.filmbox .play svg{width:28px;height:28px;margin-left:5px}
-.filmbox.on .play{opacity:0;pointer-events:none}
-.filmmeta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:14px;font-size:13px;color:var(--mut)}
-/* proof cards */
-.ex{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
-.exc{position:relative;display:flex;flex-direction:column;padding:22px;border:1px solid var(--line);border-radius:16px;background:var(--s1);overflow:hidden;isolation:isolate}
-.exc::after,.vcard::after,.plan::after{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .35s;background:radial-gradient(320px circle at var(--x,50%) var(--y,50%),rgba(190,128,255,.12),transparent 70%)}
-.exc:hover::after,.vcard:hover::after,.plan:hover::after{opacity:1}
-.exc .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.exc .who{display:flex;align-items:center;gap:10px}
-.exc .who img{width:38px;height:38px;border-radius:50%}
-.exc .who b{font:400 22px Marcellus,serif}
-.exc .addr{font-size:12px;color:var(--mut);margin-top:8px}
-.exc .why{margin-top:16px;font-size:16px;line-height:1.5}
-.exc dl{margin:16px 0 0;padding-top:14px;border-top:1px dashed var(--line);display:grid;gap:8px;font-size:13px}
-.exc dl div{display:flex;justify-content:space-between;gap:10px}.exc dt{color:var(--mut)}.exc dd{margin:0;font-family:'Martian Mono',monospace;white-space:nowrap}
-.exc .links{margin-top:auto;padding-top:18px;display:flex;gap:16px;font-size:14px}
-.exc .links a{color:var(--glow)}
-/* verdicts */
-.verds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.vcard{position:relative;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--s1);overflow:hidden;isolation:isolate}
-.vcard h3{margin-top:18px}
-.vcard>p{color:var(--mut);margin-top:10px;font-size:16px}
-.vcard ul{list-style:none;margin:20px 0 0;padding:0;font-size:15px;color:var(--mut)}
-.vcard li{padding:10px 0;border-top:1px dashed var(--line)}
-.signals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:34px 44px;margin-top:56px}
-.signals h4{margin:0;font:500 13px 'Martian Mono',monospace;color:var(--glow)}
-.signals p{color:var(--mut);margin-top:8px;font-size:16px}
-/* plans */
-.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}
-.plan{position:relative;display:flex;flex-direction:column;padding:30px;border:1px solid var(--line);border-radius:18px;background:var(--s1);overflow:hidden;isolation:isolate}
-.plan.pro{border-color:rgba(190,128,255,.55);background:linear-gradient(180deg,rgba(190,128,255,.08),transparent 40%),var(--s1)}
-.plan h3{font-size:26px}
-.plan .price{margin-top:18px;font:400 44px/1 'Martian Mono',monospace;letter-spacing:-.05em}
-.plan .price small{font:400 14px 'Hanken Grotesk',sans-serif;letter-spacing:0;color:var(--mut);margin-left:8px}
-.plan .sub{margin-top:10px;color:var(--mut);font-size:15px;min-height:48px}
-.plan ul{list-style:none;margin:20px 0 0;padding:0;font-size:15px}
-.plan li{padding:10px 0;border-top:1px dashed var(--line);color:var(--mut)}
-.plan li b{color:var(--ink);font-weight:600}
-.soon{margin-left:6px;font:400 11px 'Martian Mono',monospace;color:var(--mut);border:1px solid var(--line);border-radius:99px;padding:1px 7px}
-.plan .btn{margin-top:auto;width:100%}
-.plan ul+.btn{margin-top:26px}
-.beta{margin-top:18px;padding:16px 20px;border:1px dashed var(--line);border-radius:14px;color:var(--mut);font-size:15px}
-.beta b{color:var(--ink)}
-/* privacy */
-.trustg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.tcard{padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--s1)}
-.tcard ul{list-style:none;margin:16px 0 0;padding:0;font-size:16px}
-.tcard li{padding:11px 0;border-top:1px dashed var(--line);color:var(--mut)}
-.tcard li b{color:var(--ink);font-weight:600}
-.code{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:center;padding:28px;border:1px solid var(--line);border-radius:16px}
-.code p{color:var(--mut);margin-top:8px}
-.code pre{margin:0;font:12.5px/1.7 'Martian Mono',monospace;color:var(--mut);background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:16px;overflow-x:auto}
-.code pre b{color:var(--glow);font-weight:400}
+.hero-side{pointer-events:auto}
+.hero-side .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.hero-hint{position:absolute;right:max(5vw,18px);top:100px;z-index:2;font:400 12px 'Martian Mono',monospace;color:var(--mut);pointer-events:none}
+/* the three seals */
+.seals{padding:clamp(100px,12vw,180px) 0}
+.seals-h{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 56px;align-items:end;margin-bottom:clamp(56px,6vw,90px)}
+.seal-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(18px,3vw,48px)}
+.seal-card{text-align:center}
+.seal-card canvas{display:block;width:min(100%,300px);aspect-ratio:1;margin:0 auto;image-rendering:pixelated}
+.seal-card h3{font-size:clamp(36px,3.6vw,52px);margin-top:24px}
+.seal-card p{color:var(--mut);margin:12px auto 0;max-width:30ch}
+/* the night shift (pinned) */
+.shift-pin{min-height:100svh;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(40px,5vw,96px);align-items:center;padding:110px 0 56px}
+.shift-steps{display:grid;gap:30px;margin-top:44px}
+.shift-step{opacity:.22;transition:opacity .5s}
+.shift-step.on{opacity:1}
+.shift-step h3{font-size:clamp(26px,2.3vw,34px);margin-top:6px}
+.shift-step p{color:var(--mut);margin-top:6px;font-size:17px;max-width:40ch}
+.window{position:relative;border:1px solid var(--line);border-radius:18px;background:var(--s1);overflow:hidden;box-shadow:0 60px 140px -60px rgba(190,128,255,.5)}
+.window-bar{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--line)}
+.window-bar i{width:10px;height:10px;border-radius:50%;background:#241b2c}
+.window-bar span{margin-left:12px;font:400 12px 'Martian Mono',monospace;color:var(--mut)}
+.window-bar svg{margin-left:auto;width:22px;height:19px;opacity:.3;transition:opacity .4s,filter .4s}
+.window-bar svg.lit{opacity:1;filter:drop-shadow(0 0 10px rgba(188,51,201,.9))}
+#rows{display:block;width:100%;height:auto}
+/* what the light reads */
+.reads{padding:clamp(100px,12vw,180px) 0}
+.reads-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:22px;overflow:hidden;margin-top:clamp(48px,5vw,72px)}
+.read{position:relative;background:var(--bg);padding:36px 32px 40px;isolation:isolate;overflow:hidden}
+.read::after{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .4s;background:radial-gradient(300px circle at var(--x,50%) var(--y,50%),rgba(190,128,255,.13),transparent 70%)}
+.read:hover::after{opacity:1}
+.read canvas{display:block;width:56px;height:56px;image-rendering:pixelated}
+.read h3{font-size:28px;margin-top:24px}
+.read p{color:var(--mut);margin-top:8px;font-size:16px}
+/* read-only */
+.oath{padding:clamp(100px,12vw,180px) 0;text-align:center;position:relative;overflow:hidden;isolation:isolate}
+.oath::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(var(--line) 1.2px,transparent 1.4px);background-size:26px 26px;mask:radial-gradient(55% 60% at 50% 50%,#000,transparent);-webkit-mask:radial-gradient(55% 60% at 50% 50%,#000,transparent)}
+.oath h2{max-width:16ch;margin:14px auto 0}
+.oath-list{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:46px}
+.oath-list span{padding:12px 18px;border:1px solid var(--line);border-radius:999px;font:400 13px 'Martian Mono',monospace;color:var(--mut)}
+.oath-list span b{color:var(--ink);font-weight:500}
+.oath .lead{margin:30px auto 0;text-align:center}
+.oath .lead a{color:var(--glow);border-bottom:1px dashed rgba(190,128,255,.5)}
 /* install */
-.install{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:16px;align-items:start}
-.dl{position:sticky;top:100px;display:grid;gap:18px;padding:30px;border:1px solid rgba(190,128,255,.45);border-radius:18px;background:linear-gradient(180deg,rgba(190,128,255,.08),transparent 50%),var(--s1)}
-.dl h3{font-size:30px}
-.dl>p{color:var(--mut)}
-.file{display:flex;gap:14px;align-items:center;padding:14px;border-radius:12px;background:var(--bg);border:1px solid var(--line)}
-.file svg{width:34px;height:29px;flex:none}
-.file b{display:block;font:500 14px 'Martian Mono',monospace}.file span{color:var(--mut);font-size:13px}
-.dl .btn{width:100%}
-.steps{display:grid;gap:12px}
-.st{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;padding:22px 24px;border:1px solid var(--line);border-radius:16px;background:var(--s1)}
-.st time{display:block;font:400 12px 'Martian Mono',monospace;color:var(--glow)}
-.st h4{margin:6px 0 0;font:400 22px Marcellus,serif}
-.st p{color:var(--mut);margin-top:6px;font-size:15px}
-.vis{display:flex;align-items:center;justify-content:center;gap:10px;min-width:160px;height:54px;padding:0 14px;border-radius:12px;background:var(--bg);border:1px solid var(--line);font:400 12px 'Martian Mono',monospace;color:var(--mut);white-space:nowrap}
-.tog{width:38px;height:22px;border-radius:99px;background:#1A73E8;position:relative}.tog::after{content:"";position:absolute;right:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff}
-/* faq */
-.faq{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(32px,5vw,72px)}
-details{border-bottom:1px dashed var(--line)}
-summary{list-style:none;cursor:pointer;padding:22px 0;font:400 22px Marcellus,serif;display:flex;justify-content:space-between;gap:16px}
-summary::-webkit-details-marker{display:none}
-summary::after{content:"+";font:300 26px 'Hanken Grotesk';color:var(--glow);line-height:1;transition:transform .35s var(--ease)}
-details[open] summary::after{transform:rotate(45deg)}
-details p{color:var(--mut);padding:0 0 22px;max-width:62ch}
-details p a{color:var(--glow)}
-/* final */
-.final{position:relative;text-align:center;overflow:hidden;isolation:isolate;padding:clamp(90px,12vw,170px) 0}
-.final::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(var(--line) 1.2px,transparent 1.4px);background-size:28px 28px;mask:radial-gradient(60% 60% at 50% 50%,#000,transparent);-webkit-mask:radial-gradient(60% 60% at 50% 50%,#000,transparent)}
-.word{display:flex;justify-content:center;gap:clamp(6px,1.4vw,18px);font:400 clamp(72px,13vw,190px)/1 Marcellus,serif}
+.install{padding:clamp(100px,12vw,180px) 0}
+.install-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(36px,5vw,80px);align-items:center;padding:clamp(36px,5vw,72px);border:1px solid rgba(190,128,255,.45);border-radius:30px;background:radial-gradient(80% 90% at 0% 0%,rgba(190,128,255,.12),transparent 60%),var(--s1)}
+.install-card h2{font-size:clamp(40px,4.6vw,66px);margin-top:14px}
+.install-card .cta{margin-top:30px}
+.install-card .small{font-size:14px;color:var(--mut);margin-top:16px;max-width:44ch}
+.isteps{list-style:none;margin:0;padding:0;counter-reset:s}
+.isteps li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:14px;padding:16px 0;border-bottom:1px dashed var(--line)}
+.isteps li::before{counter-increment:s;content:counter(s);font:400 13px 'Martian Mono',monospace;color:var(--glow);padding-top:3px}
+.isteps b{display:block;font-weight:600}
+.isteps span{color:var(--mut);font-size:15px}
+.isteps code{font:400 13px 'Martian Mono',monospace;color:var(--ink)}
+/* the word */
+.word-sec{padding:clamp(90px,11vw,160px) 0 clamp(80px,9vw,130px);text-align:center;overflow:hidden}
+.word{display:flex;justify-content:center;gap:clamp(4px,1.2vw,18px);font:400 clamp(84px,17vw,260px)/.9 Marcellus,serif;letter-spacing:-.02em}
 .word span{display:inline-block;will-change:transform}
-.word .vl{background:linear-gradient(180deg,#9232F1,#BC33C9 55%,#F22C7B);-webkit-background-clip:text;background-clip:text;color:transparent}
-.final .lead{margin:22px auto 0;text-align:center}
-.final .cta{justify-content:center}
-footer{border-top:1px solid var(--line);padding:32px 0 calc(32px + env(safe-area-inset-bottom,0px));font-size:14px;color:var(--mut)}
-footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
-footer nav{display:flex;gap:22px;flex-wrap:wrap}
-.mbar{display:none}
-@media(max-width:1000px){.hero-grid,.sec-h,.story,.faq,.install,.code{grid-template-columns:minmax(0,1fr)}.nav nav{display:none}.ex{grid-template-columns:repeat(2,minmax(0,1fr))}.verds,.signals,.plans,.trustg{grid-template-columns:minmax(0,1fr)}.dl{position:static}.story{min-height:0}.deck{height:auto;perspective:none}.card{position:relative;margin-bottom:18px}}
-@media(max-width:700px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}.fact{padding:22px 16px}.fact:nth-child(odd){border-left:0;padding-left:0}.fact:nth-child(n+3){border-top:1px solid var(--line)}.ex{grid-template-columns:minmax(0,1fr)}.st{grid-template-columns:minmax(0,1fr)}.vis{justify-self:start;min-width:0}.card .cut{position:static;border-radius:0;border-left:0}}
-@media(max-width:600px){.nav .btn{display:none}.mob-note{display:block;margin-top:18px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--s1);font-size:14px;color:var(--mut)}.mob-note a{color:var(--glow)}.mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;gap:10px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(7,6,11,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line)}.mbar .btn{flex:1;height:46px}body{padding-bottom:72px}.lantern canvas{cursor:auto}}
+.word .v{background:linear-gradient(180deg,#9232F1,#BC33C9 55%,#F22C7B);-webkit-background-clip:text;background-clip:text;color:transparent}
+.word-sec .lead{margin:26px auto 0;text-align:center}
+.word-sec .btn{margin-top:30px}
+footer{border-top:1px solid var(--line);padding:30px 0 calc(30px + env(safe-area-inset-bottom,0px));font-size:14px;color:var(--mut)}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer nav{display:flex;gap:22px}
+.dv{display:block;width:100%;height:48px}
+@media(max-width:1000px){.hero-copy .wrap,.seals-h,.shift-pin,.install-card{grid-template-columns:minmax(0,1fr)}.nav nav{display:none}.nav .btn{margin-left:auto}.reads-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.shift-pin{min-height:0}.hero-hint{display:none}}
+@media(max-width:700px){.seal-row,.reads-grid{grid-template-columns:minmax(0,1fr)}.seal-card canvas{width:200px}.nav .btn{display:none}.hero{min-height:760px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -216,243 +125,124 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <linearGradient id="vg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9232F1"/><stop offset=".55" stop-color="#BC33C9"/><stop offset="1" stop-color="#F22C7B"/></linearGradient>
   <symbol id="vmark" viewBox="0 0 100 84"><path d="M0 0 L50 84 L100 0 C80 9 60 27 50 50 C40 27 20 9 0 0 Z" fill="url(#vg)"/></symbol>
+  <symbol id="chrome" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 8h9M8.5 14 4 6.5M15.5 14 11 21.8" stroke="currentColor" stroke-width="2" fill="none"/></symbol>
 </defs></svg>
-<div id="prog" aria-hidden="true"></div>
 
-<header>
+<header id="hdr">
   <div class="wrap nav">
     <a class="logo" href="#top" aria-label="Vigil home"><svg aria-hidden="true"><use href="#vmark"/></svg>Vigil</a>
-    <nav aria-label="Main"><a href="#story">How it reads</a><a href="#seen">On real sites</a><a href="#proof">Proof</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a></nav>
-    <a class="btn btn-main" href="#install">Get the extension</a>
+    <nav aria-label="Main"><a href="#seals">The seals</a><a href="#shift">How it works</a><a href="#reads">What it reads</a><a href="#oath">Read-only</a></nav>
+    <a class="btn btn-main" href="#install">Add to Chrome</a>
   </div>
 </header>
 
 <main id="top">
-<section class="hero">
-  <canvas id="dither-bg" aria-hidden="true"></canvas>
-  <div class="wrap hero-grid">
-    <div>
-      <h1 id="headline" aria-label="See the rug before you buy."><span class="w">See</span> <span class="w">the</span> <span class="w">rug</span> <span class="w">before</span> <span class="w">you</span> <span class="w">buy.</span></h1>
-      <p class="lead">Vigil is a browser extension that puts a verdict next to every Solana token on Axiom, GMGN, pump.fun, Terminal (Padre), DexScreener and X. Clean, Watch or Bundled, with the reason in one sentence.</p>
-      <div class="cta"><a class="btn btn-main" href="#install" data-scramble-hover>Get the extension, free</a><a class="plan-link" href="#pricing">Pro: $29/month, or hold $20+ of $VIGIL</a></div>
-      <p class="trust mono" data-scramble>read-only · one permission · public code · no wallet</p>
-      <p class="mob-note">On a phone? Vigil runs in a desktop browser. Open this page on your computer to install it, or <a href="/app">scan a token on the web</a>.</p>
-    </div>
-    <div class="lantern-box">
-      <div class="lantern" id="lantern"><canvas id="lanternCv" aria-label="A real capture of the Terminal (Padre) board with Vigil's badges, revealed by a moving beam of light"></canvas></div>
-      <div class="lantern-cap"><span>Real capture · Terminal (Padre) live board · 23 Nov 2026</span><span>Move your mouse over it</span></div>
+<section class="hero" aria-label="Vigil, a lantern for the trenches">
+  <canvas id="field" aria-hidden="true"></canvas>
+  <p class="hero-hint">move the lantern</p>
+  <div class="hero-copy">
+    <div class="wrap">
+      <h1 id="headline" aria-label="A lantern for the trenches."><span class="w">A</span> <span class="w">lantern</span> <span class="w">for</span> <span class="w">the</span> <span class="w">trenches.</span></h1>
+      <div class="hero-side">
+        <p class="lead">Vigil is a Chrome extension. Every Solana token you scroll past gets lit up and stamped Clean, Watch or Bundled, with the reason in one sentence.</p>
+        <div class="cta"><a class="btn btn-main" href="#install"><svg aria-hidden="true"><use href="#chrome"/></svg>Add to Chrome</a></div>
+      </div>
     </div>
   </div>
 </section>
 
-<div class="wrap">
-  <div class="facts">
-    <div class="fact"><div class="n" data-count="8">8</div><div class="l">sites read, one badge</div></div>
-    <div class="fact"><div class="n" data-count="10" data-suf=" s">10 s</div><div class="l">of each launch read, buy by buy</div></div>
-    <div class="fact"><div class="n" data-count="2">2</div><div class="l">hops of funding traced per wallet</div></div>
-    <div class="fact"><div class="n" data-count="45" data-suf=" s">45 s</div><div class="l">to read 30 brand-new tokens, measured on pump.fun</div></div>
+<section class="seals" id="seals">
+  <div class="wrap">
+    <div class="seals-h">
+      <h2>Three seals. Nothing in between.</h2>
+      <p class="lead">No score to decode. Vigil stamps each token with one of three words, and tells you the fact behind it.</p>
+    </div>
+    <div class="seal-row">
+      <div class="seal-card"><canvas data-seal="ok" width="96" height="96" aria-hidden="true"></canvas><h3>Clean</h3><p>The launch looks spread out. No wallet in control, no dev with a rug history.</p></div>
+      <div class="seal-card"><canvas data-seal="wa" width="96" height="96" aria-hidden="true"></canvas><h3>Watch</h3><p>Nothing proves a rug, but something is off. Look twice before you buy.</p></div>
+      <div class="seal-card"><canvas data-seal="bad" width="96" height="96" aria-hidden="true"></canvas><h3>Bundled</h3><p>One player took the launch, or the dev has done this many times. Stay out.</p></div>
+    </div>
   </div>
-  <div class="sites-line"><span><b>Axiom</b></span><span><b>GMGN</b></span><span><b>pump.fun</b></span><span><b>Terminal (Padre)</b></span><span><b>DexScreener</b></span><span><b>X</b></span><span>Photon · BullX in beta</span></div>
-</div>
+</section>
 
 <canvas class="dv" data-dv aria-hidden="true"></canvas>
 
-<section class="band" id="story">
-  <div class="wrap">
-    <div class="sec-h">
-      <h2>Twenty hours of MINELIUS.</h2>
-      <p class="lead">A real token, read by Vigil. Scroll: the chart is its real chart, the times are real, and the seal lands where the launch already told the truth.</p>
-    </div>
-    <div class="story" id="storyPin">
-      <div class="story-chart">
-        <div class="story-top"><img src="data:image/webp;base64,UklGRogCAABXRUJQVlA4IHwCAABQDgCdASpgAGAAPpVCnkslo6KhpzQKSLASiWIAcA7XuzNG/uq+gzbF+YDnpfUA6UD0AOlNX4K0FBZbzGUMGT83XXigzCtWXq+qQHbY3/sCNHo7aOyh0ZP+Jc4P2gvneIs/Fw9gIm3q7+jTbH6uOU6n6HIf0acVrX5NuAAA/vrXgI7ExqboRaoOzeI03uOu32DmRf+9QyFj/7Pjs5PepaCOgvPjiHdiVuX5ju6MTsllQJpLK8OLQZX1qvpojmYnAbXT/soU/6/5YffWa+55D/0BROvDL65Df7PKlQ08DkEN/OYD64E5+n7PtNmAXTcY1bUkDXIJfriTYeIMA87wZgKSJRcgPFWC4ok7r6LTYCQdJy9KvcFQ5RpMTDq3xaaNTPqX9vU+APRS6oI1VRPnGRWfjUsanYwtyPvUvdG/HWmrGEnZ4Kx6G09VLGr9/jFT/oX9f0oUIsj3TmqyaLJ49BzPAXRDA0s3BKhroqQJ9S1tWnPSwwkOODKLMxMDXaVGqDeduiYE6ossUChRb4gDRqXhE7dmXJHAMFAGXt1PI2lJJ2LbwEngomMAim6WYb3Ad9436L0euLNxLK8rudX9b4PsvWoLlOPsqLHCFXD5r9Vn9CmCbeCysUlVRzIZX9T3oH2wM3eAgJNcIidhajaZen/JYiIMUi0AaN3YWynwQG83ZUI4x2HCILQWebg8VLa3m2+G3unk/nkYnfOz6zi6dqGLfPDdmU/rLx3cEVMJeyNb5ETRYZCU6gcNnpm6RbrW5SizMT0wBmlpCpIZ+oOYX8oRodobuzfyW/I53+o69iuvs/BROmko0F+g6e5j4K+fEvbW3Jmfr56wQAAAAAA=" alt="MINELIUS logo"><div><b>MINELIUS</b><div class="small mono">E9rW…pump</div></div><div class="clock mono">UTC<span id="clock">22 Nov 21:30</span></div></div>
-        <canvas id="storyChart" aria-label="MINELIUS market cap, 15-minute candles"></canvas>
-        <canvas id="splash" aria-hidden="true"></canvas>
-        <div class="seal" id="seal" style="opacity:0"><span class="pill p-bad" id="sealTxt">Bundled</span></div>
+<section id="shift">
+  <div class="wrap shift-pin" id="shiftPin">
+    <div>
+      <span class="mark">how it works</span>
+      <h2 style="margin-top:14px">The night shift.</h2>
+      <div class="shift-steps">
+        <div class="shift-step on"><span class="mark">22:00</span><h3>You open your terminal.</h3><p>Nothing to click, nothing to paste. Vigil is already on.</p></div>
+        <div class="shift-step"><span class="mark">22:01</span><h3>The lantern reads each launch.</h3><p>The first ten seconds of buys, the dev's past launches, who funded the first wallets.</p></div>
+        <div class="shift-step"><span class="mark">22:02</span><h3>The seal lands.</h3><p>Right next to the token's name. Hover it for the reason; click it for the full read.</p></div>
       </div>
-      <ol class="log" id="log">
-        <li class="red" data-at="0.01"><time>22 Nov · 21:30</time><p><b>Launch.</b> 3 wallets, 2 of them sniper bots, take 80% of the supply in the first 10 seconds. Vigil: <b>Bundled</b>.</p></li>
-        <li class="red" data-at="0.03"><time>22 Nov · 21:30</time><p>The dev wallet has launched <b>37 tokens</b>. JENSEN, the same day, is one of them.</p></li>
-        <li data-at="0.68"><time>23 Nov · 12:30</time><p>Peak: <b>$24.1M</b> market cap. Nothing on the chart warns you.</p></li>
-        <li class="red" data-at="0.81"><time>23 Nov · 15:30</time><p>The price breaks. <b>−99% in 6 hours</b>, says DexScreener.</p></li>
-        <li class="red" data-at="0.97"><time>Today</time><p>Exit radar: the launch wallets have sold <b>100%</b> of what they bought.</p></li>
+    </div>
+    <div class="window" aria-hidden="true">
+      <div class="window-bar"><i></i><i></i><i></i><span>your terminal</span><svg id="extV"><use href="#vmark"/></svg></div>
+      <canvas id="rows" width="760" height="490"></canvas>
+    </div>
+  </div>
+</section>
+
+<canvas class="dv" data-dv aria-hidden="true"></canvas>
+
+<section class="reads" id="reads">
+  <div class="wrap">
+    <span class="mark">what the light reads</span>
+    <h2 style="margin-top:14px;max-width:14ch">Everything you'd check in four tabs.</h2>
+    <div class="reads-grid">
+      <div class="read"><canvas data-glyph="clock" width="14" height="14" aria-hidden="true"></canvas><h3>The first ten seconds</h3><p>A crowd can't buy that fast. A bundle can.</p></div>
+      <div class="read"><canvas data-glyph="tree" width="14" height="14" aria-hidden="true"></canvas><h3>Who funded who</h3><p>Ten wallets funded by one source are one player.</p></div>
+      <div class="read"><canvas data-glyph="mask" width="14" height="14" aria-hidden="true"></canvas><h3>The dev's past</h3><p>How many tokens this wallet launched before, and how they ended.</p></div>
+      <div class="read"><canvas data-glyph="stack" width="14" height="14" aria-hidden="true"></canvas><h3>The holders</h3><p>The biggest wallet, the top ten, the bundlers and the insiders.</p></div>
+      <div class="read"><canvas data-glyph="key" width="14" height="14" aria-hidden="true"></canvas><h3>The keys left on</h3><p>Whether someone can still mint more, or freeze yours.</p></div>
+      <div class="read"><canvas data-glyph="door" width="14" height="14" aria-hidden="true"></canvas><h3>The exit</h3><p>Whether the launch wallets are already walking out.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="oath" id="oath">
+  <div class="wrap">
+    <span class="mark">read-only</span>
+    <h2>The lantern looks. It never touches.</h2>
+    <div class="oath-list"><span><b>no</b> wallet connection</span><span><b>no</b> signature, ever</span><span><b>no</b> account</span><span><b>one</b> permission: storage</span><span><b>open</b> source</span></div>
+    <p class="lead">It only sends the token addresses on your screen, and reads the chain. <a href="/privacy">Privacy</a> · <a href="https://github.com/travisiol/Vigil/tree/main/lens">Read the code</a></p>
+  </div>
+</section>
+
+<section class="install" id="install">
+  <div class="wrap">
+    <div class="install-card">
+      <div>
+        <span class="mark">add to chrome</span>
+        <h2>Light it up in one minute.</h2>
+        <div class="cta"><a class="btn btn-main" href="/vigil-lens.zip" download><svg aria-hidden="true"><use href="#chrome"/></svg>Download Vigil</a></div>
+        <p class="small">Chrome, Brave, Edge, Arc and Opera. The Chrome Web Store listing is on its way; until then it installs in four steps.</p>
+      </div>
+      <ol class="isteps">
+        <li><div><b>Unzip the file</b><span>You get a folder named <code>vigil-lens</code>.</span></div></li>
+        <li><div><b>Open your extensions</b><span>Type <code>chrome://extensions</code> in the address bar.</span></div></li>
+        <li><div><b>Turn on Developer mode</b><span>Top-right corner of the page.</span></div></li>
+        <li><div><b>Load unpacked, pin the V</b><span>Pick the folder, then pin Vigil from the puzzle icon.</span></div></li>
       </ol>
     </div>
-    <p class="small" style="margin-top:18px">MINELIUS, 15-minute candles from GMGN, 22–23 Nov 2026. Vigil's verdict and facts from its own scan. Not financial advice.</p>
   </div>
 </section>
 
-<canvas class="dv" data-dv aria-hidden="true"></canvas>
-
-<section class="band" id="seen">
-  <div class="wrap">
-    <div class="sec-h">
-      <h2>On the real screen, not a mock-up.</h2>
-      <p class="lead">These are captures of the real sites with Vigil on, taken on 23 November 2026. The badge sits right after the token's name, and the reason is one hover away.</p>
-    </div>
-    <div class="deck-wrap" id="deckPin">
-      <div class="deck" id="deck">
-        <figure class="card"><img src="cap-padre-board.webp" width="1340" height="760" alt="Terminal (Padre) live board with Vigil's Clean, Watch and Bundled badges after each token name" loading="lazy"><figcaption class="cut"><b>Terminal (Padre)</b><span>live board, 15 tokens read</span></figcaption></figure>
-        <figure class="card"><img src="cap-padre-hover.webp" width="820" height="360" alt="Hovering a Watch badge on Terminal (Padre): the tooltip says the dev has launched 8 tokens before" loading="lazy"><figcaption class="cut"><b>The reason</b><span>one hover, no new tab</span></figcaption></figure>
-        <figure class="card"><img src="cap-vigil-scan.webp" width="1440" height="900" alt="Vigil's full scan of MINELIUS: Bundled, 3 wallets took 80% of supply in the first 10 seconds" loading="lazy"><figcaption class="cut"><b>The full scan</b><span>one click from the badge</span></figcaption></figure>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="band" id="film" style="padding-top:0">
-  <div class="wrap">
-    <div class="sec-h">
-      <h2>Watch it work.</h2>
-      <p class="lead">A screen recording of the live Terminal (Padre) board with Vigil on. The badges land, then the reason on hover. Only the titles and the camera are added.</p>
-    </div>
-    <div class="filmbox" id="filmbox">
-      <video id="filmv" src="vigil-film.mp4" muted playsinline loop preload="metadata" aria-label="Screen recording of Vigil on Terminal (Padre)"></video>
-      <button class="play" id="filmplay" type="button" aria-label="Play the recording"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" fill="#07060B"/></svg></span></button>
-    </div>
-    <div class="filmmeta"><span>Recorded 23 Nov 2026. Axiom recording coming next.</span><a href="#install" style="color:var(--glow)">Get the extension</a></div>
-  </div>
-</section>
-
-<canvas class="dv" data-dv aria-hidden="true"></canvas>
-
-<section class="band" id="proof">
-  <div class="wrap">
-    <div class="sec-h">
-      <h2>Real tokens, read today.</h2>
-      <p class="lead">Four tokens from today's most traded list, as Vigil read them on 23 November 2026. Each card shows the fact that decided the verdict. Check the wallets yourself.</p>
-    </div>
-    <div class="ex" id="exGrid"></div>
-    <p class="small" style="margin-top:16px">Snapshot of 23 Nov 2026. A verdict can change as wallets move. Facts from the chain, not financial advice.</p>
-  </div>
-</section>
-
-<section class="band" id="detect" style="padding-top:0">
-  <div class="wrap">
-    <div class="sec-h">
-      <h2>Three verdicts. One reason each.</h2>
-      <p class="lead">Pools, bonding curves and protocol wallets are left out, so only real wallets count. Every verdict names the fact that decided it.</p>
-    </div>
-    <div class="verds">
-      <div class="vcard"><span class="pill p-bad" data-scramble>Bundled</span><h3>Stay out.</h3><p>One player took the launch, or the dev has done this many times.</p>
-        <ul><li>30% or more of the supply bought in the first 10 seconds</li><li>One wallet holding 20% or more</li><li>Wallets funded by the same source holding a large share</li><li>A serial dev (20+ launches) or a dev farm</li></ul></div>
-      <div class="vcard"><span class="pill p-wa" data-scramble>Watch</span><h3>Look twice.</h3><p>Nothing proves a rug, but something isn't right.</p>
-        <ul><li>15% or more taken in the first seconds</li><li>Mint or freeze authority still active</li><li>Liquidity under 5% of market cap</li><li>A dev with 5 or more past launches</li></ul></div>
-      <div class="vcard"><span class="pill p-ok" data-scramble>Clean</span><h3>Nothing found.</h3><p>None of the warning signs. A fact about the launch, not a promise.</p>
-        <ul><li>A spread-out launch, no early grab</li><li>No single wallet in control</li><li>No funding links between top holders</li><li>A clean token can still go to zero</li></ul></div>
-    </div>
-    <div class="signals">
-      <div><h4>first 10 seconds</h4><p>A real crowd can't buy that fast; a bundle can. Every early buy is read and sniper bots are flagged.</p></div>
-      <div><h4>funding links</h4><p>Where each early wallet's SOL came from, two hops back. Ten wallets funded by one source are one player.</p></div>
-      <div><h4>dev history</h4><p>How many tokens the creator launched before, and whether its wallet was made minutes before launch.</p></div>
-      <div><h4>holders</h4><p>The biggest wallet and the top 10, plus wallets labelled bundler, insider or rat trader.</p></div>
-      <div><h4>authorities and liquidity</h4><p>Whether someone can still mint or freeze, and how much real money sits behind the price.</p></div>
-      <div><h4>exit radar</h4><p>What the launch wallets still hold right now, and whether they are selling together.</p></div>
-    </div>
-  </div>
-</section>
-
-<canvas class="dv" data-dv aria-hidden="true"></canvas>
-
-<section class="band" id="pricing">
-  <div class="wrap">
-    <div class="sec-h">
-      <h2>Free to start. Pro when it counts.</h2>
-      <p class="lead">The free plan puts a verdict on every token, on every site. Pro adds the deep reads and the alerts that save a trade.</p>
-    </div>
-    <div class="plans">
-      <div class="plan"><h3>Free</h3><div class="price">$0<small>forever</small></div><p class="sub">Everything you need to stop aping into bundles.</p>
-        <ul><li><b>Badges</b> on every supported site</li><li><b>The reason</b> on hover</li><li><b>The token panel</b> with the key numbers</li><li><b>The web scanner</b>, for any contract address</li></ul>
-        <a class="btn btn-line" href="#install">Install the free plan</a></div>
-      <div class="plan pro"><h3>Pro</h3><div class="price">$29<small>a month, paid in SOL</small></div><p class="sub">For traders who open dozens of tokens a day.</p>
-        <ul><li><b>Everything in Free</b></li><li><b>Funding links</b> traced two hops back, in the panel</li><li><b>Exit radar</b> live on every token page</li><li><b>Exit alerts</b> when launch wallets start selling<span class="soon">soon</span></li><li><b>Dev watchlist</b><span class="soon">soon</span></li></ul>
-        <a class="btn btn-main" href="#install">Get Pro</a></div>
-      <div class="plan"><h3>Holders</h3><div class="price">$20+<small>of $VIGIL in your wallet</small></div><p class="sub">Pro, unlocked by holding at least $20 worth of $VIGIL instead of paying the subscription.</p>
-        <ul><li><b>Minimum $20 of $VIGIL</b>, valued at the market price</li><li><b>Under $20</b>, you're on the Free plan</li><li><b>Everything in Pro</b>, for as long as you hold</li></ul>
-        <a class="btn btn-line" href="#faq">How it works</a></div>
-    </div>
-    <p class="beta"><b>Beta:</b> until the Chrome Web Store release, Pro features are open to beta testers. After that, Pro needs the $29 subscription or at least $20 of $VIGIL in your wallet.</p>
-  </div>
-</section>
-
-<section class="band" id="trust" style="padding-top:0">
-  <div class="wrap">
-    <div class="sec-h">
-      <h2>Read-only. And you can check it.</h2>
-      <p class="lead">An extension sees the pages you visit, so you should know exactly what this one does.</p>
-    </div>
-    <div class="trustg">
-      <div class="tcard"><h3>What Vigil does</h3><ul><li><b>Reads token addresses</b> on the supported sites, nowhere else.</li><li><b>Sends those addresses</b> to Vigil's server, which reads the chain and answers with a verdict.</li><li><b>Remembers one setting</b> on your computer.</li></ul></div>
-      <div class="tcard"><h3>What Vigil never does</h3><ul><li><b>Never touches a wallet.</b> No connection, no signature.</li><li><b>Never reads your history,</b> your cookies or any other site.</li><li><b>Never asks for an account</b> on the free plan.</li></ul></div>
-      <div class="code"><div><h3>The code is public</h3><p>A few small files you can read before installing. The only permission is <code>storage</code>, plus access to the supported sites. <a href="/privacy" style="color:var(--glow)">Privacy policy</a>.</p><p style="margin-top:18px"><a class="btn btn-line" href="https://github.com/travisiol/Vigil/tree/main/lens">Read the code on GitHub</a></p></div>
-        <pre aria-label="Excerpt of the extension manifest">"permissions": [<b>"storage"</b>],
-"content_scripts": [{ "matches": [
-  "https://axiom.trade/*", "https://gmgn.ai/*",
-  "https://pump.fun/*", "https://trade.padre.gg/*",
-  "https://dexscreener.com/*", "https://x.com/*", …
-]}]</pre></div>
-    </div>
-  </div>
-</section>
-
-<canvas class="dv" data-dv aria-hidden="true"></canvas>
-
-<section class="band" id="install">
-  <div class="wrap">
-    <div class="sec-h">
-      <h2>Ready in one minute.</h2>
-      <p class="lead">The Chrome Web Store listing is on the way. Until then, Vigil installs by hand in any Chromium browser.</p>
-    </div>
-    <div class="install">
-      <div class="dl">
-        <h3>Vigil for your browser</h3>
-        <p>One small file. Nothing to sign up for, nothing to connect.</p>
-        <div class="file"><svg aria-hidden="true"><use href="#vmark"/></svg><div><b>vigil-lens.zip</b><span>Version 0.3.0 · 26 KB · Chrome, Brave, Edge, Arc, Opera</span></div></div>
-        <a class="btn btn-main" href="/vigil-lens.zip" download>Download the extension</a>
-        <p class="small">Extensions don't run on phones: on mobile, use the <a href="/app" style="color:var(--glow)">web scanner</a>.</p>
-      </div>
-      <div class="steps">
-        <div class="st"><div><time>step 1</time><h4>Download and unzip</h4><p>You get a folder named <code>vigil-lens</code>. Keep it where it won't be deleted.</p></div><div class="vis">vigil-lens/</div></div>
-        <div class="st"><div><time>step 2</time><h4>Open your extensions page</h4><p>Type <code>chrome://extensions</code>. On Brave <code>brave://extensions</code>, on Edge <code>edge://extensions</code>.</p></div><div class="vis">chrome://extensions</div></div>
-        <div class="st"><div><time>step 3</time><h4>Turn on Developer mode</h4><p>Top-right corner of the page.</p></div><div class="vis">Developer mode <span class="tog" aria-hidden="true"></span></div></div>
-        <div class="st"><div><time>step 4</time><h4>Load the folder and pin the V</h4><p>Click <b>Load unpacked</b>, pick <code>vigil-lens</code>, then pin the V from the puzzle icon.</p></div><div class="vis">Load unpacked</div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="band" id="faq" style="padding-top:0">
-  <div class="wrap faq">
-    <div><h2>Questions</h2><p class="lead" style="margin-top:20px">Facts, not financial advice. Vigil shows what happened on-chain; the decision stays yours.</p></div>
-    <div>
-      <details open><summary>What is Vigil?</summary><p>A browser extension that detects rugs on Solana memecoins. It doesn't trade and doesn't replace your terminal: it sits on top of the sites you already use and puts a Clean, Watch or Bundled verdict next to every token.</p></details>
-      <details><summary>Which sites does it work on?</summary><p>Axiom, GMGN, pump.fun, Terminal (Padre), DexScreener and X. Photon and BullX are in beta.</p></details>
-      <details><summary>How fast is a verdict?</summary><p>A few seconds for a token nobody has checked yet; on pump.fun we measured 30 brand-new tokens read in about 45 seconds. After that it's instant, because verdicts are shared.</p></details>
-      <details><summary>Does it see my wallet?</summary><p>No. It never connects to a wallet and never signs anything. The only thing it sends is the token addresses on your screen. Read the <a href="/privacy">privacy policy</a>.</p></details>
-      <details><summary>Is it free?</summary><p>The Free plan is, for good. Pro costs $29 a month, paid in SOL, or you unlock it by holding at least $20 of $VIGIL. Under $20 of $VIGIL, you stay on the Free plan.</p></details>
-      <details><summary>Is a Clean verdict a buy signal?</summary><p>No. A verdict is a fact about how the token launched and who holds it, not a prediction. A clean token can still go to zero.</p></details>
-      <details><summary>What is $VIGIL?</summary><p>The community token behind the project. You don't need it for the Free plan. To unlock Pro with it, your wallet must hold at least $20 worth of $VIGIL.</p></details>
-    </div>
-  </div>
-</section>
-
-<section class="final" id="final">
-  <div class="wrap">
-    <div class="word" id="word" aria-label="Vigil"><span class="vl">V</span><span>I</span><span>G</span><span>I</span><span>L</span></div>
-    <p class="lead">Keep the lantern on. It starts reading the next token you open.</p>
-    <div class="cta"><a class="btn btn-main" href="#install">Get the extension, free</a><a class="btn btn-line" href="/app">Scan a token on the web</a></div>
-  </div>
+<section class="word-sec" id="final">
+  <div class="word" id="word" aria-label="Vigil"><span class="v">V</span><span>I</span><span>G</span><span>I</span><span>L</span></div>
+  <p class="lead">Always on watch.</p>
+  <a class="btn btn-main" href="#install"><svg aria-hidden="true"><use href="#chrome"/></svg>Add to Chrome</a>
 </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <a class="logo" href="#top" style="font-size:20px"><svg aria-hidden="true" style="width:24px;height:21px"><use href="#vmark"/></svg>Vigil</a>
-    <nav aria-label="Footer"><a href="#install">Install</a><a href="/app">Web scanner</a><a href="/docs">Docs</a><a href="/privacy">Privacy</a><a href="https://github.com/travisiol/Vigil/tree/main/lens">Code</a><a href="https://x.com/vigiltrade">X</a></nav>
-    <span>Not financial advice. Memecoins can lose all their value.</span>
+    <span>Vigil · Facts from the chain, not financial advice.</span>
+    <nav aria-label="Footer"><a href="/privacy">Privacy</a><a href="https://github.com/travisiol/Vigil/tree/main/lens">Code</a><a href="https://x.com/vigiltrade">X</a></nav>
   </div>
 </footer>
-<div class="mbar"><a class="btn btn-main" href="/app">Scan a token</a></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -461,240 +251,208 @@ footer nav{display:flex;gap:22px;flex-wrap:wrap}
 {
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const touch = matchMedia('(hover: none)').matches;
-const SITE = '';
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const clamp01 = (k) => Math.max(0, Math.min(1, k));
 const ease = (k) => 1 - (1 - k) ** 3;
 const dpr = Math.min(devicePixelRatio || 1, 2);
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => (v + 0.5) / 16);
-const PILL = { ok: ['p-ok', 'Clean'], wa: ['p-wa', 'Watch'], bad: ['p-bad', 'Bundled'] };
-const pill = (k) => '<span class="pill ' + PILL[k][0] + '">' + PILL[k][1] + '</span>';
+const bay = (x, y) => BAYER[((y | 0) & 3) * 4 + ((x | 0) & 3)];
+const COL = { ok: '#2EF0C8', wa: '#FFB21F', bad: '#FF4D4D' };
+let seed = 11; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
 
-/* ---- text scramble (adapted from 21st.dev Text Scramble, vanilla) ---- */
-const GLYPHS = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789';
-const scramble = (el, dur = 700, speed = 35) => {
-  if (reduce || el.__scr) return;
-  const text = el.dataset.text || (el.dataset.text = el.textContent);
-  el.__scr = true;
-  const steps = Math.ceil(dur / speed); let s = 0;
-  const id = setInterval(() => {
-    const k = s / steps, n = Math.floor(k * text.length);
-    el.textContent = [...text].map((c, i) => c === ' ' || c === '·' || i < n ? c : GLYPHS[(Math.random() * GLYPHS.length) | 0]).join('');
-    if (++s > steps) { clearInterval(id); el.textContent = text; el.__scr = false; }
-  }, speed);
-};
-for (const el of $$('[data-scramble-hover]')) el.addEventListener('mouseenter', () => scramble(el, 500));
-
-/* ---- animated ordered-dither field behind the hero (adapted from 21st.dev Shader Dithering, vanilla WebGL) ---- */
-(() => {
-  const cv = $('#dither-bg'); const gl = cv.getContext('webgl', { antialias: false, premultipliedAlpha: false });
-  if (!gl) return;
-  const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
-  const fs = 'precision mediump float;uniform vec2 r;uniform float t;uniform float px;' +
-    'float b(vec2 c){vec2 m=mod(floor(c),4.);int i=int(m.x+m.y*4.);float v=0.;' +
-    'if(i==0)v=0.;else if(i==1)v=8.;else if(i==2)v=2.;else if(i==3)v=10.;else if(i==4)v=12.;else if(i==5)v=4.;else if(i==6)v=14.;else if(i==7)v=6.;' +
-    'else if(i==8)v=3.;else if(i==9)v=11.;else if(i==10)v=1.;else if(i==11)v=9.;else if(i==12)v=15.;else if(i==13)v=7.;else if(i==14)v=13.;else v=5.;return (v+.5)/16.;}' +
-    'void main(){vec2 c=floor(gl_FragCoord.xy/px);vec2 u=gl_FragCoord.xy/r;' +
-    'float w=.5+.5*sin(u.x*5.2+t*.35+sin(u.y*3.1-t*.22)*1.6)*cos(u.y*2.4-t*.18);' +
-    'float g=smoothstep(.0,1.,w)*(1.-u.y*.55)*.62;' +
-    'vec3 bg=vec3(.027,.024,.043);vec3 fg=vec3(.165,.118,.204);' +
-    'gl_FragColor=vec4(g>b(c)?fg:bg,1.);}';
-  const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
-  const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr);
-  if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return;
-  gl.useProgram(pr);
-  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
-  const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  const ur = gl.getUniformLocation(pr, 'r'), ut = gl.getUniformLocation(pr, 't'), up = gl.getUniformLocation(pr, 'px');
-  let on = true, t0 = performance.now();
-  const size = () => { cv.width = cv.clientWidth; cv.height = cv.clientHeight; gl.viewport(0, 0, cv.width, cv.height); };
-  new ResizeObserver(size).observe(cv); size();
-  new IntersectionObserver((e) => { on = e[0].isIntersecting; }).observe(cv);
-  const draw = (now) => { if (on) { gl.uniform2f(ur, cv.width, cv.height); gl.uniform1f(ut, reduce ? 4 : (now - t0) / 1000); gl.uniform1f(up, 3); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); } if (!reduce) requestAnimationFrame(draw); };
-  requestAnimationFrame(draw);
+/* ---------- the pixel lantern (1-bit, drawn once) ---------- */
+const lanternSprite = (() => {
+  const S = 4, w = 30, h = 46, c = document.createElement('canvas'); c.width = w * S; c.height = h * S;
+  const x = c.getContext('2d');
+  const put = (px, py, col) => { x.fillStyle = col; x.fillRect(px * S, py * S, S, S); };
+  const frame = '#4A3858', rim = '#BE80FF';
+  for (let py = 0; py < h; py++) for (let px = 0; px < w; px++) {
+    const cx = px - w / 2 + 0.5;
+    if (py < 4) { if (Math.abs(cx) < 2.2 && !(py > 0 && py < 3 && Math.abs(cx) < 0.8)) put(px, py, frame); continue; }
+    if (py < 8) { if (Math.abs(cx) < 2 + (py - 4) * 1.6) put(px, py, frame); continue; }
+    if (py < 10) { if (Math.abs(cx) < 9) put(px, py, rim); continue; }
+    if (py < 38) {
+      const half = 8 + Math.sin((py - 10) / 28 * Math.PI) * 2;
+      if (Math.abs(cx) > half) continue;
+      if (Math.abs(cx) > half - 1.2 || (Math.abs(cx) < 0.6 && (py < 18 || py > 33))) { put(px, py, frame); continue; }
+      const d = Math.hypot(cx, (py - 26) / 1.25), glow = Math.max(0, 1 - d / 11);
+      if (glow > bay(px, py) * 0.9) put(px, py, glow > 0.75 ? '#FFF6E6' : glow > 0.5 ? '#F5CCFF' : rim);
+      continue;
+    }
+    if (py < 40) { if (Math.abs(cx) < 9) put(px, py, rim); continue; }
+    if (py < 44 && Math.abs(cx) < 6 - (py - 40) * 1.2) put(px, py, frame);
+  }
+  return c;
 })();
 
-/* ---- the lantern: a real capture in lilac dither, revealed in colour inside the V beam ---- */
+/* ---------- hero: the lantern over the trenches ---------- */
 (() => {
-  const box = $('#lantern'), cv = $('#lanternCv'), cx = cv.getContext('2d');
-  const img = new Image(); img.src = 'cap-padre-board.webp';
-  let W = 0, H = 0, dith = null, ignite = reduce ? 1 : 0, open = reduce ? 1 : 0, mx = 0.5, my = 0.42, tx = 0.5, ty = 0.42, lastMove = 0, on = true;
+  const cv = $('#field'), cx = cv.getContext('2d');
+  let W = 0, H = 0, tiles = [], T = 16, on = true;
   const build = () => {
-    if (!img.naturalWidth) return;
-    W = Math.round(box.clientWidth * dpr); H = Math.round(box.clientHeight * dpr); cv.width = W; cv.height = H;
-    const cell = Math.max(2, Math.round(2.5 * dpr));
-    const sw = Math.ceil(W / cell), shh = Math.ceil(H / cell);
-    const s = document.createElement('canvas'); s.width = sw; s.height = shh; const sx = s.getContext('2d');
-    sx.drawImage(img, 0, 0, sw, shh);
-    let d;
-    try { d = sx.getImageData(0, 0, sw, shh); } catch (e) {
-      /* pixels not readable (cross-origin host): a dimmed version of the capture stands in for the dither */
-      dith = document.createElement('canvas'); dith.width = W; dith.height = H; const fx = dith.getContext('2d');
-      fx.filter = 'grayscale(1) brightness(.35) sepia(1) hue-rotate(220deg) saturate(2.2)'; fx.drawImage(img, 0, 0, W, H); return;
+    W = cv.clientWidth; H = cv.clientHeight; cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    T = W < 700 ? 12 : 16; tiles = []; seed = 11;
+    for (let y = 0; y < H / T + 1; y++) for (let x = 0; x < W / T + 1; x++) {
+      const r = rnd(), v = r < 0.6 ? 'ok' : r < 0.83 ? 'wa' : 'bad';
+      tiles.push({ x: x * T, y: y * T, gx: x, gy: y, lum: 0.25 + rnd() * 0.75, v, phase: rnd() * 6.28, lit: 0 });
     }
-    const px = d.data;
-    for (let y = 0; y < shh; y++) for (let x = 0; x < sw; x++) {
-      const i = (y * sw + x) * 4, l = (0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2]) / 255;
-      const lit = Math.min(1, Math.max(0, l - 0.09) * 1.55) > BAYER[(y % 4) * 4 + (x % 4)];
-      px[i] = lit ? 190 : 7; px[i + 1] = lit ? 128 : 6; px[i + 2] = lit ? 255 : 11; px[i + 3] = 255;
-    }
-    sx.putImageData(d, 0, 0);
-    dith = document.createElement('canvas'); dith.width = W; dith.height = H; const dx = dith.getContext('2d');
-    dx.imageSmoothingEnabled = false; dx.drawImage(s, 0, 0, sw * cell, shh * cell);
   };
-  img.onload = build; new ResizeObserver(build).observe(box);
-  if (!touch) box.addEventListener('pointermove', (e) => { const r = box.getBoundingClientRect(); tx = (e.clientX - r.left) / r.width; ty = (e.clientY - r.top) / r.height; lastMove = performance.now(); });
-  new IntersectionObserver((e) => { on = e[0].isIntersecting; }).observe(box);
-  const beam = (cxp, top, half, len) => { cx.beginPath(); cx.moveTo(cxp, top); cx.lineTo(cxp + Math.tan(half) * len, top + len); cx.lineTo(cxp - Math.tan(half) * len, top + len); cx.closePath(); };
+  new ResizeObserver(build).observe(cv); build();
+  new IntersectionObserver((e) => { on = e[0].isIntersecting; }).observe(cv);
+  /* pendulum: the lantern hangs from the top and swings toward the pointer */
+  let ang = 0.4, vel = 0, target = 0, pointer = false, lastP = 0, wake = reduce ? 1 : 0;
+  const born = performance.now();
+  if (!touch) cv.parentElement.addEventListener('pointermove', (e) => { const r = cv.getBoundingClientRect(); target = ((e.clientX - r.left) / r.width - 0.5) * 1.3; pointer = true; lastP = performance.now(); });
   const frame = (now) => {
-    if (on && dith) {
-      if (!touch && now - lastMove < 2400) { mx += (tx - mx) * 0.12; my += (ty - my) * 0.12; }
-      else if (!reduce) { const k = now / 1000; tx = 0.5 + Math.sin(k * 0.45) * 0.34; ty = 0.45 + Math.sin(k * 0.31) * 0.12; mx += (tx - mx) * 0.05; my += (ty - my) * 0.05; }
-      cx.clearRect(0, 0, W, H);
+    if (on) {
+      const t = now / 1000;
+      if (!pointer || now - lastP > 3000) target = Math.sin(t * 0.5) * 0.55;
+      if (reduce) ang = 0.15; else { vel += (target - ang) * 0.012 - vel * 0.045; ang += vel; wake = clamp01((now - born - 300) / 1500); }
+      const pivX = W * 0.6, len = Math.min(H * 0.34, 300);
+      const lx = pivX + Math.sin(ang) * len, ly = -30 + Math.cos(ang) * len;
+      const half = 0.5 * ease(wake), dir = Math.PI / 2 + ang * 0.55, dirx = Math.cos(dir), diry = Math.sin(dir), tanH = Math.tan(half);
       cx.fillStyle = '#07060B'; cx.fillRect(0, 0, W, H);
-      /* the board lights up from the bottom, like a flame taking */
-      const ig = ease(ignite), yTop = H * (1 - ig);
-      cx.save(); cx.beginPath(); cx.rect(0, yTop, W, H - yTop); cx.clip(); cx.drawImage(dith, 0, 0); cx.restore();
-      /* the V beam: apex above the frame, opening downward */
-      const half = 0.42 * ease(open), apexX = mx * W, apexY = (my - 0.62) * H, len = H * 1.7;
-      if (half > 0.01) {
-        cx.save(); beam(apexX, apexY, half, len); cx.clip();
-        cx.drawImage(img, 0, 0, W, H);
-        const g = cx.createRadialGradient(apexX, my * H, 10, apexX, my * H, H * 0.8); g.addColorStop(0, 'rgba(190,128,255,0.10)'); g.addColorStop(1, 'rgba(7,6,11,0.25)');
-        cx.fillStyle = g; cx.fillRect(0, 0, W, H);
-        cx.restore();
-        cx.save(); cx.strokeStyle = 'rgba(190,128,255,.85)'; cx.lineWidth = 1.5 * dpr; cx.shadowColor = '#BE80FF'; cx.shadowBlur = 14 * dpr;
-        cx.beginPath(); cx.moveTo(apexX, apexY); cx.lineTo(apexX + Math.tan(half) * len, apexY + len); cx.moveTo(apexX, apexY); cx.lineTo(apexX - Math.tan(half) * len, apexY + len); cx.stroke(); cx.restore();
+      const flick = 0.93 + Math.sin(t * 9) * 0.04 + Math.sin(t * 23) * 0.03;
+      /* the trenches: tiles in dither, revealed and sealed inside the beam */
+      for (const p of tiles) {
+        const dx = p.x + T / 2 - lx, dy = p.y + T / 2 - ly;
+        const along = dx * dirx + dy * diry, across = Math.abs(-dx * diry + dy * dirx);
+        const inBeam = along > 0 && across < tanH * along;
+        p.lit += ((inBeam ? 1 : 0) - p.lit) * 0.16;
+        if (p.lit < 0.06) {
+          const shimmer = 0.5 + 0.5 * Math.sin(t * 0.7 + p.phase);
+          const base = p.lum * (0.14 + 0.1 * shimmer) * (0.25 + 0.75 * p.y / H) * ease(clamp01(wake * 1.5 - (1 - p.y / H) * 0.5));
+          if (base > bay(p.gx, p.gy) * 0.42) { cx.fillStyle = 'rgba(190,128,255,' + (0.18 + base * 0.45).toFixed(3) + ')'; cx.fillRect(p.x + 4, p.y + 4, T - 8, T - 8); }
+          continue;
+        }
+        const edge = clamp01(1 - across / (tanH * along + 1)), fade = clamp01(along / (H * 1.15));
+        const k = p.lit * (1 - fade * 0.5) * flick;
+        cx.fillStyle = 'rgba(243,238,249,' + (0.04 + 0.1 * k).toFixed(3) + ')';
+        cx.fillRect(p.x + 2, p.y + 2, T - 4, T - 4);
+        cx.globalAlpha = Math.min(1, k * (0.5 + edge * 0.7));
+        cx.fillStyle = COL[p.v];
+        const s = p.v === 'bad' ? 6 : 4; cx.fillRect(p.x + T / 2 - s / 2, p.y + T / 2 - s / 2, s, s);
+        cx.globalAlpha = 1;
       }
+      /* the beam: two blades of light opening from the lantern */
+      if (half > 0.01) {
+        const L = H * 1.7, a1 = dir - half, a2 = dir + half;
+        const g = cx.createRadialGradient(lx, ly, 10, lx, ly, L * 0.75); g.addColorStop(0, 'rgba(255,236,214,.22)'); g.addColorStop(0.35, 'rgba(190,128,255,.08)'); g.addColorStop(1, 'rgba(190,128,255,0)');
+        cx.fillStyle = g; cx.beginPath(); cx.moveTo(lx, ly); cx.lineTo(lx + Math.cos(a1) * L, ly + Math.sin(a1) * L); cx.lineTo(lx + Math.cos(a2) * L, ly + Math.sin(a2) * L); cx.closePath(); cx.fill();
+        cx.save(); cx.strokeStyle = 'rgba(190,128,255,.55)'; cx.lineWidth = 1.2; cx.shadowColor = '#BE80FF'; cx.shadowBlur = 16;
+        cx.beginPath(); cx.moveTo(lx, ly); cx.lineTo(lx + Math.cos(a1) * L, ly + Math.sin(a1) * L); cx.moveTo(lx, ly); cx.lineTo(lx + Math.cos(a2) * L, ly + Math.sin(a2) * L); cx.stroke(); cx.restore();
+      }
+      /* the chain and the lantern */
+      cx.strokeStyle = '#3A2B47'; cx.lineWidth = 2; cx.setLineDash([3, 4]); cx.beginPath(); cx.moveTo(pivX, 0); cx.lineTo(lx, ly - 60); cx.stroke(); cx.setLineDash([]);
+      const halo = cx.createRadialGradient(lx, ly, 4, lx, ly, 220); halo.addColorStop(0, 'rgba(255,214,190,' + (0.3 * flick * ease(wake)).toFixed(3) + ')'); halo.addColorStop(1, 'rgba(190,128,255,0)');
+      cx.fillStyle = halo; cx.fillRect(lx - 220, ly - 220, 440, 440);
+      cx.save(); cx.translate(lx, ly); cx.rotate(-ang * 0.55); cx.imageSmoothingEnabled = false;
+      const sw = lanternSprite.width * 0.95, sh = lanternSprite.height * 0.95; cx.drawImage(lanternSprite, -sw / 2, -sh * 0.6, sw, sh); cx.restore();
     }
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
-  if (!reduce) { const t = { v: 0 }; gsap.to(t, { v: 1, duration: 1.1, ease: 'power2.inOut', delay: 0.35, onUpdate: () => { ignite = t.v; } }); const o = { v: 0 }; gsap.to(o, { v: 1, duration: 1.2, ease: 'expo.out', delay: 1.3, onUpdate: () => { open = o.v; } }); }
 })();
 
-/* ---- counters ---- */
-const runCount = (el) => { const end = +el.dataset.count, suf = el.dataset.suf || ''; if (reduce) { el.textContent = end + suf; return; } const t0 = performance.now(); const f = () => { const k = clamp01((performance.now() - t0) / 1400); el.textContent = Math.round(end * ease(k)) + suf; if (k < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); };
-const onceVisible = (el, fn, th = 0.5) => { const o = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) { fn(); o.disconnect(); } }, { threshold: th }); o.observe(el); };
-$$('[data-count]').forEach((c) => onceVisible(c, () => runCount(c), 0.6));
-$$('[data-scramble]').forEach((c) => onceVisible(c, () => scramble(c, 900), 0.8));
+/* ---------- the three seals (1-bit wax seals) ---------- */
+const drawSeal = (cv, kind, k) => {
+  const x = cv.getContext('2d'), N = cv.width, c = N / 2, col = COL[kind];
+  x.clearRect(0, 0, N, N);
+  for (let py = 0; py < N; py++) for (let px = 0; px < N; px++) {
+    const dx = px - c + 0.5, dy = py - c + 0.5, d = Math.hypot(dx, dy) / c;
+    const wob = 1 + 0.04 * Math.sin(Math.atan2(dy, dx) * 9 + kind.length * 1.7);
+    if (d > 0.96 * wob * k) continue;
+    let v = d > 0.8 * wob ? 0.95 : d > 0.74 * wob ? 0.22 : 0.64 - d * 0.36;
+    const ux = dx / (c * 0.5), uy = dy / (c * 0.5) + 0.3;
+    if (uy > -0.6 && uy < 0.8 && Math.abs(ux) < (0.8 - uy) * 0.7 && Math.abs(ux) > (0.3 - uy) * 0.5) v = 0.1;
+    x.fillStyle = v > bay(px, py) ? col : '#150F1B';
+    x.fillRect(px, py, 1, 1);
+  }
+};
+$$('[data-seal]').forEach((cv) => drawSeal(cv, cv.dataset.seal, 1));
 
-/* ---- dither dividers: pixels assemble as the section arrives ---- */
+/* ---------- 1-bit glyphs ---------- */
+const GL = {
+  clock: ['...XXXXXXXX...', '..X........X..', '.X..........X.', '.X....X.....X.', '.X....X.....X.', '.X....X.....X.', '.X....XXXX..X.', '.X..........X.', '.X..........X.', '..X........X..', '...XXXXXXXX...', '..............', '..............', '..............'],
+  tree: ['......XX......', '......XX......', '......XX......', '...XXXXXXXX...', '...X......X...', '..XX......XX..', '..XX......XX..', '..............', '.XX...XX...XX.', '.XX...XX...XX.', '..............', '..............', '..............', '..............'],
+  mask: ['..............', '.XXXXXXXXXXXX.', 'X............X', 'X..XX....XX..X', 'X..XX....XX..X', 'X............X', '.X....XX....X.', '..X........X..', '...XX....XX...', '.....XXXX.....', '..............', '..............', '..............', '..............'],
+  stack: ['..............', 'XXXXXXXXXXXX..', '..............', 'XXXXXXXX......', '..............', 'XXXXX.........', '..............', 'XXX...........', '..............', 'XX............', '..............', 'X.............', '..............', '..............'],
+  key: ['..............', '..............', '.XXXX.........', 'X....X........', 'X....XXXXXXXXX', 'X....X....X.X.', '.XXXX.....X.X.', '..............', '..............', '..............', '..............', '..............', '..............', '..............'],
+  door: ['XXXXXXXX......', 'X......X......', 'X......X......', 'X......X..X...', 'X....X.X...X..', 'X......XXXXXXX', 'X......X...X..', 'X......X..X...', 'X......X......', 'X......X......', 'XXXXXXXX......', '..............', '..............', '..............']
+};
+$$('[data-glyph]').forEach((cv) => { const x = cv.getContext('2d'), g = GL[cv.dataset.glyph]; x.fillStyle = '#BE80FF'; g.forEach((row, y) => [...row].forEach((ch, i) => { if (ch === 'X') x.fillRect(i, y, 1, 1); })); });
+if (!touch) for (const el of $$('.read')) el.addEventListener('pointermove', (e) => { const r = el.getBoundingClientRect(); el.style.setProperty('--x', (e.clientX - r.left) + 'px'); el.style.setProperty('--y', (e.clientY - r.top) + 'px'); });
+
+/* ---------- the night shift: abstract terminal rows, lit and sealed one by one ---------- */
+const rowsCv = $('#rows'), rx = rowsCv.getContext('2d');
+const ROWS = (() => { seed = 5; return ['ok', 'bad', 'ok', 'wa', 'ok', 'bad', 'wa'].map((v) => ({ v, name: 50 + ((rnd() * 70) | 0), sub: 40 + ((rnd() * 90) | 0), mc: 30 + ((rnd() * 36) | 0), hue: rnd() })); })();
+const drawRows = (p) => {
+  const w = rowsCv.width, h = rowsCv.height, rh = h / ROWS.length, n = ROWS.length + 1.5;
+  rx.fillStyle = '#120E17'; rx.fillRect(0, 0, w, h);
+  ROWS.forEach((r, i) => {
+    const y = i * rh, scan = clamp01(p * n - i - 0.3), seal = clamp01((p * n - i - 0.9) * 3);
+    rx.fillStyle = 'rgba(42,30,52,.9)'; rx.fillRect(0, y + rh - 1, w, 1);
+    for (let py = 0; py < 32; py += 3) for (let px = 0; px < 32; px += 3) {
+      const d = Math.hypot(px - 15, py - 15) / 16;
+      if (d < 1 && (0.75 - d * 0.4) * (0.3 + scan * 0.7) > bay(px / 3, py / 3)) { rx.fillStyle = scan > 0.5 ? 'hsl(' + (255 + r.hue * 90) + ',70%,72%)' : '#BE80FF'; rx.fillRect(26 + px, y + rh / 2 - 16 + py, 2.5, 2.5); }
+    }
+    rx.fillStyle = 'rgba(243,238,249,' + (0.22 + scan * 0.6) + ')'; rx.fillRect(78, y + rh / 2 - 13, r.name, 11);
+    rx.fillStyle = 'rgba(154,139,174,' + (0.18 + scan * 0.4) + ')'; rx.fillRect(78, y + rh / 2 + 6, r.sub, 7);
+    rx.fillStyle = 'rgba(243,238,249,' + (0.18 + scan * 0.4) + ')'; rx.fillRect(w - 44 - r.mc, y + rh / 2 - 5, r.mc, 11);
+    if (scan > 0 && scan < 1) { rx.fillStyle = 'rgba(190,128,255,' + (0.3 * (1 - Math.abs(scan - 0.5) * 2)) + ')'; rx.fillRect(0, y, w * scan, rh - 1); }
+    if (seal > 0) {
+      const col = COL[r.v], sx = 88 + r.name + 46, sy = y + rh / 2 - 4, s = 1 + (1 - ease(seal)) * 0.6;
+      rx.save(); rx.translate(sx, sy); rx.scale(s, s); rx.globalAlpha = ease(seal);
+      rx.strokeStyle = col; rx.lineWidth = 1.5; rx.fillStyle = col + '1f';
+      rx.beginPath(); rx.roundRect(-42, -12, 84, 24, 12); rx.fill(); rx.stroke();
+      rx.fillStyle = col; rx.font = '500 11px "Martian Mono", monospace'; rx.textAlign = 'center'; rx.textBaseline = 'middle';
+      rx.fillText(r.v === 'ok' ? 'Clean' : r.v === 'wa' ? 'Watch' : 'Bundled', 5, 1);
+      rx.beginPath(); rx.arc(-29, 0, 3, 0, 7); rx.fill();
+      rx.restore();
+    }
+  });
+  $('#extV').classList.toggle('lit', p > 0.04);
+  const idx = p < 0.22 ? 0 : p < 0.55 ? 1 : 2; $$('.shift-step').forEach((s, j) => s.classList.toggle('on', j <= idx));
+};
+drawRows(reduce ? 1 : 0);
+
+/* ---------- dither dividers ---------- */
 const dividers = $$('[data-dv]').map((cv) => {
   const cx = cv.getContext('2d'); let k = reduce ? 1 : 0;
-  const draw = () => {
-    const w = cv.width = cv.clientWidth, h = cv.height = cv.clientHeight, s = 6;
-    cx.clearRect(0, 0, w, h);
-    for (let y = 0; y < h; y += s) for (let x = 0; x < w; x += s) {
-      const fade = 1 - Math.abs(y + s / 2 - h / 2) / (h / 2);
-      const v = fade * k * (0.55 + 0.45 * Math.sin(x * 0.012));
-      if (v > BAYER[((y / s) % 4) * 4 + ((x / s) % 4)] * 1.15) { cx.fillStyle = v > 0.7 ? 'rgba(190,128,255,.55)' : 'rgba(190,128,255,.22)'; cx.fillRect(x, y, s - 1, s - 1); }
-    }
-  };
+  const draw = () => { const w = cv.width = cv.clientWidth, h = cv.height = cv.clientHeight, s = 6; cx.clearRect(0, 0, w, h);
+    for (let y = 0; y < h; y += s) for (let x = 0; x < w; x += s) { const fade = 1 - Math.abs(y + s / 2 - h / 2) / (h / 2), v = fade * k * (0.5 + 0.5 * Math.sin(x * 0.011)); if (v > bay(x / s, y / s) * 1.1) { cx.fillStyle = v > 0.7 ? 'rgba(190,128,255,.5)' : 'rgba(190,128,255,.18)'; cx.fillRect(x, y, s - 1, s - 1); } } };
   new ResizeObserver(draw).observe(cv);
   return { cv, set: (v) => { k = v; draw(); } };
 });
 
-/* ---- MINELIUS story ---- */
-const CAND = [[2.0,1823.0,2.0,1511.3],[1511.3,3783.6,1489.2,3668.4],[3668.4,5749.3,3080.1,5321.8],[5321.8,7882.7,4784.8,7353.2],[7353.2,10444.1,6839.5,9767.5],[9767.5,9771.7,7368.9,7958.6],[7958.6,8317.7,7075.1,8166.3],[8166.3,8166.5,7053.9,7220.0],[7220.0,7817.8,7185.1,7450.9],[7450.9,8094.5,6993.4,7945.5],[7945.5,8981.6,7810.7,8729.8],[8729.8,8777.2,7465.8,7559.7],[7559.7,8222.1,7221.3,7671.5],[7671.5,7762.1,6743.7,7314.8],[7314.8,7857.6,7052.2,7146.4],[7146.4,8165.4,7025.5,8165.3],[8165.3,8379.3,7070.1,7931.9],[7931.9,8743.1,7736.4,8323.6],[8323.6,8607.9,7678.8,7723.1],[7723.1,8102.3,7342.3,8026.9],[8026.9,8116.6,7310.4,8114.9],[8114.9,9060.5,8067.6,8794.6],[8794.6,8874.7,8227.0,8266.1],[8266.1,8266.9,6462.8,6704.2],[6704.2,7663.0,6572.3,6578.3],[6578.3,6881.6,6084.8,6556.9],[6556.9,7619.1,6458.3,7580.9],[7580.9,8914.0,7196.1,8682.7],[8682.7,9345.5,8038.8,8326.9],[8326.9,8717.0,7889.2,8647.2],[8647.2,9188.8,7553.4,7728.1],[7728.1,7996.7,7328.3,7950.8],[7950.8,7993.5,7361.4,7577.0],[7577.0,8476.8,7451.6,8333.2],[8333.2,9140.0,7840.9,8149.4],[8149.4,10043.4,7509.9,9986.9],[9986.9,10781.5,9934.1,10368.9],[10368.9,10930.9,10248.6,10631.6],[10631.6,10977.0,10106.3,10581.3],[10581.3,10946.4,9941.4,10362.6],[10362.6,10703.1,10126.8,10517.7],[10517.7,12761.4,10465.7,12548.2],[12548.2,13780.3,12468.8,13343.3],[13343.3,14617.9,13337.6,14500.5],[14500.5,15773.6,14292.8,15667.2],[15667.2,16722.1,15667.1,16583.9],[16583.9,16791.6,16349.6,16521.3],[16521.3,16745.2,16250.6,16575.4],[16575.4,16644.0,16257.8,16583.0],[16583.0,16627.4,16237.9,16494.8],[16494.8,16879.9,14620.3,15121.5],[15121.5,15399.0,14074.9,15057.8],[15057.8,15311.3,13493.2,13962.3],[13962.3,14546.5,13219.2,13498.7],[13498.7,13759.0,12428.0,12524.3],[12524.3,13130.7,12456.9,13127.5],[13127.5,14762.6,12824.2,14710.2],[14710.2,17796.4,14512.8,17598.8],[17598.8,20566.0,16680.9,19886.7],[19886.7,23069.7,18964.8,22399.7],[22399.7,24089.4,18047.5,19541.9],[19541.9,19590.4,15560.1,17057.5],[17057.5,17272.1,14225.8,15507.7],[15507.7,15699.1,13786.7,15078.4],[15078.4,15228.0,13882.5,13882.6],[13882.6,15382.6,13724.8,15134.0],[15134.0,15918.4,14468.6,15702.1],[15702.1,17170.3,15668.0,17109.2],[17109.2,17164.5,15381.5,15406.9],[15406.9,16295.8,15368.4,15907.5],[15907.5,15999.5,14466.0,14941.4],[14941.4,15169.6,13055.7,14520.4],[14520.4,14540.4,3242.5,3772.1],[3772.1,4269.7,3737.5,3757.7],[3757.7,3869.0,3445.4,3718.2],[3718.2,3812.6,3500.0,3501.6],[3501.6,3990.9,3467.3,3950.7],[3950.7,4334.3,3908.3,3939.6],[3939.6,4129.2,3635.4,3898.2],[3898.2,4051.6,2113.5,2358.1],[2358.1,2548.4,2164.3,2222.6],[2222.6,2353.4,2050.8,2255.2],[2255.2,2286.9,2030.9,2164.1],[2164.1,2431.6,705.5,764.6],[764.6,935.3,93.2,106.0],[106.0,109.5,96.9,102.7],[102.7,112.1,97.3,102.8],[102.8,121.6,99.2,118.3],[118.3,123.1,79.4,86.8],[86.8,89.7,86.5,88.7]];
-const T0 = 1795383000;
-const NC = CAND.length;
-const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const clock = (i) => { const d = new Date((T0 + i * 900) * 1000); return d.getUTCDate() + ' ' + MON[d.getUTCMonth()] + ' ' + String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0'); };
-const kfmt = (k) => k >= 1000 ? '$' + (k / 1000).toFixed(k >= 10000 ? 1 : 2) + 'M' : '$' + Math.round(k) + 'K';
-const sc = $('#storyChart'), sx = sc.getContext('2d');
-let storyP = reduce ? 1 : 0, sealed = false;
-const drawStory = () => {
-  const w = sc.width = Math.round(sc.clientWidth * dpr), h = sc.height = Math.round(sc.clientHeight * dpr);
-  sx.setTransform(1, 0, 0, 1, 0, 0); sx.clearRect(0, 0, w, h); sx.scale(dpr, dpr);
-  const W = w / dpr, H = h / dpr, padR = 70, padT = 24, padB = 30, cw = W - padR - 16, ch = H - padT - padB, hi = 26000;
-  const Y = (v) => padT + (1 - v / hi) * ch;
-  sx.font = '11px "Martian Mono", monospace'; sx.fillStyle = '#9A8BAE';
-  for (let g = 0; g <= 4; g++) { const v = hi * g / 4, y = Y(v); sx.strokeStyle = 'rgba(42,30,52,.9)'; sx.setLineDash([2, 4]); sx.beginPath(); sx.moveTo(16, y); sx.lineTo(16 + cw, y); sx.stroke(); sx.setLineDash([]); sx.fillText(kfmt(v), 16 + cw + 10, y + 4); }
-  const n = Math.max(1, Math.min(NC, Math.round(storyP * (NC - 1)) + 1)), slot = cw / NC, bw = Math.max(2, slot * 0.6);
-  for (let i = 0; i < n; i++) { const [o, hh, l, c] = CAND[i], x = 16 + i * slot + slot / 2, col = c >= o ? '#2EF0C8' : '#FF4D4D'; sx.strokeStyle = col; sx.lineWidth = 1; sx.beginPath(); sx.moveTo(x, Y(hh)); sx.lineTo(x, Y(l)); sx.stroke(); sx.fillStyle = col; sx.fillRect(x - bw / 2, Y(Math.max(o, c)), bw, Math.max(1, Y(Math.min(o, c)) - Y(Math.max(o, c)))); }
-  const last = CAND[n - 1][3]; sx.fillStyle = '#F3EEF9'; sx.fillText(kfmt(last), 16 + (n - 1) * slot + 10, Y(last) - 8);
-  $('#clock').textContent = clock(n - 1);
-  $$('#log li').forEach((li) => li.classList.toggle('on', storyP >= +li.dataset.at));
-  if (!sealed && storyP > 0.012) { sealed = true; stampSeal(); }
-};
-/* the Bundled seal lands with a red dither splash */
-const splash = $('#splash'), spx = splash.getContext('2d');
-const stampSeal = () => {
-  const seal = $('#seal');
-  if (reduce) { seal.style.opacity = 1; return; }
-  gsap.fromTo(seal, { opacity: 0, scale: 1.6, rotate: -6 }, { opacity: 1, scale: 1, rotate: 0, duration: 0.5, ease: 'back.out(2.2)' });
-  scramble($('#sealTxt'), 500);
-  const w = splash.width = 240, h = splash.height = 110, s = 4, st = { k: 0 };
-  gsap.to(st, { k: 1, duration: 0.9, ease: 'power2.out', onUpdate: () => {
-    spx.clearRect(0, 0, w, h); const r = 18 + st.k * 90, a = 1 - st.k;
-    for (let y = 0; y < h; y += s) for (let x = 0; x < w; x += s) { const d = Math.hypot(x - 70, y - 44) / r; const v = (1 - d) * a * 1.4; if (v > BAYER[((y / s) % 4) * 4 + ((x / s) % 4)]) { spx.fillStyle = 'rgba(255,77,77,.7)'; spx.fillRect(x, y, s - 1, s - 1); } }
-  } });
-};
-new ResizeObserver(drawStory).observe(sc);
+/* ---------- header ---------- */
+const hdr = $('#hdr');
+addEventListener('scroll', () => hdr.classList.toggle('solid', scrollY > 40), { passive: true });
 
-/* ---- proof cards ---- */
-const L = {"HOGE": "data:image/webp;base64,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", "UCASH": "data:image/webp;base64,UklGRjoDAABXRUJQVlA4IC4DAABQEQCdASpgAGAAPpVEmkolo6IhrjQIaLASiWQA1XA4fD8q7xXAfdIQD/x31cbYzzAdEbeWvQz6WX9xYAjnxewE+o2M3DIFnoOcL/zGuO5OwcY95I/y53F0EY/MIN58fvyp+5nqTiBKhrSklAPJHs9q6mzbIiwM8YVL4bJRdp7piyncv59Mh20Yc9MPnKAGxpkjkDgA/vuwDgBw9S+0AI3YZmc9uO/QY2ZvPLhZcybT+WGDYITHguILBqTDEd7Cks6jVd46dmm1k+vKRkv0JRxe1o521svxgVGvrfJ1Cel0afgvLwDhGdcH5tCA/GzZV0doOE5T1GrNeKcWZgJnLclXTe8aJUvXEy30VQ7g+zO9ga0AEBtjRW9B9WhOyr6qgb8rf685pIkl0HGnFMP9M2qJfbHNCjBP1RFIiy/y6XnqJjmqnc0GMuaOGqc+qIkOGw6s4jqFiullpD6mUIEyXN5StQYd+A9PRARYaXxUSCgf4eWDnO3puehTGiK8WXlbFFerHGe4E1842Chja3tz27pLwniw0d5CJTq/KVZFx3q6fJXh42WxjJ9aQYPWHL+7SpVC6mII68DMee65STOqpJ/Hr1fPWrdyM+cNm3AFbe59KqySf5a6yCufsQ6sLhe6PQXDOW3UVJdj847hROKXEIcdkUJQd+YbvCbZeXAb7aIU0mvUMYvvKjWsnvErejCLVmFZPxG6pATO6sr/NgZbB8lEVzqoXyRS1jNgYIXzPhg8ejbEVTgGx7ZqTxTuq2Z/xlLu89yl6pbxkVlfid/Mf9WYRJwtJ8iiHlj8DqPucqhgspmdH51D2fFQyzXjBij741u6w7lq0NGS7d14x0piz4kpoG+bE4lMxu/U7mjrzLw+WaOetgdR9XugGJss+Q07Vd9jeru8W/VXfx1g9OiuZG01HIK/e7KXnNhtby7V1KOAW5dcIMEFQa7qMSVyumAzxxFLGLhq2lEQzEqPi5GpVg+f+sHBsaprJWyRJbwwnYOOrQfw2O2/T3lr4N34a5ZPmeQck17GC7xpu4nwkrcA/tz93KyBV++UDaQ/T+RekqI5/aEbo/nd8ZrmuQAAAAAA", "BRUH": "data:image/webp;base64,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", "COPIUM": "data:image/webp;base64,UklGRiQFAABXRUJQVlA4IBgFAABQFwCdASpgAGAAPpVGnUqlo6KhplbbULASiUAZ+pSw1jxNunz3fR/5MH5GdNM/HcRRmvjd5O3efbQZc/2Pq3zO1Vk0vyE/VnsG/rT1rP3AYn9rfPGI9MHwjUBk4mcgQ5Ok5A/12owW5p4vNfF00XN32WZWzWjbYNxItTR4BTrBo44PdJTrXIg4FUzmBXwAVD3/Jm12GMmUxSw4S/uBolYEPN4UCSXYqG5e3Ev5fdcSFSt9672EH59lSGHff0jNQ9sgBAAA/vu4qbUlV/4VqARLb1dbIEydTBN7gN9ZmBEMWrKQggJi3ZcXvsR2aMGwDJp/dl/HJAT+0HeVNMz9oXwm7FfjlgbbZRe532oS6fw5eozRejMrDU9efq/8Q1JeBg0mc4gyxWnv3DcT4FQgbFLrRn0jiSusSlh2sX0zd/Dl9mfe+u7pGTvq95aboifGRWWKnjHYAQk4bmvB+eRSnQzEePq6bwZ090HtHv0W9N8Bbwd6zhB9TOfN/ezXlBcnDpqK86E/b0WbRp8yjH+Lst3dHAglKnG7wF0EZcBMFTppf1x3HN5jlf/zgnChSVh9FN3AGaCZaqgporXkOvDTpfhKWPcRrqlL1Debjc9bCszKaJsK54t+z0nJ96K3jsKVJwiM2lfed+29T6eHGpxNSbZhIf8cFS968S9N97x+fw0/F7qJj3oMZXcMr0CV2e5mUd9+wxvnjWuHVxo96lyKRcH5anMNmuRpquvczsqyUgANbQnmV/pdtO3/5YSiTyY0zQyD6xIc/Ufa+NlNnreNLBi7AQ2B4Js8UkB6CsIQ/K61LuisG38ixUfR9bO8yXv+abcXJKdMbyNenPW44QEoOg7howUT9dZ6ixQrttEHUNzShHbPJMqQHAwdOuLGnYCXmLyrf8DUDGXQEbEARgF6qddtBH1TQy/ocY7RE1C2RimXgcaVsaCxWPYjmMz5fPvbWPEVqt+P0JH6DqK1g1rRDUqb+GLYisP6ji8LIP4xRHZD9Xnu45ctKyBylxj1yp5bqkoWbd8tuT1IQuh3R5ZdfrDw5aIAu8ysgFIwac/RzG2k0wUqsUWswU8FMNgVw5rGpdtEG7qzvuJpiTYI18eJC29B+IzA20FSNdsBZuhumKbsLofjEHZmnueQ24LCT80jpBC8ESFHRBv9G3uYXhNp8WVA7f0BIDOrmifcCnaz7nfyxlaM/3N3iDBhCSdnskScVO0v2VGdSh7xNuj4+X2B//7e3H5BG+jt/hKo9ahAt1Z6+0cAigWNV4ZgWJFLnv/Kt0367VdWs9e9iH6nhBaPirUxHsnVaLXRWuWVR95R8x6Ovf/Y3pxL+xj5KJofu4pyfhL0/b+IqtX6yPh18tD8qQTGoD7K3yomztS1MMVXqeptBJASm+wNOF6YNSxVb6iL1iQeFbqivqLB0ainXMc7UoHOjSBoiziYqp9bk4SLjiiH7lCpgClumMwVLQ09UY+79rUeIdmytBLPH427bjuXDtJUJYLZQmhX9JepQrfyIxr3BpuL2BTHIr+mP/LReZ8eb5Q8y5rpaP8IEf+hBytgmdQ87bgd09zXX2vA9Ip/pKZEGk7N2BeQVyRoKUWCUt9L3xsh4/yqCIdy/MioCGtrT6HvHwT3+ec1qCAHiTPFT9wQEvugofiJAjw/mlrbYnVhhL1EaD/a3MknBUAwXXbqyb17wGSsa74pimN5Y4MKRB2a51XYfUTNseGf4RBAqar7vEOPB4dP8SAAAA=="};
-const EX = [
-  { s: 'HOGE', m: 'FVzqGqRmr4UH1Fif6dewmwbJ1p4YUZCu8dcw4Efopump', v: 'bad', why: 'Serial dev: the creator’s wallet has launched 542 tokens.', f: [['Bundler wallets hold', '20.6%'], ['Biggest wallet', '2.2%'], ['Market cap at scan', '$560K']] },
-  { s: 'UCASH', m: '7cFiqdT46zs7ooHWLFiLSaSQKLMibtokh9dBinsspump', v: 'bad', why: 'Dev farm: the wallet that funded this dev also funded 41 other dev wallets.', f: [['Top 10 wallets', '7.2%'], ['Biggest wallet', '0.7%'], ['Market cap at scan', '$916K']] },
-  { s: 'BRUH', m: 'PgFtGGquvnv2zEkjG2N2QPvBTBrafuExGYEqahRpump', v: 'wa', why: 'Liquidity is only 2.8% of the market cap: little real money behind the price.', f: [['Top 10 wallets', '4.3%'], ['Biggest wallet', '0.9%'], ['Market cap at scan', '$7.9M']] },
-  { s: 'COPIUM', m: 'BAKsQrynzwadyACDMsg3J5R8a4CTvj1u7kEYyjq7pump', v: 'ok', why: 'Biggest wallet 0.5%; dev history, bundlers and insiders look normal.', f: [['Top 10 wallets', '5.2%'], ['Mint and freeze', 'revoked'], ['Market cap at scan', '$793K']] }
-];
-$('#exGrid').innerHTML = EX.map((e) => '<article class="exc"><div class="top"><span class="who"><img src="' + L[e.s] + '" alt="' + e.s + ' logo"><b>' + e.s + '</b></span>' + pill(e.v) + '</div><div class="addr mono">' + e.m.slice(0, 4) + '…' + e.m.slice(-4) + '</div><p class="why">' + e.why + '</p><dl>' + e.f.map((x) => '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>').join('') + '</dl><div class="links"><a href="' + SITE + '/token/' + e.m + '">Open the scan</a><a href="https://solscan.io/token/' + e.m + '">Solscan</a></div></article>').join('');
-if (!touch) for (const el of $$('.exc, .vcard, .plan')) el.addEventListener('pointermove', (e) => { const r = el.getBoundingClientRect(); el.style.setProperty('--x', (e.clientX - r.left) + 'px'); el.style.setProperty('--y', (e.clientY - r.top) + 'px'); });
-
-/* ---- film ---- */
-const fv = $('#filmv'), fbox = $('#filmbox');
-const startFilm = () => fv.play().then(() => fbox.classList.add('on')).catch(() => {});
-$('#filmplay').addEventListener('click', () => { fv.controls = true; startFilm(); });
-fv.addEventListener('play', () => fbox.classList.add('on'));
-if (!reduce) new IntersectionObserver((es) => { for (const e of es) { if (e.isIntersecting) startFilm(); else fv.pause(); } }, { threshold: 0.55 }).observe(fbox);
-
-/* ---- header progress ---- */
-const prog = $('#prog');
-addEventListener('scroll', () => { const d = document.documentElement; prog.style.transform = 'scaleX(' + (d.scrollTop / Math.max(1, d.scrollHeight - d.clientHeight)).toFixed(4) + ')'; }, { passive: true });
-
-/* ---- scroll-driven motion ---- */
-const word = $$('#word span');
+/* ---------- motion ---------- */
 if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && !reduce) {
   gsap.registerPlugin(ScrollTrigger);
   if (typeof Lenis !== 'undefined') {
-    const lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+    const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
     lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add((t) => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0);
     for (const a of $$('a[href^="#"]')) a.addEventListener('click', (e) => { const tg = $(a.getAttribute('href')); if (tg) { e.preventDefault(); lenis.scrollTo(tg, { offset: -76 }); } });
   }
-  /* headline: words rise out of a blur */
-  gsap.from('#headline .w', { yPercent: 45, opacity: 0, filter: 'blur(12px)', duration: 1.1, ease: 'expo.out', stagger: 0.07, clearProps: 'filter' });
-  gsap.from('.hero .lead, .hero .cta, .hero .trust, .lantern-box', { y: 24, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.09, delay: 0.3 });
-  /* section headings rise from a mask, line by line */
-  for (const h of $$('.sec-h h2')) { h.innerHTML = '<span style="display:block;overflow:hidden;padding-bottom:.08em"><span style="display:block">' + h.innerHTML + '</span></span>'; gsap.from(h.firstChild.firstChild, { yPercent: 108, duration: 1.15, ease: 'expo.out', scrollTrigger: { trigger: h, start: 'top 88%' } }); }
-  for (const el of $$('.sec-h .lead, .facts, .filmbox, .code, .beta, .dl')) gsap.from(el, { y: 40, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
-  const group = (sel, extra) => { const els = $$(sel); if (els.length) gsap.from(els, Object.assign({ y: 46, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.1, scrollTrigger: { trigger: els[0].parentElement, start: 'top 85%' } }, extra || {})); };
-  group('.exc', { onComplete: () => $$('.exc .pill').forEach((p, i) => setTimeout(() => gsap.fromTo(p, { scale: 1.3 }, { scale: 1, duration: 0.45, ease: 'back.out(2.5)' }), i * 140)) });
-  group('.vcard', { rotateX: -10, transformOrigin: '50% 0' }); group('.signals > div'); group('.plan', { y: 64 }); group('.tcard'); group('.st', { x: 34, y: 0 });
-  /* dither dividers assemble with the scroll */
+  gsap.from('#headline .w', { yPercent: 60, opacity: 0, filter: 'blur(14px)', duration: 1.3, ease: 'expo.out', stagger: 0.08, delay: 0.6, clearProps: 'filter' });
+  gsap.from('.hero-side', { y: 26, opacity: 0, duration: 1.1, ease: 'expo.out', delay: 1.1 });
+  for (const h of $$('main h2')) { h.innerHTML = '<span style="display:block;overflow:hidden;padding-bottom:.08em"><span style="display:block">' + h.innerHTML + '</span></span>'; gsap.from(h.firstChild.firstChild, { yPercent: 110, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: h, start: 'top 88%' } }); }
+  for (const el of $$('main .lead:not(.hero-side .lead), main .mark, .oath-list span, .isteps li')) gsap.from(el, { y: 26, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 92%' } });
+  $$('[data-seal]').forEach((cv, i) => { const st = { k: 0.001 }; drawSeal(cv, cv.dataset.seal, st.k); ScrollTrigger.create({ trigger: cv, start: 'top 85%', once: true, onEnter: () => gsap.to(st, { k: 1, duration: 0.9, delay: i * 0.2, ease: 'back.out(1.8)', onUpdate: () => drawSeal(cv, cv.dataset.seal, st.k) }) }); });
+  gsap.from('.read', { y: 40, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.08, scrollTrigger: { trigger: '.reads-grid', start: 'top 85%' } });
+  gsap.from('.install-card', { y: 60, opacity: 0, scale: 0.97, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: '.install-card', start: 'top 85%' } });
   for (const d of dividers) ScrollTrigger.create({ trigger: d.cv, start: 'top 95%', end: 'top 45%', scrub: true, onUpdate: (s) => d.set(s.progress) });
-  /* the word V-I-G-I-L gathers */
-  const spread = [[-220, -120, -14], [-90, 140, 9], [30, -170, -6], [120, 120, 12], [240, -60, -10]];
-  word.forEach((l, i) => gsap.fromTo(l, { x: spread[i][0], y: spread[i][1], rotate: spread[i][2], opacity: 0.25 }, { x: 0, y: 0, rotate: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: '#final', start: 'top 85%', end: 'center 60%', scrub: true } }));
+  const spread = [[-280, -150, -16], [-120, 180, 10], [20, -200, -7], [150, 160, 13], [290, -80, -11]];
+  $$('#word span').forEach((l, i) => gsap.fromTo(l, { x: spread[i][0], y: spread[i][1], rotate: spread[i][2], opacity: 0.2 }, { x: 0, y: 0, rotate: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: '#final', start: 'top 90%', end: 'center 60%', scrub: true } }));
   ScrollTrigger.matchMedia({
-    '(min-width: 1001px)': () => {
-      /* MINELIUS: the scroll drives twenty real hours */
-      const s1 = ScrollTrigger.create({ trigger: '#storyPin', start: 'top 96px', end: '+=1800', pin: true, scrub: true, onUpdate: (s) => { storyP = s.progress; drawStory(); } });
-      /* deck of real captures (adapted from 21st.dev Scroll Stacking Cards) */
-      const cards = $$('#deck .card');
-      gsap.set(cards, { y: (i) => i ? 520 : 0, rotateX: (i) => i ? 22 : 0, filter: (i) => i ? 'blur(6px)' : 'blur(0px)', opacity: (i) => i ? 0 : 1 });
-      const tl = gsap.timeline({ scrollTrigger: { trigger: '#deckPin', start: 'top 90px', end: '+=' + (cards.length - 1) * 700, pin: true, scrub: 0.6 } });
-      cards.forEach((c, i) => { if (!i) return; tl.to(c, { y: i * 26, rotateX: 0, filter: 'blur(0px)', opacity: 1, duration: 1, ease: 'power2.out' }, i - 1).to(cards.slice(0, i), { scale: (k) => 1 - (i - k) * 0.045, filter: 'brightness(.55)', duration: 1, ease: 'power2.out' }, i - 1); });
-      return () => { s1.kill(); tl.kill(); };
-    },
-    '(max-width: 1000px)': () => { onceVisible($('#storyPin'), () => { const st = { p: 0 }; gsap.to(st, { p: 1, duration: 3.5, ease: 'power1.inOut', onUpdate: () => { storyP = st.p; drawStory(); } }); }, 0.3); }
+    '(min-width: 1001px)': () => { const s = ScrollTrigger.create({ trigger: '#shiftPin', start: 'top top', end: '+=1500', pin: true, scrub: true, onUpdate: (st) => drawRows(st.progress) }); return () => s.kill(); },
+    '(max-width: 1000px)': () => { ScrollTrigger.create({ trigger: '#rows', start: 'top 80%', once: true, onEnter: () => { const st = { p: 0 }; gsap.to(st, { p: 1, duration: 4, ease: 'power1.inOut', onUpdate: () => drawRows(st.p) }); } }); }
   });
-} else {
-  storyP = 1; drawStory(); dividers.forEach((d) => d.set(1));
-}
+} else { dividers.forEach((d) => d.set(1)); }
 }
 </script>
 </body>
