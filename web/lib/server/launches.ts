@@ -297,17 +297,21 @@ let last: { rows: Awaited<ReturnType<typeof newPairs>>; at: number } | null = nu
 export function feedRow(mint: string) {
   return last?.rows.find((r) => r.mint === mint) ?? null;
 }
-let firstRun: Promise<Awaited<ReturnType<typeof newPairs>>> | null = null;
-export async function newPairsFast() {
+type Rows = Awaited<ReturnType<typeof newPairs>>;
+let refreshing: Promise<Rows> | null = null;
+/**
+ * Liste pour l'écran. Sur Vercel, la boucle de fond s'arrête dès que la réponse part : c'est donc chaque visite
+ * qui relance le calcul (F-078). La liste repart tout de suite (le calcul attend au plus 1,5 s, 8 s sur une instance neuve) ;
+ * s'il n'a pas fini, `pending` permet à la route de le terminer juste après la réponse (after()).
+ */
+export async function newPairsFast(): Promise<{ rows: Rows; pending: Promise<Rows> | null }> {
   startLoop();
-  if (last && Date.now() - last.at < 60_000) return last.rows;
-  // Instance neuve (Vercel) : on ne fait jamais attendre l'écran plus de 8 s. Le calcul continue,
-  // et les rafraîchissements suivants (toutes les 3 s) reçoivent la liste dès qu'elle est prête.
-  firstRun ??= newPairs().finally(() => {
-    firstRun = null;
-  });
-  const r = await Promise.race([firstRun, new Promise<null>((res) => setTimeout(() => res(null), 8_000))]);
-  return r ?? last?.rows ?? [];
+  if (last && Date.now() - last.at < 3_000) return { rows: last.rows, pending: null };
+  const p = (refreshing ??= newPairs().finally(() => {
+    refreshing = null;
+  }));
+  const r = await Promise.race([p, new Promise<null>((res) => setTimeout(() => res(null), last ? 1_500 : 8_000))]);
+  return { rows: r ?? last?.rows ?? [], pending: r ? null : p };
 }
 
 // Un token qui arrive en Final stretch mérite le scan complet (financements, clusters), même si personne ne l'a ouvert
