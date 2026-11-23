@@ -182,6 +182,31 @@
   function hideTip() {
     if (tip) tip.style.display = "none";
   }
+  // Les sites posent souvent un calque cliquable par-dessus leurs lignes (pump.fun, Padre…) : le badge ne reçoit
+  // alors jamais le survol. On suit donc la souris nous-mêmes et on teste la position des badges.
+  let hoverEl = null, hoverQueued = false, mx = -1, my = -1;
+  function checkHover() {
+    hoverQueued = false;
+    let hit = null;
+    for (const set of badges.values()) {
+      for (const el of set) {
+        if (!el.isConnected) continue;
+        const r = el.getBoundingClientRect();
+        if (r.width && mx >= r.left - 2 && mx <= r.right + 2 && my >= r.top - 2 && my <= r.bottom + 2) { hit = el; break; }
+      }
+      if (hit) break;
+    }
+    if (hit !== hoverEl) {
+      hoverEl = hit;
+      if (hit) showTip(hit);
+      else hideTip();
+    }
+  }
+  document.addEventListener("mousemove", (e) => {
+    mx = e.clientX; my = e.clientY;
+    if (!hoverQueued) { hoverQueued = true; requestAnimationFrame(checkHover); }
+  }, { capture: true, passive: true });
+  document.addEventListener("scroll", () => { if (hoverEl) { hoverEl = null; hideTip(); } }, { capture: true, passive: true });
   const escapeHtml = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
   // --- parcours de la page ---
@@ -206,8 +231,26 @@
     }
     return null;
   }
+  // La carte ou la ligne qui contient un lien (pour les liens réduits à une image : on remonte jusqu'à la carte)
+  function cardOf(el) {
+    let c = el.parentElement;
+    for (let i = 0; i < 16 && c && c !== document.body; i++, c = c.parentElement) {
+      if (c.offsetHeight >= 48 && c.offsetHeight <= 260 && c.offsetWidth >= 200) return c;
+    }
+    return null;
+  }
   function placeBadge(a, badge) {
     const big = a.offsetHeight >= 40 && a.offsetWidth > 140;
+    // lien réduit à l'image du token (Padre, Photon…) : badge après le nom, dans la carte
+    if (!big && a.querySelector("img") && a.textContent.trim().length <= 4) {
+      const card = cardOf(a);
+      const name = card && nameIn(card);
+      if (name && !a.contains(name)) {
+        badge.classList.remove("vgl-abs");
+        name.insertAdjacentElement("afterend", badge);
+        return;
+      }
+    }
     if (!big) return a.insertAdjacentElement("afterend", badge);
     // ligne ou carte entière cliquable : après le nom du token, sinon en haut à droite
     const empty = !a.textContent.trim() && !a.querySelector("img");
@@ -237,6 +280,8 @@
       if (addr === panelAddr && !a.closest("table, [role=row], li")) continue;
       // liens vides : on ignore les petites icônes, mais on garde les liens posés sur toute une ligne (listes pump.fun)
       if (!a.textContent.trim() && !a.querySelector("img") && !(a.offsetHeight >= 40 && a.offsetWidth > 140)) continue;
+      const card = cardOf(a);
+      if (card && [...card.querySelectorAll(".vgl-b")].some((b) => b.dataset.vglAddr === addr)) continue; // déjà un badge pour ce token dans la carte
       const badge = makeBadge(addr);
       linkBadge.set(a, badge);
       placeBadge(a, badge);
@@ -254,13 +299,17 @@
       const m = (img.getAttribute("src") || "").match(/[1-9A-HJ-NP-Za-km-z]{32,44}/);
       if (!m || !IS_B58.test(m[0]) || img.closest("a[data-vgl]")) continue;
       if (img.width && img.width > 120) continue; // pas les grandes images (bannières)
-      let row = img.parentElement;
-      for (let i = 0; i < 6 && row && row.offsetHeight < 48; i++) row = row.parentElement;
-      if (!row || row === document.body || row.offsetHeight > 260 || row.querySelector(".vgl-b")) continue;
-      const badge = makeBadge(m[0]);
-      if (getComputedStyle(row).position === "static") row.style.position = "relative";
-      badge.classList.add("vgl-abs");
-      row.appendChild(badge);
+      const addr = m[0];
+      const card = cardOf(img);
+      if (!card || [...card.querySelectorAll(".vgl-b")].some((b) => b.dataset.vglAddr === addr)) continue;
+      const badge = makeBadge(addr);
+      const name = nameIn(card);
+      if (name) name.insertAdjacentElement("afterend", badge);
+      else {
+        if (getComputedStyle(card).position === "static") card.style.position = "relative";
+        badge.classList.add("vgl-abs");
+        card.appendChild(badge);
+      }
     }
   }
 

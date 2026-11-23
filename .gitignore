@@ -1,3 +1,6 @@
 .env
 data/
 node_modules/
+tools/film/chrome-profile/
+tools/film/chrome-render/
+tools/film/captures/

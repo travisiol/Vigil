@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vigil · film over a real capture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE   the real site, filmed with Vigil on; motion only adds the camera, the cursor and the words
+   IDEA    a screen recording directed like a product film: title, push-in on the badge, dive into the token page
+   PICTURE real captured frames on a canvas, a camera that frames them, captions on a dark gradient
+   COLOUR  the site's own colours; Vigil's gradient only on the cards and captions accents
+   TYPE    Sora captions, Inter small print
+   LAYOUT  fixed 1920x1080 stage scaled to the window; player bar hidden in record mode */
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:#000;color:#F5F3FA;font:16px/1.4 Inter,system-ui,sans-serif;overflow:hidden}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:#000}
+#cv{position:absolute;inset:0;width:1920px;height:1080px}
+.capbg{position:absolute;left:0;right:0;bottom:0;height:430px;background:linear-gradient(transparent,rgba(0,0,0,.88));opacity:0}
+.cap{position:absolute;left:110px;bottom:92px;font:700 68px/1.04 Sora,sans-serif;letter-spacing:-.04em;opacity:0;text-shadow:0 6px 40px #000}
+.cap small{display:block;font:500 24px Inter,sans-serif;letter-spacing:0;color:#A6A1B8;margin-top:16px}
+.card{position:absolute;inset:0;display:grid;place-items:center;text-align:center;background:#000}
+.card .v{width:190px;height:160px;filter:drop-shadow(0 0 60px rgba(188,51,201,.8))}
+.card h1{font:700 92px/1 Sora,sans-serif;letter-spacing:-.05em;margin-top:38px}
+.card p{font:500 30px Inter,sans-serif;color:#A6A1B8;margin-top:22px}
+.grad{background:linear-gradient(135deg,#9232F1,#BC33C9 50%,#F22C7B);-webkit-background-clip:text;background-clip:text;color:transparent}
+.halo{position:absolute;left:50%;top:50%;width:1400px;height:900px;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(146,50,241,.35),rgba(242,44,123,.1) 55%,transparent)}
+.foot{position:absolute;left:0;right:0;bottom:58px;font:500 20px Inter,sans-serif;color:#7C768E}
+.tag{position:absolute;left:110px;top:70px;display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:14px;background:rgba(0,0,0,.72);border:1px solid #24212E;font:600 20px Inter,sans-serif;opacity:0}
+.tag svg{width:26px;height:22px}
+.ui{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:10px;align-items:center;padding:8px 12px;border-radius:12px;background:rgba(11,10,15,.85);border:1px solid #24212E;z-index:9;font:12px monospace;color:#A6A1B8}
+.ui button{height:32px;padding:0 12px;border-radius:8px;border:1px solid #24212E;background:#13111A;color:#fff;cursor:pointer}
+body.rec .ui{display:none}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="vg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9232F1"/><stop offset=".55" stop-color="#BC33C9"/><stop offset="1" stop-color="#F22C7B"/></linearGradient>
+  <symbol id="vmark" viewBox="0 0 100 84"><path d="M0 0 L50 84 L100 0 C80 9 60 27 50 50 C40 27 20 9 0 0 Z" fill="url(#vg)"/></symbol>
+</defs></svg>
+<div id="stage">
+  <canvas id="cv" width="1920" height="1080"></canvas>
+  <div class="tag" id="tag"><svg><use href="#vmark"/></svg><span id="tagtxt">Vigil on</span></div>
+  <div class="capbg" id="capbg"></div>
+  <div class="cap" id="c1"></div>
+  <div class="cap" id="c2"></div>
+  <div class="cap" id="c3"></div>
+  <div class="card" id="title"><div class="halo"></div><div style="position:relative"><svg class="v" viewBox="0 0 100 84"><use href="#vmark"/></svg><h1 id="t1"></h1><p id="t2">Vigil is already watching.</p></div></div>
+  <div class="card" id="end" style="opacity:0"><div class="halo"></div><div style="position:relative"><svg class="v" viewBox="0 0 100 84"><use href="#vmark"/></svg><h1>See the rug <span class="grad">before you click.</span></h1><p>Vigil · browser extension for Solana traders</p></div><div class="foot" id="foot"></div></div>
+</div>
+<div class="ui"><button id="play" type="button">Pause</button><span id="time"></span></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+{
+const $ = (s) => document.querySelector(s);
+const qs = new URLSearchParams(location.search);
+const DIR = qs.get('dir');
+const SITE = qs.get('site') || 'Axiom';
+if (qs.has('record')) document.body.classList.add('rec');
+const stage = $('#stage');
+const fit = () => { const k = Math.min(innerWidth / 1920, innerHeight / 1080); stage.style.transform = 'translate(' + ((innerWidth - 1920 * k) / 2) + 'px,' + ((innerHeight - 1080 * k) / 2) + 'px) scale(' + k + ')'; };
+addEventListener('resize', fit); fit();
+const cv = $('#cv'), cx = cv.getContext('2d');
+const ease = (k) => k < 0.5 ? 4 * k * k * k : 1 - (-2 * k + 2) ** 3 / 2;
+const lerp = (a, b, k) => a + (b - a) * k;
+
+const ready = (async () => {
+  const m = await (await fetch(DIR + '/manifest.json')).json();
+  const imgs = new Map();
+  await Promise.all([...new Set(m.frames.map((f) => f.f))].map((f) => new Promise((res) => { const im = new Image(); im.onload = () => res(); im.onerror = () => res(); im.src = DIR + '/' + f; imgs.set(f, im); })));
+  await document.fonts.ready;
+  return { m, imgs };
+})();
+
+ready.then(({ m, imgs }) => {
+  const E = m.events, W = m.w, H = m.h, F = m.frames;
+  const hov = E.hover, clk = E.click, pan = E.panel;
+  /* film time -> capture time, in segments */
+  const seg = [];
+  let T = 2.6; // after the title card
+  const add = (c0, c1, dur) => { seg.push({ T0: T, T1: T + dur, c0, c1 }); T += dur; };
+  const start = Math.min(1.2, F[0].t + 0.6);
+  const hoverIn = hov ? hov.t - 1.5 : E.end;
+  add(start, hoverIn, Math.min(7, Math.max(3.5, hoverIn - start)));            // the board: badges light up
+  if (hov) add(hoverIn, hov.t + 3.2, hov.t + 3.2 - hoverIn);                      // hover: the reason
+  if (clk) {
+    const land = pan ? pan.t : clk.t + 3;
+    add(clk.t - 0.3, land, Math.min(2.2, land - clk.t + 0.3));                     // click: the token page loads (shortened)
+    add(land, Math.min(E.end, land + 6), Math.min(E.end, land + 6) - land);        // the Vigil panel
+  }
+  const filmEnd = T;
+  const DUR = filmEnd + 4.6;
+  const capAt = (TT) => { if (TT <= seg[0].T0) return seg[0].c0; for (const s of seg) if (TT <= s.T1) return lerp(s.c0, s.c1, (TT - s.T0) / (s.T1 - s.T0)); return seg[seg.length - 1].c1; };
+  const frameAt = (c) => { let lo = 0, hi = F.length - 1; while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (F[mid].t <= c) lo = mid; else hi = mid - 1; } return imgs.get(F[lo].f); };
+
+  /* camera: rectangle of the capture shown on screen (x, y, w), 16:9 */
+  const full = { x: 0, y: (H - W * 9 / 16) / 2, w: W };
+  const around = (px, py, w) => { const h = w * 9 / 16; return { x: Math.max(0, Math.min(W - w, px - w / 2)), y: Math.max(Math.min(0, (H - h) / 2), Math.min(H - h, py - h / 2)), w }; };
+  const camKeys = [{ c: start, r: full }];
+  if (hov) { camKeys.push({ c: hoverIn, r: full }); camKeys.push({ c: hov.t - 0.2, r: around(hov.x - 80, hov.y + 40, 820) }); camKeys.push({ c: hov.t + 3.0, r: around(hov.x - 80, hov.y + 40, 780) }); }
+  if (clk) { camKeys.push({ c: clk.t + 0.1, r: full }); }
+  if (pan) { camKeys.push({ c: pan.t + 0.4, r: full }); camKeys.push({ c: pan.t + 2.2, r: around(pan.x + pan.w / 2 - 260, pan.y + pan.h / 2, 1100) }); }
+  const camAt = (c) => {
+    if (c <= camKeys[0].c) return camKeys[0].r;
+    for (let i = 1; i < camKeys.length; i++) {
+      const a = camKeys[i - 1], b = camKeys[i];
+      if (c <= b.c) { const k = ease(Math.max(0, Math.min(1, (c - a.c) / Math.max(0.001, b.c - a.c)))); return { x: lerp(a.r.x, b.r.x, k), y: lerp(a.r.y, b.r.y, k), w: lerp(a.r.w, b.r.w, k) }; }
+    }
+    return camKeys[camKeys.length - 1].r;
+  };
+  /* cursor path, as the capture moved it */
+  const cursorAt = (c) => {
+    if (!hov) return null;
+    const m0 = { x: W * 0.75, y: H * 0.85 }, t0 = hov.t - 1.2;
+    if (c < t0 - 0.6) return null;
+    if (c < hov.t) { const k = ease(Math.max(0, Math.min(1, (c - t0) / 1.2))); return { x: lerp(m0.x, hov.x, k), y: lerp(m0.y, hov.y, k) }; }
+    if (!clk || c < clk.t - 0.4) return { x: hov.x, y: hov.y };
+    if (c < clk.t + 0.6) { const k = ease(Math.max(0, Math.min(1, (c - (clk.t - 0.4)) / 0.4))); return { x: lerp(hov.x, clk.x, k), y: lerp(hov.y, clk.y, k), click: c >= clk.t ? (c - clk.t) / 0.6 : 0 }; }
+    return null;
+  };
+  const drawCursor = (p, cam) => {
+    const s = 1920 / cam.w, x = (p.x - cam.x) * s, y = (p.y - cam.y) * s, k = Math.min(1.6, s * 0.9);
+    if (p.click) { cx.strokeStyle = 'rgba(255,255,255,' + (0.9 * (1 - p.click)) + ')'; cx.lineWidth = 3; cx.beginPath(); cx.arc(x, y, 10 + 40 * p.click, 0, 7); cx.stroke(); }
+    cx.save(); cx.translate(x, y); cx.scale(k * 1.4, k * 1.4);
+    cx.fillStyle = '#fff'; cx.strokeStyle = '#000'; cx.lineWidth = 1.2; cx.beginPath(); cx.moveTo(0, 0); cx.lineTo(15, 9); cx.lineTo(8, 10.6); cx.lineTo(4.4, 17.4); cx.closePath(); cx.fill(); cx.stroke(); cx.restore();
+  };
+  const render = (TT) => {
+    const c = capAt(TT), cam = camAt(c), img = frameAt(c), h = cam.w * 9 / 16;
+    cx.fillStyle = '#000'; cx.fillRect(0, 0, 1920, 1080);
+    if (img && img.naturalWidth) {
+      cx.drawImage(img, cam.x, cam.y, cam.w, h, 0, 0, 1920, 1080);
+      /* privacy: blur the account area of the site (balance, wallet) */
+      for (const r of m.redact || []) {
+        const s = 1920 / cam.w, dx = (r.x - cam.x) * s, dy = (r.y - cam.y) * s, dw = r.w * s, dh = r.h * s;
+        if (dx + dw < 0 || dy + dh < 0 || dx > 1920 || dy > 1080) continue;
+        cx.save(); cx.beginPath(); cx.rect(dx, dy, dw, dh); cx.clip(); cx.filter = 'blur(18px)'; cx.drawImage(img, cam.x, cam.y, cam.w, h, 0, 0, 1920, 1080); cx.restore();
+      }
+    }
+    const p = cursorAt(c); if (p) drawCursor(p, cam);
+  };
+
+  /* words and cards */
+  $('#t1').textContent = 'You open ' + SITE + '.';
+  $('#tagtxt').textContent = SITE + ' · Vigil on';
+  $('#c1').innerHTML = 'Every token on ' + SITE + '<br>gets a verdict.<small>Real page, real tokens, Vigil’s real verdicts.</small>';
+  $('#c2').innerHTML = 'The reason,<br>one hover away.';
+  $('#c3').innerHTML = 'The full read,<br>on the token page.';
+  $('#foot').textContent = 'Recorded on ' + SITE + ' with Vigil on, ' + new Date(m.capturedAt).toUTCString().slice(5, 16) + '. Account details blurred. Not financial advice.';
+  const tl = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
+  const proxy = { t: 0 };
+  tl.to(proxy, { t: DUR, duration: DUR, ease: 'none', onUpdate: () => render(proxy.t) }, 0);
+  tl.from('#title .v', { scale: 0.6, opacity: 0, filter: 'blur(20px)', duration: 1.1 }, 0)
+    .from('#t1', { y: 40, opacity: 0, filter: 'blur(12px)', duration: 0.9 }, 0.35)
+    .from('#t2', { y: 26, opacity: 0, duration: 0.8 }, 0.9)
+    .to('#title', { opacity: 0, duration: 0.6, ease: 'power2.inOut' }, 2.2)
+    .fromTo('#tag', { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.6 }, 2.7)
+    .to('#capbg', { opacity: 1, duration: 0.6 }, 3.2)
+    .fromTo('#c1', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 }, 3.3);
+  const s1 = seg[1];
+  if (s1) tl.to('#c1', { opacity: 0, y: -20, duration: 0.5 }, s1.T0 - 0.2).fromTo('#c2', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 }, s1.T0 + 1.2).to('#c2', { opacity: 0, y: -20, duration: 0.5 }, s1.T1 - 0.4);
+  else tl.to('#c1', { opacity: 0, duration: 0.5 }, filmEnd - 0.6);
+  const s3 = seg[3];
+  if (s3) tl.fromTo('#c3', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 }, s3.T0 + 0.8).to('#c3', { opacity: 0, y: -20, duration: 0.5 }, s3.T1 - 0.4);
+  tl.to('#capbg', { opacity: 0, duration: 0.5 }, filmEnd - 0.5).to('#tag', { opacity: 0, duration: 0.4 }, filmEnd - 0.4)
+    .to('#end', { opacity: 1, duration: 0.8, ease: 'power2.inOut' }, filmEnd)
+    .from('#end .v', { scale: 0.7, filter: 'blur(16px)', duration: 1 }, filmEnd + 0.2)
+    .from('#end h1', { y: 40, opacity: 0, filter: 'blur(10px)', duration: 0.9 }, filmEnd + 0.45)
+    .from('#end p, #foot', { y: 20, opacity: 0, duration: 0.7, stagger: 0.15 }, filmEnd + 0.9)
+    .to({}, { duration: 0.1 }, DUR - 0.1);
+  window.__film = { duration: DUR, seek: (t) => tl.seek(t, false), ready: Promise.resolve(true) };
+  tl.seek(0, false);
+  let playing = !qs.has('record'), last = 0;
+  $('#play').onclick = () => { if (tl.time() >= DUR) tl.seek(0); playing = !playing; $('#play').textContent = playing ? 'Pause' : 'Play'; };
+  const tick = (ts) => { const dt = last ? Math.min(0.05, (ts - last) / 1000) : 0; last = ts; if (playing) { const t = tl.time() + dt; tl.seek(t >= DUR ? 0 : t, false); } $('#time').textContent = tl.time().toFixed(1) + ' / ' + DUR.toFixed(1) + ' s'; requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+});
+window.__film = { duration: 0, seek: () => {}, ready: ready.then(() => new Promise((r) => { const w = () => (window.__film.duration ? r(true) : setTimeout(w, 50)); w(); })) };
+}
+</script>
+</body>
+</html>
