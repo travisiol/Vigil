@@ -1,3 +1,4 @@
+import { cdn } from "@/lib/server/cdn";
 import { markets } from "@/lib/server/dex";
 import { gmgnInfo } from "@/lib/server/gmgn";
 import { feedRow } from "@/lib/server/launches";
@@ -6,7 +7,7 @@ import { errorResponse, isMint, UserError } from "@/lib/server/rpc";
 
 // Prix / market cap en direct pour l'en-tête de la page token.
 // DexScreener quand il connaît le token ; sinon la bonding curve pump.fun (+ volume et âge via GMGN).
-export async function GET(_req: Request, ctx: { params: Promise<{ mint: string }> }) {
+async function get(_req: Request, ctx: { params: Promise<{ mint: string }> }) {
   try {
     const { mint } = await ctx.params;
     if (!isMint(mint)) throw new UserError("This address is not a token.", 404);
@@ -42,3 +43,6 @@ async function compute(mint: string): Promise<Response> {
     });
   }
 }
+
+// Cache partagé Vercel : 3 s, puis servi pendant le recalcul jusqu'à 30 s
+export const GET = cdn(3, 30, get);

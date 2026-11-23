@@ -1,10 +1,11 @@
+import { cdn } from "@/lib/server/cdn";
 import { markets } from "@/lib/server/dex";
 import { curvePda, isPumpToken } from "@/lib/server/pump";
 import { isMint } from "@/lib/server/rpc";
 
 // Réponse éclair (~0,2 s) : la paire DexScreener du token, et sa bonding curve pump.fun s'il en a une
 // (sert au graphique TradingView quand l'adresse du token ne finit pas par "pump").
-export async function GET(_req: Request, ctx: { params: Promise<{ mint: string }> }) {
+async function get(_req: Request, ctx: { params: Promise<{ mint: string }> }) {
   const { mint } = await ctx.params;
   if (!isMint(mint)) return Response.json({ pairAddress: null, curve: null });
   const timeout = <T,>(p: Promise<T>, ms: number, v: T) => Promise.race([p, new Promise<T>((r) => setTimeout(() => r(v), ms))]);
@@ -15,3 +16,6 @@ export async function GET(_req: Request, ctx: { params: Promise<{ mint: string }
   ]);
   return Response.json({ pairAddress: m?.pairAddress ?? null, curve: pump ? curvePda(mint).toBase58() : null });
 }
+
+// Cache partagé Vercel : 10 s, puis servi pendant le recalcul jusqu'à 60 s
+export const GET = cdn(10, 60, get);

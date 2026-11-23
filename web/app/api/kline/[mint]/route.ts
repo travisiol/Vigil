@@ -1,3 +1,4 @@
+import { cdn } from "@/lib/server/cdn";
 import { sampleCurve, sampledTicks, ticks, toCandles } from "@/lib/server/candles";
 import { gmgnKline } from "@/lib/server/gmgn";
 import { errorResponse, isMint, UserError } from "@/lib/server/rpc";
@@ -9,7 +10,7 @@ const RES: Record<string, number> = { "1s": 1, "15s": 15, "30s": 30, "1m": 60, "
  * 1 s et 15 s : trades on-chain (prix exact payé à la courbe) + relevé du prix sur la courbe chaque seconde.
  * Au-delà : GMGN (historique complet), avec repli sur les trades on-chain.
  */
-export async function GET(req: Request, ctx: { params: Promise<{ mint: string }> }) {
+async function get(req: Request, ctx: { params: Promise<{ mint: string }> }) {
   try {
     const { mint } = await ctx.params;
     if (!isMint(mint)) throw new UserError("This address is not a token.", 404);
@@ -26,3 +27,6 @@ export async function GET(req: Request, ctx: { params: Promise<{ mint: string }>
     return errorResponse(e);
   }
 }
+
+// Cache partagé Vercel : 2 s, puis servi pendant le recalcul jusqu'à 20 s
+export const GET = cdn(2, 20, get);

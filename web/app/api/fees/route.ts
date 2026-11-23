@@ -1,3 +1,4 @@
+import { cdn } from "@/lib/server/cdn";
 import { brand } from "@/brand.config";
 import { syncLedger, totals } from "@/lib/server/ledger";
 import { cached, errorResponse } from "@/lib/server/rpc";
@@ -6,7 +7,7 @@ export const maxDuration = 60;
 
 // Uniquement ce qui vient des trades Vigil (lu dans le registre), jamais le solde total du wallet :
 // le wallet peut contenir d'autres fonds qui ne sont pas des fees.
-export async function GET() {
+async function get() {
   try {
     const wallet = process.env.VIGIL_FEE_WALLET || null;
     const cashbackWallet = process.env.VIGIL_CASHBACK_WALLET || null;
@@ -28,3 +29,6 @@ export async function GET() {
     return errorResponse(e);
   }
 }
+
+// Cache partagé Vercel : 30 s, puis servi pendant le recalcul jusqu'à 120 s
+export const GET = cdn(30, 120, get);

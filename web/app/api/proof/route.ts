@@ -1,3 +1,4 @@
+import { cdn } from "@/lib/server/cdn";
 import { brand } from "@/brand.config";
 import { buybacks } from "@/lib/server/buybacks";
 import { syncLedger, totals } from "@/lib/server/ledger";
@@ -11,7 +12,7 @@ export const maxDuration = 60;
  * fees reçues (trade par trade), cashback versé, rachats et burns de $VIGIL, bulletin des verdicts, règles du scan.
  * Jamais le solde total des wallets (ils peuvent contenir autre chose) : seulement les mouvements Vigil.
  */
-export async function GET() {
+async function get() {
   try {
     const data = await cached("proof", 60_000, async () => {
       const [l, bb] = await Promise.all([syncLedger().catch(() => null), buybacks().catch(() => null)]);
@@ -55,3 +56,6 @@ export async function GET() {
     return errorResponse(e);
   }
 }
+
+// Cache partagé Vercel : 60 s, puis servi pendant le recalcul jusqu'à 300 s
+export const GET = cdn(60, 300, get);
