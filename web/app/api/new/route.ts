@@ -8,7 +8,8 @@ async function get() {
     const { rows, pending } = await newPairsFast();
     // Calcul pas fini : il continue après la réponse (Vercel garde la fonction en vie pour ça)
     if (pending) after(() => pending.then(() => {}).catch(() => {}));
-    return Response.json({ tokens: rows, at: Date.now() });
+    // Liste encore partielle (copie du serveur qui vient de démarrer) : jamais gardée dans le cache partagé
+    return Response.json({ tokens: rows, at: Date.now() }, rows.length < 40 ? { headers: { "Cache-Control": "no-store" } } : undefined);
   } catch (e) {
     return errorResponse(e);
   }
