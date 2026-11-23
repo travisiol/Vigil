@@ -3,6 +3,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { PublicKey } from "@solana/web3.js";
 import type { ScanLite, Verdict } from "../types";
+import { DATA_DIR } from "./datadir";
 import { curveStats, decodeCurve } from "./pump";
 import { rpcLow } from "./rpc";
 
@@ -62,7 +63,7 @@ export type Graded = {
 
 const watched = new Map<string, Watched>();
 // Le suivi survit aux redémarrages et aux mises à jour (F-076) : sinon Final stretch, Migrated et le bulletin repartent de zéro
-const WATCH_FILE = join(process.cwd(), ".vigil-data", "watch.json");
+const WATCH_FILE = join(DATA_DIR, "watch.json");
 try {
   const cut = Date.now() - 6 * 3_600_000;
   for (const w of JSON.parse(readFileSync(WATCH_FILE, "utf8")) as Watched[]) if (w.createdAt > cut) watched.set(w.mint, w);
@@ -72,12 +73,11 @@ function saveWatch() {
   if (Date.now() - lastWatchSave < 60_000) return;
   lastWatchSave = Date.now();
   try {
-    mkdirSync(join(process.cwd(), ".vigil-data"), { recursive: true });
+    mkdirSync(DATA_DIR, { recursive: true });
     writeFileSync(WATCH_FILE, JSON.stringify([...watched.values()]));
   } catch {}
 }
 let graded: Graded[] = [];
-const DATA_DIR = join(process.cwd(), ".vigil-data");
 const FILE = join(DATA_DIR, "track.json");
 
 // Le bulletin survit aux redémarrages du serveur

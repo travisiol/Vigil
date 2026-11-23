@@ -3,6 +3,7 @@ import { PublicKey, type ParsedInstruction, type ParsedTransactionWithMeta, type
 import fs from "node:fs/promises";
 import path from "node:path";
 import { brand } from "@/brand.config";
+import { DATA_DIR, ON_VERCEL } from "./datadir";
 import { getTxs, RPC_URL, rpc } from "./rpc";
 
 /**
@@ -30,7 +31,8 @@ type Ledger = {
   syncedAt: number;
 };
 
-const FILE = process.env.LEDGER_PATH || path.join(/* turbopackIgnore: true */ process.cwd(), ".data", "ledger.json");
+// Cache seulement (le registre se reconstruit depuis la blockchain). Sur Vercel : /tmp, seul dossier inscriptible.
+const FILE = process.env.LEDGER_PATH || (ON_VERCEL ? path.join(DATA_DIR, "ledger.json") : path.join(/* turbopackIgnore: true */ process.cwd(), ".data", "ledger.json"));
 
 async function load(feeWallet: string, cashbackWallet: string | null): Promise<Ledger> {
   try {
@@ -50,10 +52,13 @@ async function load(feeWallet: string, cashbackWallet: string | null): Promise<L
 }
 
 async function save(l: Ledger) {
-  await fs.mkdir(path.dirname(FILE), { recursive: true });
-  const tmp = `${FILE}.${process.pid}.tmp`;
-  await fs.writeFile(tmp, JSON.stringify(l));
-  await fs.rename(tmp, FILE);
+  // Un cache qui ne peut pas s'écrire ne doit jamais faire tomber la page (disque en lecture seule, etc.)
+  try {
+    await fs.mkdir(path.dirname(FILE), { recursive: true });
+    const tmp = `${FILE}.${process.pid}.tmp`;
+    await fs.writeFile(tmp, JSON.stringify(l));
+    await fs.rename(tmp, FILE);
+  } catch {}
 }
 
 /** Nouvelles signatures depuis le curseur, de la plus ancienne à la plus récente. */

@@ -2,6 +2,7 @@ import "server-only";
 import { mkdirSync, readFileSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { DATA_DIR } from "./datadir";
 import { fundingOf } from "./funding";
 
 /**
@@ -25,7 +26,7 @@ let startedAt = 0;
  * La mémoire survit aux redémarrages (F-066) : sauvegardée sur disque toutes les 60 s, relue au démarrage.
  * C'est le signal le plus fiable de Vigil (backtest : 2 survivants sur 131 tokens de devs en série), il ne doit jamais se perdre.
  */
-const DIR = join(process.cwd(), ".vigil-data");
+const DIR = DATA_DIR;
 const FILE = join(DIR, "devs.json");
 type Saved = { startedAt: number; launches: [string, [string, number][]][]; fund: [string, { funder: string | null; firstSeen: number | null; aged: boolean }][] };
 try {

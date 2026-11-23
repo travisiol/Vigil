@@ -4,6 +4,7 @@
  */
 export async function register() {
   if (process.env.NEXT_RUNTIME !== "nodejs") return;
+  if (process.env.VERCEL) return; // sur Vercel, pas de serveur permanent : le flux démarre à la première visite
   const port = process.env.PORT || "3100";
   const kick = (tries: number) =>
     setTimeout(() => {
