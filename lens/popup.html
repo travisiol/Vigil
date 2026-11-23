@@ -62,6 +62,10 @@
           <input class="sw" type="checkbox" id="site" />
         </div>
         <div class="row">
+          <label for="auto">Scan every token automatically<small>Off: click the Vigil mark next to a token to read it. Faster.</small></label>
+          <input class="sw" type="checkbox" id="auto" />
+        </div>
+        <div class="row">
           <label for="clean">Show Clean badges<small>Off: only Watch and Bundled stay on screen</small></label>
           <input class="sw" type="checkbox" id="clean" />
         </div>
@@ -79,7 +83,7 @@
         <label for="api">Vigil server</label>
         <input id="api" type="url" spellcheck="false" />
       </details>
-      <footer>Read-only. Vigil only receives the token addresses shown on screen. Facts from the chain, not financial advice.</footer>
+      <footer>Read-only. Vigil only receives the addresses of the tokens you scan. Facts from the chain, not financial advice.</footer>
     </div>
     <script src="popup.js"></script>
   </body>

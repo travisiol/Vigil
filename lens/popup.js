@@ -1,6 +1,6 @@
 // Fenêtre de l'extension : ce que Vigil voit sur la page, réglages site par site `[F-093]`
 const DEFAULT_API = "https://vigil-eight-ecru.vercel.app";
-const DEF = { enabled: true, off: [], showClean: true };
+const DEF = { enabled: true, off: [], showClean: true, autoScan: false };
 const SITES = [
   ["pump", "pump.fun"], ["axiom", "Axiom"], ["gmgn", "GMGN"], ["dex", "DexScreener"],
   ["padre", "Padre"], ["photon", "Photon", "beta"], ["bullx", "BullX", "beta"], ["x", "X"],
@@ -30,7 +30,7 @@ function renderSites() {
 function renderPage() {
   const box = $("page");
   if (!page) {
-    box.innerHTML = `<div class="off"><b>Vigil isn't on this page.</b>Open pump.fun, Axiom, GMGN, DexScreener, Padre or X: a seal appears right after each token's name.</div>`;
+    box.innerHTML = `<div class="off"><b>Vigil isn't on this page.</b>Open pump.fun, Axiom, GMGN, DexScreener, Padre or X: a small Vigil mark sits after each token's name. Click it to scan that token.</div>`;
     $("siteRow").hidden = true;
     return;
   }
@@ -42,14 +42,19 @@ function renderPage() {
   }
   const s = page.stats || {};
   const reading = (s.scan || 0) + (s.none || 0);
-  const total = (s.clean || 0) + (s.watch || 0) + (s.bundled || 0) + reading;
+  const read = (s.clean || 0) + (s.watch || 0) + (s.bundled || 0);
+  const idle = s.idle || 0;
   let html = `<h2>On this page</h2>
     <div class="counts">
       <div class="c ok"><strong>${s.clean || 0}</strong><span>${glyph("clean")}Clean</span></div>
       <div class="c wa"><strong>${s.watch || 0}</strong><span>${glyph("watch")}Watch</span></div>
       <div class="c bad${s.bundled ? " hot" : ""}"><strong>${s.bundled || 0}</strong><span>${glyph("bundled")}Bundled</span></div>
     </div>`;
-  html += `<p class="note">${total ? `${total} token${total > 1 ? "s" : ""} read${reading ? `, ${reading} still reading` : ""}.` : "No token on screen yet. Scroll a list or open a token."}</p>`;
+  const parts = [];
+  if (read) parts.push(`${read} scanned`);
+  if (reading) parts.push(`${reading} reading`);
+  if (idle) parts.push(`${idle} not scanned yet: click the Vigil mark next to a token`);
+  html += `<p class="note">${parts.length ? parts.join(" · ") + "." : "No token on screen yet. Scroll a list or open a token."}</p>`;
   const t = page.token;
   if (t) {
     const cls = { clean: "ok", watch: "wa", bundled: "bad" }[t.kind] || "";
@@ -76,6 +81,7 @@ async function askPage() {
 chrome.storage.sync.get(DEF).then((s) => {
   settings = s;
   $("clean").checked = s.showClean !== false;
+  $("auto").checked = !!s.autoScan;
   askPage();
 });
 setInterval(askPage, 1500);
@@ -87,6 +93,10 @@ $("site").addEventListener("change", () => {
   else off.add(page.site);
   settings.off = [...off];
   chrome.storage.sync.set({ off: settings.off }).then(() => setTimeout(askPage, 400));
+});
+$("auto").addEventListener("change", () => {
+  settings.autoScan = $("auto").checked;
+  chrome.storage.sync.set({ autoScan: settings.autoScan }).then(() => setTimeout(askPage, 400));
 });
 $("clean").addEventListener("change", () => {
   settings.showClean = $("clean").checked;

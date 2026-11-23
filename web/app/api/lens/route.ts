@@ -8,6 +8,8 @@ import { peekScan, scan } from "@/lib/server/scan";
  * GET /api/lens?a=<adresse>,<adresse>…  (30 max : tokens ou paires DexScreener, tout ce que l'extension voit à l'écran)
  * Pour chaque adresse : le verdict déjà calculé, sinon "pending" et un scan rapide
  * lancé juste après la réponse ; l'extension redemande au bout de quelques secondes.
+ * &peek=1 : lecture seule, aucun scan lancé (token ou pas ? verdict déjà connu ?) : l'extension s'en sert pour
+ * savoir où poser sa marque « Scan », le vrai scan n'a lieu qu'au clic `[F-094]`.
  * Données publiques, lecture seule : ouverte à tous les sites (CORS).
  */
 export const maxDuration = 60;
@@ -57,6 +59,7 @@ async function mintFlags(addrs: string[]) {
 async function get(req: Request) {
   const raw = (new URL(req.url).searchParams.get("a") ?? "").split(",").map((x) => x.trim()).filter((x) => B58.test(x));
   const addrs = [...new Set(raw)].slice(0, 30);
+  const peek = new URL(req.url).searchParams.get("peek") === "1";
   if (!addrs.length) return Response.json({ results: {} }, { headers: CORS });
 
   await mintFlags(addrs);
@@ -84,7 +87,7 @@ async function get(req: Request) {
     };
   }
   // Scans rapides des tokens inconnus, après la réponse (Vercel garde la fonction en vie pour ça)
-  const batch = toScan.slice(0, SCANS_PER_CALL);
+  const batch = peek ? [] : toScan.slice(0, SCANS_PER_CALL);
   if (batch.length) after(() => Promise.allSettled(batch.map((m) => withPriority(1, () => scan(m, "quick")))).then(() => {}));
 
   const allKnown = !Object.values(results).some((r) => r.pending);

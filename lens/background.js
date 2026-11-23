@@ -4,7 +4,7 @@
 
 const DEFAULT_API = "https://vigil-eight-ecru.vercel.app";
 const KNOWN_TTL = 60_000; // verdict connu : gardé 1 min
-const PENDING_TTL = 2_500; // scan en cours : on redemande au serveur au bout de 2,5 s
+const PENDING_TTL = 1_200; // scan en cours : on redemande au serveur au bout de 1,2 s (un token cliqué doit répondre vite)
 const IS_B58 = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
 const cache = new Map(); // adresse -> { data, at }
@@ -28,30 +28,32 @@ async function getJson(url, ms) {
   return r.json();
 }
 
-async function verdicts(list) {
+// peek : lecture légère sans lancer de scan (token ou wallet ? verdict déjà connu ?) `[F-094]`
+async function verdicts(list, peek = false) {
   const addrs = [...new Set((list || []).filter((a) => typeof a === "string" && IS_B58.test(a)))].slice(0, 60);
   const start = Date.now();
   const out = {};
+  const key = (a) => (peek ? "p:" : "s:") + a;
   const todo = [];
   const waits = new Set();
   for (const a of addrs) {
     const c = cache.get(a);
-    if (c && start - c.at < (c.data.pending ? PENDING_TTL : KNOWN_TTL)) out[a] = c.data;
-    else if (inflight.has(a)) waits.add(inflight.get(a));
+    if (c && start - c.at < (c.data.pending ? PENDING_TTL : KNOWN_TTL) && (peek || !c.data.pending || !c.peek)) out[a] = c.data;
+    else if (inflight.has(key(a))) waits.add(inflight.get(key(a)));
     else todo.push(a);
   }
   if (todo.length) {
     const base = await apiBase();
     for (let i = 0; i < todo.length; i += 30) {
       const chunk = todo.slice(i, i + 30);
-      const p = getJson(`${base}/api/lens?a=${chunk.join(",")}`, 12_000)
+      const p = getJson(`${base}/api/lens?a=${chunk.join(",")}${peek ? "&peek=1" : ""}`, 12_000)
         .then((j) => {
           const t = Date.now();
-          for (const a of chunk) if (j?.results?.[a]) cache.set(a, { data: j.results[a], at: t });
+          for (const a of chunk) if (j?.results?.[a]) cache.set(a, { data: j.results[a], at: t, peek });
         })
         .catch(() => {}) // réseau coupé ou serveur en erreur : la page redemandera plus tard
-        .finally(() => chunk.forEach((a) => inflight.delete(a)));
-      chunk.forEach((a) => inflight.set(a, p));
+        .finally(() => chunk.forEach((a) => inflight.delete(key(a))));
+      chunk.forEach((a) => inflight.set(key(a), p));
       waits.add(p);
     }
   }
@@ -101,7 +103,7 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   const tab = sender.tab;
   switch (msg?.type) {
     case "verdicts":
-      verdicts(msg.addrs).then(reply, () => reply({}));
+      verdicts(msg.addrs, !!msg.peek).then(reply, () => reply({}));
       return true;
     case "detail":
       detail(msg.mint).then(reply, () => reply({}));

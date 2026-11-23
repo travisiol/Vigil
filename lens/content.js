@@ -1,7 +1,7 @@
 // Vigil Lens — content script `[F-080]` `[F-093]`
-// Pose un badge de verdict (Clean / Watch / Bundled) juste après le nom de chaque token Solana visible,
-// et un panneau flottant sur la page d'un token (verdict, chiffres, radar de sortie, ouverture dans Vigil).
-// Seuls les tokens à l'écran sont demandés au serveur ; rien ne tourne quand l'onglet est caché.
+// Pose une petite marque « Scan » juste après le nom de chaque token Solana visible. Rien n'est analysé tant qu'on
+// ne clique pas : le clic lit ce token-là seul, vite, et ouvre son panneau (verdict, chiffres, radar de sortie) `[F-094]`.
+// Le scan automatique de tout l'écran reste une option, coupée par défaut. Rien ne tourne quand l'onglet est caché.
 (() => {
   if (window.__vigilLens) return;
   window.__vigilLens = true;
@@ -22,7 +22,7 @@
   const SITE = SITES.find(([, re]) => re.test(host)) || ["page", null, host];
   const IS_X = SITE[0] === "x";
 
-  const TEXT = { clean: "Clean", watch: "Watch", bundled: "Bundled", scan: "Scanning", none: "No read" };
+  const TEXT = { clean: "Clean", watch: "Watch", bundled: "Bundled", scan: "Scanning", none: "No read", idle: "Scan" };
   // Le symbole de chaque verdict, en pixels, identique à celui du site : un point seul, un point cerclé, trois points groupés `[F-092]`
   const GLYPH = {
     clean: [".......", "..XXX..", ".XXXXX.", ".XXXXX.", ".XXXXX.", "..XXX..", "......."],
@@ -30,6 +30,8 @@
     bundled: ["..XX...", "..XX...", ".......", "XX...XX", "XX...XX", ".......", "......."],
     scan: [".......", ".......", "..XXX..", "..XXX..", "..XXX..", ".......", "......."],
     none: [".......", ".......", ".......", ".XXXXX.", ".......", ".......", "......."],
+    // pas encore lu : le V de Vigil, en pixels
+    idle: ["X.....X", "X.....X", ".X...X.", ".X...X.", "..X.X..", "..X.X..", "...X..."],
   };
   const SVG_NS = "http://www.w3.org/2000/svg";
   function glyph(k) {
@@ -71,7 +73,7 @@
       });
     }
     const get = (p, ms) => fetch(TEST_API + p, { signal: AbortSignal.timeout(ms) }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-    if (msg.type === "verdicts") return get(`/api/lens?a=${msg.addrs.join(",")}`, 12000).then((j) => j?.results || {});
+    if (msg.type === "verdicts") return get(`/api/lens?a=${msg.addrs.join(",")}${msg.peek ? "&peek=1" : ""}`, 12000).then((j) => j?.results || {});
     if (msg.type === "detail") return Promise.all([get(`/api/radar/${msg.mint}`, 15000), get(`/api/scan/${msg.mint}?depth=quick`, 15000)]).then(([radar, scan]) => ({ radar, scan }));
     if (msg.type === "open") return window.open(`${TEST_API}/token/${msg.mint}`, "_blank", "noopener"), Promise.resolve({});
     return Promise.resolve({});
@@ -131,12 +133,28 @@
   const REFRESH = 150_000; // un verdict connu est relu toutes les 2 min 30 (un Watch peut devenir Bundled)
   const MAX_TRIES = 40; // ~8 min de scan sans réponse : on affiche « No read »
   let running = false;
+  let autoScan = false; // réglage « Scan every token automatically » (coupé par défaut) `[F-094]`
+  const chosen = new Set(); // tokens qu'on a cliqués : lus, puis relus quand ils réapparaissent (gardés entre les pages)
+  let pageAddr = null; // token de la page en cours (pump.fun/coin/…, Axiom /meme/…) : lu d'office, c'est déjà un choix
 
-  const kindOf = (s) => (s?.d?.verdict ? s.d.verdict : s?.failed ? "none" : "scan");
+  const wantsRead = (a) => autoScan || chosen.has(a) || a === pageAddr;
+  function kindOf(a) {
+    const s = state.get(a);
+    if (s?.d?.verdict) return s.d.verdict;
+    if (s?.failed) return "none";
+    return wantsRead(a) ? "scan" : "idle";
+  }
+  function choose(a) {
+    if (!a || chosen.has(a)) return;
+    chosen.add(a);
+    retry.delete(a);
+    if (state.get(a)?.failed) state.delete(a);
+    store.set("local", { chosen: [...chosen].slice(-400) });
+  }
 
   // --- badges ---
-  function paint(el, s) {
-    const k = kindOf(s);
+  function paint(el) {
+    const k = kindOf(el.dataset.vglAddr);
     if (el.dataset.v === k) return;
     el.dataset.v = k;
     el.className = `vgl-b vgl-${k}${el.classList.contains("vgl-abs") ? " vgl-abs" : ""}`;
@@ -158,7 +176,7 @@
       if (m.addr !== a) continue;
       if (s && s.d && s.d.mint === null) drop(m); // pas un token (wallet, programme…) : pas de badge
       else if (m.solo && s?.d?.mint && s.d.mint === pageMint()) drop(m); // le token de la page : le panneau suffit
-      else paint(m.badge, s);
+      else paint(m.badge);
     }
     if (hoverEl && hoverEl.dataset.vglAddr === a) showTip(hoverEl);
   }
@@ -169,7 +187,7 @@
     badge.className = "vgl-b";
     badge.dataset.vglAddr = addr;
     badge.setAttribute("role", "button");
-    paint(badge, s);
+    paint(badge);
     const m = { addr, anchor, badge, place, solo };
     mounts.add(m);
     place(badge);
@@ -184,6 +202,7 @@
         if (e.isIntersecting) {
           visible.add(e.target);
           need(e.target.dataset.vglAddr, Date.now());
+          peekLater(e.target.dataset.vglAddr);
           any = true;
         } else visible.delete(e.target);
       }
@@ -193,7 +212,7 @@
   );
 
   function need(a, now) {
-    if (!a || inflight.has(a)) return;
+    if (!a || inflight.has(a) || !wantsRead(a)) return;
     const s = state.get(a);
     if (s && s.d && s.d.mint === null) return;
     if (s && s.failed) return;
@@ -201,6 +220,34 @@
     const r = retry.get(a);
     if (r && now < r.t) return;
     wanted.add(a);
+  }
+  // Lecture légère des tokens à l'écran, sans scan : écarte les wallets (pas de marque) et montre tout de suite
+  // les verdicts que Vigil connaît déjà. Le vrai scan n'a lieu qu'au clic `[F-094]`
+  const peeked = new Set(), peekWanted = new Set();
+  let peekTimer = null;
+  function peekLater(a) {
+    if (!a || peeked.has(a) || state.has(a) || wantsRead(a)) return;
+    peekWanted.add(a);
+    if (!peekTimer) peekTimer = setTimeout(peekFlush, 250);
+  }
+  async function peekFlush() {
+    peekTimer = null;
+    if (dead || !peekWanted.size) return;
+    const addrs = [...peekWanted].slice(0, 30);
+    for (const a of addrs) {
+      peekWanted.delete(a);
+      peeked.add(a);
+    }
+    const res = await send({ type: "verdicts", addrs, peek: true });
+    const now = Date.now();
+    for (const a of addrs) {
+      const d = res && res[a];
+      if (!d || state.get(a)?.d?.verdict) continue;
+      if (d.mint === null || d.verdict || !state.has(a)) state.set(a, { d, at: now });
+      paintAddr(a);
+    }
+    statsSoon();
+    if (peekWanted.size) peekTimer = setTimeout(peekFlush, 250);
   }
   let flushTimer = null;
   function flushSoon() {
@@ -228,14 +275,13 @@
         if (d) state.set(a, { d, at: now });
         const n = (retry.get(a)?.n || 0) + 1;
         if (n > MAX_TRIES && !prev?.d?.verdict) state.set(a, { d: d || prev?.d || null, at: now, failed: true });
-        else retry.set(a, { n, t: now + (n < 4 ? 3000 : n < 10 ? 6000 : 15000) });
+        // un token cliqué est relu toutes les 1,5 s : le verdict arrive dès que le scan finit
+        else retry.set(a, { n, t: now + (chosen.has(a) || a === pageAddr ? (n < 10 ? 1500 : n < 16 ? 4000 : 12000) : n < 4 ? 3000 : n < 10 ? 6000 : 15000) });
       }
       paintAddr(a);
     }
-    if (panelAddr && addrs.includes(panelAddr)) {
-      renderPanel();
-      for (const m of [...mounts]) if (m.solo && state.get(m.addr)?.d?.mint === pageMint()) drop(m);
-    }
+    if (panelAddr && addrs.includes(panelAddr)) renderPanel();
+    if (pageAddr && addrs.includes(pageAddr)) for (const m of [...mounts]) if (m.solo && state.get(m.addr)?.d?.mint === pageMint()) drop(m);
     statsSoon();
     flushSoon();
   }
@@ -267,7 +313,7 @@
   let tip = null, hoverEl = null, hoverQueued = false, mx = -1, my = -1;
   function showTip(el) {
     const s = state.get(el.dataset.vglAddr);
-    const k = kindOf(s);
+    const k = kindOf(el.dataset.vglAddr);
     if (!tip) {
       tip = document.createElement("div");
       tip.className = "vgl-tip";
@@ -276,7 +322,10 @@
     if (!tip.isConnected) document.documentElement.appendChild(tip);
     const b = document.createElement("b");
     const lines = [];
-    if (k === "scan") {
+    if (k === "idle") {
+      b.textContent = "Vigil · Click to scan this token";
+      lines.push("Reads this launch only: the first ten seconds of buys, the dev's past launches, who funded the first wallets. A few seconds.");
+    } else if (k === "scan") {
       b.textContent = "Vigil is reading this token…";
       lines.push("Launch wallets, the dev's past launches, who funded the first buyers.");
     } else if (k === "none") {
@@ -286,7 +335,7 @@
       b.textContent = `Vigil · ${TEXT[k]}${s.d.symbol ? ` · ${s.d.symbol}` : ""}`;
       b.className = `vgl-${k}`;
       if (s.d.reason) lines.push(s.d.reason);
-      lines.push("Click for the full scan and the exit radar.");
+      lines.push("Click for the numbers and the exit radar. Ctrl+click opens the full scan.");
     }
     tip.replaceChildren(b, ...lines.map((t) => Object.assign(document.createElement("span"), { textContent: t })));
     tip.style.display = "block";
@@ -301,6 +350,8 @@
     hoverQueued = false;
     const hit = running ? hitAt(mx, my) : null;
     if (hit !== hoverEl) {
+      if (hoverEl) delete hoverEl.dataset.hot;
+      if (hit) hit.dataset.hot = "1";
       hoverEl = hit;
       if (hit) showTip(hit);
       else hideTip();
@@ -316,22 +367,29 @@
   };
   const onScroll = () => {
     if (hoverEl) {
+      delete hoverEl.dataset.hot;
       hoverEl = null;
       hideTip();
     }
   };
-  // Clic sur un badge : on ouvre le scan complet, et la ligne du site ne reçoit pas le clic
+  // Clic sur une marque : on lit CE token et on ouvre son panneau ; la ligne du site ne reçoit pas le clic.
+  // Ctrl+clic ou clic molette : le scan complet dans un nouvel onglet.
   const onPress = (e) => {
     if (!running || !visible.size || (e.button !== undefined && e.button > 1)) return;
     const el = hitAt(e.clientX, e.clientY);
     if (!el) return;
     e.preventDefault();
     e.stopImmediatePropagation();
-    if (e.type === "click" || e.type === "auxclick") {
-      const s = state.get(el.dataset.vglAddr);
-      const mint = s?.d?.mint;
-      if (mint && IS_B58.test(mint)) send({ type: "open", mint });
-    }
+    if (e.type !== "click" && e.type !== "auxclick") return;
+    const a = el.dataset.vglAddr;
+    const mint = state.get(a)?.d?.mint;
+    if ((e.type === "auxclick" || e.ctrlKey || e.metaKey) && mint && IS_B58.test(mint)) return send({ type: "open", mint });
+    choose(a);
+    paintAddr(a);
+    need(a, Date.now());
+    flushSoon();
+    openPanel(a);
+    statsSoon();
   };
 
   // --- parcours de la page ---
@@ -409,7 +467,7 @@
       const addr = addrFromHref(a.getAttribute("href"));
       if (!addr) continue;
       // pas de badge sur les liens vers la page en cours hors des listes (le panneau s'en charge)
-      if (addr === panelAddr && !a.closest("table, [role=row], li")) continue;
+      if (addr === pageAddr && !a.closest("table, [role=row], li")) continue;
       // liens vides : on ignore les petites icônes, mais on garde les liens posés sur toute une ligne (listes pump.fun)
       const empty = !a.textContent.trim() && !a.querySelector("img");
       if (empty && !(a.offsetHeight >= 40 && a.offsetWidth > 140)) continue;
@@ -509,12 +567,12 @@
 
   // --- compteurs pour la fenêtre de l'extension et l'icône (nombre de Bundled à l'écran) ---
   function stats() {
-    const c = { clean: 0, watch: 0, bundled: 0, scan: 0, none: 0 };
+    const c = { clean: 0, watch: 0, bundled: 0, scan: 0, none: 0, idle: 0 };
     const seen = new Set();
     for (const m of mounts) {
       if (seen.has(m.addr) || !m.anchor.isConnected) continue;
       seen.add(m.addr);
-      c[kindOf(state.get(m.addr))]++;
+      c[kindOf(m.addr)]++;
     }
     return c;
   }
@@ -533,7 +591,7 @@
   }
 
   // --- panneau flottant sur la page d'un token ---
-  let panelAddr = null, panelHost = null, panelRoot = null, lastPath = "", panelMin = false;
+  let panelAddr = null, panelHost = null, panelRoot = null, lastPath = "", panelMin = false, panelClosed = false;
   const detailCache = new Map(); // mint -> { det, at }
   const PANEL_CSS = `
     :host{all:initial}
@@ -548,7 +606,8 @@
     .v svg{width:8px;height:8px;fill:currentColor;shape-rendering:crispEdges}
     .p[data-v=scan] .v svg{animation:pl 1s steps(2) infinite}@keyframes pl{50%{opacity:.25}}
     button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
-    .mn{margin-left:auto;color:#9A8BAE;width:22px;height:22px;border-radius:6px}.mn:hover{background:#1A1420;color:#F3EEF9}
+    .mn{margin-left:auto;color:#9A8BAE;width:22px;height:22px;border-radius:6px}.mn:hover,.cl:hover{background:#1A1420;color:#F3EEF9}
+    .cl{color:#9A8BAE;width:22px;height:22px;border-radius:6px;font-size:11px}
     .tk{display:flex;align-items:center;gap:8px;margin-top:10px;color:#9A8BAE}.tk .sym{color:#F3EEF9;font-weight:700}
     .ca{margin-left:auto;font:500 11px ui-monospace,Consolas,monospace;color:#9A8BAE;border:1px solid #2A1E34;border-radius:7px;padding:2px 7px}.ca:hover{color:#F3EEF9;border-color:#4A3460}
     .r{color:#C9BEDA;margin:8px 0 0}
@@ -583,7 +642,7 @@
       <div class="h">
         <svg class="logo" viewBox="0 0 100 84" aria-hidden="true"><defs><linearGradient id="vg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9232F1"/><stop offset="1" stop-color="#F22C7B"/></linearGradient></defs><path d="M0 0 L50 84 L100 0 C80 9 60 27 50 50 C40 27 20 9 0 0 Z" fill="url(#vg)"/></svg>
         <b>Vigil</b><span class="v"></span>
-        <button class="mn" type="button"></button>
+        <button class="mn" type="button"></button><button class="cl" type="button" title="Close">✕</button>
       </div>
       <div class="body">
         <div class="tk"><span class="sym"></span><button class="ca" type="button" title="Copy the contract address"></button></div>
@@ -598,6 +657,10 @@
     $(".mn").addEventListener("click", () => {
       panelMin = !panelMin;
       store.set("local", { panelMin });
+      renderPanel();
+    });
+    $(".cl").addEventListener("click", () => {
+      panelClosed = true;
       renderPanel();
     });
     $(".ca").addEventListener("click", () => {
@@ -645,12 +708,15 @@
     panelHost.style.right = "auto";
     panelHost.style.bottom = "auto";
   }
-  const pageMint = () => (panelAddr ? state.get(panelAddr)?.d?.mint || panelAddr : null);
+  const pageMint = () => (pageAddr ? state.get(pageAddr)?.d?.mint || pageAddr : null);
   function checkPage() {
     const path = location.pathname + location.search;
     if (path === lastPath) return;
     lastPath = path;
-    panelAddr = IS_X ? null : addrFromUrl(new URL(location.href));
+    pageAddr = IS_X ? null : addrFromUrl(new URL(location.href));
+    // nouvelle page : le panneau montre le token de la page (s'il y en a un)
+    panelAddr = pageAddr;
+    panelClosed = false;
     if (!panelAddr) {
       if (panelHost) panelHost.hidden = true;
       return;
@@ -660,17 +726,23 @@
     need(panelAddr, Date.now());
     flushSoon();
   }
+  function openPanel(a) {
+    panelAddr = a;
+    panelClosed = false;
+    ensurePanel();
+    renderPanel();
+  }
   function renderPanel() {
     if (!panelRoot) return;
     const s = panelAddr ? state.get(panelAddr) : null;
     // page d'un wallet, d'un programme… : ce n'est pas un token, pas de panneau
-    if (!panelAddr || !running || (s && s.d && s.d.mint === null)) {
+    if (!panelAddr || !running || panelClosed || (s && s.d && s.d.mint === null)) {
       panelHost.hidden = true;
       return;
     }
     panelHost.hidden = false;
     const $ = (q) => panelRoot.querySelector(q);
-    const k = kindOf(s), d = s?.d;
+    const k = kindOf(panelAddr), d = s?.d;
     const p = $(".p");
     p.dataset.v = k;
     p.classList.toggle("min", panelMin);
@@ -694,8 +766,19 @@
     if (c && Date.now() - c.at < 20000) return;
     if (c?.loading) return;
     detailCache.set(d.mint, { ...(c || {}), loading: true, at: c?.at || 0 });
+    const forAddr = panelAddr;
     send({ type: "detail", mint: d.mint }).then((det) => {
       detailCache.set(d.mint, { det: det && (det.radar || det.scan) ? det : c?.det || null, at: Date.now() });
+      // le scan rapide renvoie déjà le verdict : on l'affiche sans attendre la prochaine relance
+      const sc = det?.scan;
+      if (sc?.verdict && !state.get(forAddr)?.d?.verdict) {
+        const prev = state.get(forAddr)?.d || {};
+        state.set(forAddr, { d: { ...prev, mint: d.mint, verdict: sc.verdict, reason: sc.reason, depth: sc.depth, pending: false, symbol: prev.symbol || sc.market?.symbol || null }, at: Date.now() });
+        retry.delete(forAddr);
+        paintAddr(forAddr);
+        renderPanel();
+        statsSoon();
+      }
       if (state.get(panelAddr)?.d?.mint === d.mint) fillDetail(detailCache.get(d.mint).det);
     });
   }
@@ -774,15 +857,26 @@
     dead = true;
     io.disconnect();
   }
-  const DEF = { enabled: true, off: [], showClean: true };
+  const DEF = { enabled: true, off: [], showClean: true, autoScan: false };
   function apply(s) {
     if (dead) return;
     document.documentElement.toggleAttribute("data-vgl-noclean", s.showClean === false);
+    if (!!s.autoScan !== autoScan) {
+      autoScan = !!s.autoScan;
+      for (const m of mounts) paint(m.badge);
+      const now = Date.now();
+      for (const el of visible) need(el.dataset.vglAddr, now);
+      flushSoon();
+      statsSoon();
+    }
     const on = s.enabled !== false && !(s.off || []).includes(SITE[0]);
     if (on) start();
     else stop();
   }
-  store.get("sync", DEF).then(apply);
+  store.get("local", { chosen: [] }).then(({ chosen: c }) => {
+    for (const a of c || []) if (IS_B58.test(a)) chosen.add(a);
+    store.get("sync", DEF).then(apply);
+  });
   if (hasExt) {
     chrome.storage.onChanged.addListener((_c, area) => {
       if (area === "sync" && chrome.runtime?.id) store.get("sync", DEF).then(apply);
@@ -791,7 +885,7 @@
     chrome.runtime.onMessage.addListener((msg, _sender, reply) => {
       if (msg?.type !== "page") return false;
       const t = panelAddr ? state.get(panelAddr) : null;
-      reply({ site: SITE[0], siteName: SITE[2], running, stats: stats(), token: t?.d?.mint ? { mint: t.d.mint, symbol: t.d.symbol, kind: kindOf(t), reason: t.d.reason } : null });
+      reply({ site: SITE[0], siteName: SITE[2], running, autoScan, stats: stats(), token: t?.d?.mint ? { mint: t.d.mint, symbol: t.d.symbol, kind: kindOf(panelAddr), reason: t.d.reason } : null });
       return false;
     });
   }

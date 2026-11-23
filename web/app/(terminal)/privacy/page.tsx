@@ -11,13 +11,14 @@ export default function Page() {
 
       <section>
         <h2>The short version</h2>
-        <p>Vigil reads the Solana token addresses shown on the pages where it runs, sends those addresses to Vigil&apos;s server, and shows you the verdict. That is all it sends. It never reads your wallet, your browsing history, your cookies or anything you type.</p>
+        <p>Vigil reads the Solana token addresses shown on the pages where it runs and asks Vigil&apos;s server about them. A full read starts only on the token you click. That is all it sends. It never reads your wallet, your browsing history, your cookies or anything you type.</p>
       </section>
 
       <section>
         <h2>What the extension sends</h2>
         <ul>
-          <li><b>Token addresses</b> visible on Axiom, GMGN, pump.fun, DexScreener, X, Padre, Photon and BullX, so the server can return a Clean, Watch or Bundled verdict.</li>
+          <li><b>Token addresses</b> visible on Axiom, GMGN, pump.fun, DexScreener, X, Padre, Photon and BullX, for a light check: is it a token, and does Vigil already know its verdict. No scan starts from this.</li>
+          <li><b>The address of a token you click</b>, so the server reads its launch and returns a Clean, Watch or Bundled verdict. If you turn on automatic scan in the extension&apos;s window, every token on screen is read this way.</li>
           <li>Nothing else: no page content, no URLs of other sites, no identifiers, no account.</li>
         </ul>
       </section>
@@ -25,8 +26,8 @@ export default function Page() {
       <section>
         <h2>What the extension stores</h2>
         <ul>
-          <li><b>One setting</b> in your browser&apos;s local storage: the address of the Vigil server to ask. It never leaves your computer.</li>
-          <li>Whether you minimised the panel, for the current tab only.</li>
+          <li><b>Your settings</b> in your browser&apos;s storage: Vigil on or off for each site, automatic scan, Clean badges shown or hidden, and the Vigil server to ask. Chrome may sync these settings between your own browsers.</li>
+          <li><b>The tokens you chose to scan</b> (up to 400 addresses) and where you put the panel, in your browser only, so they stay read when you come back.</li>
         </ul>
       </section>
 
