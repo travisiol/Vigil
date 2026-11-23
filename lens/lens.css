@@ -1,0 +1,84 @@
+/* Vigil Lens — styles posés par le manifest (jamais bloqués par la CSP des sites). Tout est préfixé vgl-. */
+.vgl-b {
+  all: initial;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+  padding: 0 7px;
+  margin: 0 0 0 6px;
+  flex: none;
+  align-self: center;
+  width: max-content !important;
+  box-sizing: border-box;
+  border-radius: 999px;
+  font: 600 10.5px/1 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif !important;
+  letter-spacing: 0.01em;
+  vertical-align: middle;
+  cursor: pointer;
+  white-space: nowrap;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #0b0a0f;
+  color: #9a8bae;
+  position: relative;
+  z-index: 2;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.vgl-b .vgl-g {
+  all: initial;
+  color: inherit;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  fill: currentColor;
+  shape-rendering: crispEdges;
+  flex: none;
+}
+.vgl-b .vgl-t {
+  all: initial;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  cursor: inherit;
+}
+.vgl-b.vgl-clean { color: #2ef0c8; border-color: rgba(46, 240, 200, 0.4); background: #0b1714; }
+.vgl-b.vgl-watch { color: #ffb21f; border-color: rgba(255, 178, 31, 0.4); background: #1a1408; }
+.vgl-b.vgl-bundled { color: #ff4d4d; border-color: rgba(255, 77, 77, 0.45); background: #1d0c0e; }
+.vgl-b.vgl-none { color: #7d7290; border-style: dashed; }
+.vgl-b.vgl-scan .vgl-g { animation: vgl-pulse 1s steps(2) infinite; }
+.vgl-b.vgl-abs { position: absolute !important; top: 6px; right: 6px; margin: 0; }
+@keyframes vgl-pulse { 50% { opacity: 0.25; } }
+
+/* Sites en thème clair (X de jour, etc.) : mêmes symboles, couleurs lisibles sur blanc */
+html[data-vgl-theme="light"] .vgl-b { background: #fff; border-color: rgba(0, 0, 0, 0.14); color: #5d556c; }
+html[data-vgl-theme="light"] .vgl-b.vgl-clean { color: #067a64; background: #e8fbf6; border-color: #93e3d1; }
+html[data-vgl-theme="light"] .vgl-b.vgl-watch { color: #9a5a00; background: #fff4de; border-color: #f2c977; }
+html[data-vgl-theme="light"] .vgl-b.vgl-bundled { color: #c41c1c; background: #ffeded; border-color: #f2a0a0; }
+
+/* Réglage « Show Clean badges » coupé : on ne garde que ce qui demande de l'attention */
+html[data-vgl-noclean] .vgl-b.vgl-clean { display: none !important; }
+
+.vgl-tip {
+  all: initial;
+  position: fixed;
+  z-index: 2147483647;
+  max-width: 280px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #0b0a0f;
+  border: 1px solid #2a1e34;
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.8);
+  font: 500 12px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #f3eef9;
+  pointer-events: none;
+  display: none;
+}
+.vgl-tip b { all: initial; font: inherit; font-weight: 700; color: #f3eef9; display: block; }
+.vgl-tip b.vgl-clean { color: #2ef0c8; }
+.vgl-tip b.vgl-watch { color: #ffb21f; }
+.vgl-tip b.vgl-bundled { color: #ff4d4d; }
+.vgl-tip span { all: initial; font: inherit; color: #9a8bae; display: block; margin-top: 4px; }
+
+#vgl-panel { all: initial; position: fixed; right: 16px; bottom: 16px; z-index: 2147483646; display: block; }
+#vgl-panel[hidden] { display: none !important; }

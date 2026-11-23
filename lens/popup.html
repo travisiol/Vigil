@@ -2,37 +2,84 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <title>Vigil</title>
     <style>
-      body { margin: 0; width: 300px; background: #0b0a0f; color: #f5f3fa; font: 500 13px/1.5 Inter, system-ui, sans-serif; }
+      :root { --bg: #07060b; --s1: #120e17; --line: #2a1e34; --ink: #f3eef9; --mut: #9a8bae; --dim: #6e6380; --glow: #be80ff; --ok: #2ef0c8; --wa: #ffb21f; --bad: #ff4d4d; }
+      * { box-sizing: border-box; }
+      body { margin: 0; width: 320px; background: var(--bg); color: var(--ink); font: 500 13px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
       .w { padding: 16px; }
-      h1 { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; font-size: 16px; }
-      h1 img { width: 20px; height: 20px; }
-      p { margin: 0 0 12px; color: #a6a1b8; font-size: 12.5px; }
-      ul { margin: 0 0 14px; padding: 0; list-style: none; display: grid; gap: 6px; }
-      li { display: flex; justify-content: space-between; padding: 8px 10px; border-radius: 10px; background: #13111a; border: 1px solid #24212e; }
-      li span { color: #07e7c3; font-size: 12px; }
-      label { display: block; font-size: 11.5px; color: #a6a1b8; margin-bottom: 4px; }
-      input { width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 9px; border: 1px solid #24212e; background: #000; color: #f5f3fa; font: 12px ui-monospace, monospace; }
-      a { display: block; margin-top: 12px; text-align: center; padding: 9px; border-radius: 10px; color: #fff; text-decoration: none; font-weight: 700; background: linear-gradient(135deg, #9232f1, #bc33c9 50%, #f22c7b); }
-      small { display: block; margin-top: 10px; color: #6e6880; font-size: 11px; }
+      header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+      header svg { width: 18px; height: 15px; }
+      header b { font-size: 15px; letter-spacing: 0.01em; }
+      header small { margin-left: auto; color: var(--dim); font: 11px ui-monospace, Consolas, monospace; }
+      h2 { margin: 0 0 8px; font-size: 11px; font-weight: 600; color: var(--mut); text-transform: uppercase; letter-spacing: 0.08em; }
+      .counts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+      .c { padding: 9px 8px; border-radius: 10px; background: var(--s1); border: 1px solid var(--line); }
+      .c strong { display: block; font-size: 20px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+      .c span { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; }
+      .c svg { width: 8px; height: 8px; fill: currentColor; shape-rendering: crispEdges; }
+      .c.ok span { color: var(--ok); } .c.wa span { color: var(--wa); } .c.bad span { color: var(--bad); }
+      .c.bad.hot { border-color: rgba(255, 77, 77, 0.5); background: #1d0c0e; }
+      .note { margin: 8px 0 0; color: var(--dim); font-size: 11.5px; }
+      .tok { margin-top: 10px; padding: 10px 11px; border-radius: 10px; background: var(--s1); border: 1px solid var(--line); border-left: 3px solid var(--glow); }
+      .tok.ok { border-left-color: var(--ok); } .tok.wa { border-left-color: var(--wa); } .tok.bad { border-left-color: var(--bad); }
+      .tok b { font-size: 13px; } .tok p { margin: 3px 0 0; color: var(--mut); font-size: 12px; }
+      .off { padding: 12px; border-radius: 10px; background: var(--s1); border: 1px solid var(--line); color: var(--mut); font-size: 12.5px; }
+      .off b { color: var(--ink); display: block; margin-bottom: 3px; }
+      section { margin-top: 16px; }
+      .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); }
+      .row:first-of-type { border-top: 0; }
+      .row label { cursor: pointer; } .row label small { display: block; color: var(--dim); font-size: 11px; }
+      .sw { appearance: none; width: 34px; height: 20px; border-radius: 999px; background: #2a1e34; position: relative; cursor: pointer; flex: none; margin: 0; transition: background 0.15s; }
+      .sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: var(--mut); transition: transform 0.15s, background 0.15s; }
+      .sw:checked { background: #6d2fb0; } .sw:checked::after { transform: translateX(14px); background: #fff; }
+      .sw:focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
+      .sites { display: flex; flex-wrap: wrap; gap: 5px; }
+      .sites span { padding: 3px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--mut); font-size: 11.5px; }
+      .sites span.on { color: var(--ink); border-color: #4a3460; }
+      .sites span i { font-style: normal; color: var(--dim); }
+      a.cta { display: block; margin-top: 16px; text-align: center; padding: 10px; border-radius: 10px; color: #fff; text-decoration: none; font-weight: 700; background: linear-gradient(135deg, #9232f1, #bc33c9 50%, #f22c7b); }
+      details { margin-top: 12px; color: var(--dim); font-size: 11.5px; }
+      summary { cursor: pointer; }
+      details label { display: block; margin: 8px 0 4px; }
+      input[type="url"] { width: 100%; padding: 7px 9px; border-radius: 8px; border: 1px solid var(--line); background: #000; color: var(--ink); font: 11.5px ui-monospace, Consolas, monospace; }
+      footer { margin-top: 12px; color: var(--dim); font-size: 11px; }
     </style>
   </head>
   <body>
     <div class="w">
-      <h1><img src="icons/icon32.png" alt="" />Vigil</h1>
-      <p>A rug verdict next to every Solana token you see. Hover a badge for the reason, click it for the full scan.</p>
-      <ul>
-        <li>pump.fun <span>on</span></li>
-        <li>Axiom <span>on</span></li>
-        <li>GMGN <span>on</span></li>
-        <li>DexScreener <span>on</span></li>
-        <li>Padre · Photon · BullX <span>beta</span></li>
-        <li>X <span>on</span></li>
-      </ul>
-      <label for="api">Vigil server</label>
-      <input id="api" spellcheck="false" />
-      <a id="site" href="https://vigil-eight-ecru.vercel.app" target="_blank" rel="noopener">Open Vigil</a>
-      <small>Read-only: Vigil only receives the token addresses shown on screen. Facts from the chain, not financial advice.</small>
+      <header>
+        <svg viewBox="0 0 100 84" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9232F1" /><stop offset="1" stop-color="#F22C7B" /></linearGradient></defs><path d="M0 0 L50 84 L100 0 C80 9 60 27 50 50 C40 27 20 9 0 0 Z" fill="url(#g)" /></svg>
+        <b>Vigil</b><small id="ver"></small>
+      </header>
+
+      <div id="page"></div>
+
+      <section>
+        <h2>Settings</h2>
+        <div class="row" id="siteRow" hidden>
+          <label for="site"><span id="siteLabel">Vigil on this site</span><small>Badges and the token panel</small></label>
+          <input class="sw" type="checkbox" id="site" />
+        </div>
+        <div class="row">
+          <label for="clean">Show Clean badges<small>Off: only Watch and Bundled stay on screen</small></label>
+          <input class="sw" type="checkbox" id="clean" />
+        </div>
+      </section>
+
+      <section>
+        <h2>Works on</h2>
+        <div class="sites" id="sites"></div>
+      </section>
+
+      <a class="cta" id="open" href="https://vigil-eight-ecru.vercel.app" target="_blank" rel="noopener">How Vigil reads a launch</a>
+
+      <details>
+        <summary>Advanced</summary>
+        <label for="api">Vigil server</label>
+        <input id="api" type="url" spellcheck="false" />
+      </details>
+      <footer>Read-only. Vigil only receives the token addresses shown on screen. Facts from the chain, not financial advice.</footer>
     </div>
     <script src="popup.js"></script>
   </body>
