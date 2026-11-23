@@ -1,4 +1,5 @@
 import { cdn } from "@/lib/server/cdn";
+import { cors } from "@/lib/server/cors";
 import { exitRadar } from "@/lib/server/radar";
 import { cached, errorResponse, isMint, UserError } from "@/lib/server/rpc";
 
@@ -14,4 +15,4 @@ async function get(_req: Request, ctx: { params: Promise<{ mint: string }> }) {
 }
 
 // Cache partagé Vercel : 3 s, puis servi pendant le recalcul jusqu'à 30 s
-export const GET = cdn(3, 30, get);
+export const GET = cors(cdn(3, 30, get));
