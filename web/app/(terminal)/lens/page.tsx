@@ -12,7 +12,8 @@ const SITES = [
   { name: "Padre · Photon · BullX", where: "beta: token pages and token links" },
 ];
 
-/** Page d'installation de Vigil Lens (F-080). Chrome Web Store en attente : installation manuelle en 4 étapes. */
+/** Page d'installation de Vigil Lens (F-080). Installation depuis la fiche Chrome Web Store `[F-129]`. */
+const STORE_URL = "https://chromewebstore.google.com/detail/nakiioiplklgongjjhlhikaoojcjgceh";
 export default function Page() {
   return (
     <article className="lens">
@@ -20,26 +21,26 @@ export default function Page() {
         <span className="eyebrow mono">VIGIL · BROWSER EXTENSION · FREE</span>
         <h1>See the rug <span className="grad-text">before you click.</span></h1>
         <p className="mut">
-          Vigil puts a rug verdict next to every Solana token on Axiom, GMGN, pump.fun, DexScreener, X, and in beta on Padre, Photon and BullX. Hover it for the reason. Click it for the full scan and the exit radar.
+          Vigil puts a rug verdict next to every Solana token on Axiom, GMGN, pump.fun, DexScreener, X, and in beta on Padre, Photon and BullX. Click the V next to any token: Vigil reads its launch and seals it in seconds.
         </p>
         <div className="lens-badges" aria-label="The three verdicts">
           <Pill v="clean" /> <Pill v="watch" /> <Pill v="bundled" />
         </div>
         <div className="cta">
-          <a className="btn btn-main" href="/vigil-lens.zip" download>Download the extension</a>
+          <a className="btn btn-main" href={STORE_URL} target="_blank" rel="noopener">Add to Chrome</a>
           <Link className="btn btn-ghost" href="/app">Scan a token on the web</Link>
         </div>
-        <p className="mut lens-note">Works in Chrome, Brave, Edge, Arc and Opera. Chrome Web Store listing on the way: until then, it installs in four steps.</p>
+        <p className="mut lens-note">Free on the Chrome Web Store, checked by Google. Works in Chrome, Brave, Edge, Arc and Opera.</p>
       </div>
 
       <section className="lens-grid">
         <div className="card lens-card">
           <h2>Install in 4 steps</h2>
           <ol className="lens-steps">
-            <li><b>Download</b> the file above and unzip it. You get a folder named <code>vigil-lens</code>.</li>
-            <li>Open <code>chrome://extensions</code> in a new tab.</li>
-            <li>Turn on <b>Developer mode</b>, top right.</li>
-            <li>Click <b>Load unpacked</b> and pick the <code>vigil-lens</code> folder. Pin the V to your toolbar.</li>
+            <li>Open <a href={STORE_URL} target="_blank" rel="noopener" style={{ textDecoration: "underline" }}>Vigil on the Chrome Web Store</a>.</li>
+            <li>Click <b>Add to Chrome</b>, then <b>Add extension</b>.</li>
+            <li>Pin the V: puzzle icon in the toolbar, then the pin next to Vigil.</li>
+            <li>Open your terminal and click the V after any token's name.</li>
           </ol>
         </div>
         <div className="card lens-card">
