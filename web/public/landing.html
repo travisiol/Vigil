@@ -4,12 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vigil · A lantern for the trenches</title>
-<meta name="description" content="Vigil is a Chrome extension that lights up every Solana token you scroll past and stamps it Clean, Watch or Bundled, with the reason.">
+<meta name="description" content="Vigil is a Chrome extension: click the small V next to any Solana token and it reads the launch, then stamps it Clean, Watch or Bundled, with the reason.">
 <link rel="icon" href="/brand/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@400;500;600&family=Martian+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+[hidden]{display:none!important}
 /* VOICE   a night watchman's notebook: few words, exact, a little solemn; one red seal when it matters
    IDEA    Lantern: the trenches are a night of dithered noise; Vigil is a pixel lantern whose V-shaped beam turns noise into verdicts
    PICTURE a hanging 1-bit lantern swinging over an endless field of token tiles; wherever the beam falls, tiles resolve and get sealed
@@ -134,7 +135,7 @@ footer nav{display:flex;gap:22px}
   <div class="wrap nav">
     <a class="logo" href="#top" aria-label="Vigil home"><svg aria-hidden="true"><use href="#vmark"/></svg>Vigil</a>
     <nav aria-label="Main"><a href="#seals">The seals</a><a href="#shift">How it works</a><a href="#reads">What it reads</a><a href="#oath">Read-only</a></nav>
-    <a class="btn btn-main" href="#install">Add to Chrome</a>
+    <a class="btn btn-main" href="#install" data-store>Add to Chrome</a>
   </div>
 </header>
 
@@ -146,8 +147,8 @@ footer nav{display:flex;gap:22px}
     <div class="wrap">
       <h1 id="headline" aria-label="A lantern for the trenches."><span class="w">A</span> <span class="w">lantern</span> <span class="w">for</span> <span class="w">the</span> <span class="w">trenches.</span></h1>
       <div class="hero-side">
-        <p class="lead">Vigil is a Chrome extension. Every Solana token you scroll past gets lit up and stamped Clean, Watch or Bundled, with the reason in one sentence.</p>
-        <div class="cta"><a class="btn btn-main" href="#install"><svg aria-hidden="true"><use href="#chrome"/></svg>Add to Chrome</a></div>
+        <p class="lead">Vigil is a Chrome extension. Click the small V next to any Solana token: it reads the launch and stamps it Clean, Watch or Bundled, with the reason in one sentence.</p>
+        <div class="cta"><a class="btn btn-main" href="#install" data-store><svg aria-hidden="true"><use href="#chrome"/></svg>Add to Chrome</a></div>
       </div>
     </div>
   </div>
@@ -210,7 +211,7 @@ footer nav{display:flex;gap:22px}
     <span class="mark">read-only</span>
     <h2>The lantern looks. It never touches.</h2>
     <div class="oath-list"><span><b>no</b> wallet connection</span><span><b>no</b> signature, ever</span><span><b>no</b> account</span><span><b>one</b> permission: storage</span><span><b>open</b> source</span></div>
-    <p class="lead">It only sends the token addresses on your screen, and reads the chain. <a href="/privacy">Privacy</a> · <a href="https://github.com/travisiol/Vigil/tree/main/lens">Read the code</a></p>
+    <p class="lead">It reads the chain only for the token you click, and sends nothing else. <a href="/privacy">Privacy</a> · <a href="https://github.com/travisiol/Vigil/tree/main/lens">Read the code</a></p>
   </div>
 </section>
 
@@ -220,10 +221,17 @@ footer nav{display:flex;gap:22px}
       <div>
         <span class="mark">add to chrome</span>
         <h2>Light it up in one minute.</h2>
-        <div class="cta"><a class="btn btn-main" href="/vigil-lens.zip" download><svg aria-hidden="true"><use href="#chrome"/></svg>Download Vigil</a></div>
-        <p class="small">Chrome, Brave, Edge, Arc and Opera. The Chrome Web Store listing is on its way; until then it installs in four steps.</p>
+        <div class="cta"><a class="btn btn-main" href="/vigil-lens.zip" download data-store data-store-label="Add to Chrome"><svg aria-hidden="true"><use href="#chrome"/></svg><span>Download Vigil</span></a></div>
+        <p class="small" data-when="zip">Chrome, Brave, Edge, Arc and Opera. The Chrome Web Store listing is on its way; until then it installs in four steps.</p>
+        <p class="small" data-when="store" hidden>Free on the Chrome Web Store, checked by Google. Works in Chrome, Brave, Edge, Arc and Opera.</p>
       </div>
-      <ol class="isteps">
+      <ol class="isteps" data-when="store" hidden>
+        <li><div><b>Open Vigil on the Chrome Web Store</b><span>The button on the left. Checked and installed by Google.</span></div></li>
+        <li><div><b>Click Add to Chrome</b><span>Chrome shows what Vigil reads: token addresses on the sites it supports.</span></div></li>
+        <li><div><b>Pin the V</b><span>Puzzle icon in the toolbar, then the pin next to Vigil.</span></div></li>
+        <li><div><b>Open your terminal</b><span>Click the V after any token's name. The seal lands in seconds.</span></div></li>
+      </ol>
+      <ol class="isteps" data-when="zip">
         <li><div><b>Unzip the file</b><span>You get a folder named <code>vigil-lens</code>.</span></div></li>
         <li><div><b>Open your extensions</b><span>Type <code>chrome://extensions</code> in the address bar.</span></div></li>
         <li><div><b>Turn on Developer mode</b><span>Top-right corner of the page.</span></div></li>
@@ -236,7 +244,7 @@ footer nav{display:flex;gap:22px}
 <section class="word-sec" id="final">
   <div class="word" id="word" aria-label="Vigil"><span class="v">V</span><span>I</span><span>G</span><span>I</span><span>L</span></div>
   <p class="lead">Always on watch.</p>
-  <a class="btn btn-main" href="#install"><svg aria-hidden="true"><use href="#chrome"/></svg>Add to Chrome</a>
+  <a class="btn btn-main" href="#install" data-store><svg aria-hidden="true"><use href="#chrome"/></svg>Add to Chrome</a>
 </section>
 </main>
 
@@ -251,6 +259,16 @@ footer nav{display:flex;gap:22px}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>
+/* Chrome Web Store listing: paste its address here once published. Every "Add to Chrome" button then opens it,
+   and the install card shows the store steps instead of the developer-mode ones `[F-097]` */
+const STORE_URL = '';
+if (STORE_URL) {
+  document.querySelectorAll('[data-store]').forEach((a) => {
+    a.href = STORE_URL; a.target = '_blank'; a.rel = 'noopener'; a.removeAttribute('download');
+    const label = a.dataset.storeLabel; if (label) a.querySelector('span').textContent = label;
+  });
+  document.querySelectorAll('[data-when]').forEach((el) => { el.hidden = el.dataset.when !== 'store'; });
+}
 {
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const touch = matchMedia('(hover: none)').matches;
