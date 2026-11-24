@@ -76,10 +76,9 @@
     if (msg.type === "verdicts") return get(`/api/lens?a=${msg.addrs.join(",")}${msg.peek ? "&peek=1" : ""}`, 12000).then((j) => j?.results || {});
     if (msg.type === "detail") return Promise.all([get(`/api/radar/${msg.mint}`, 15000), get(`/api/scan/${msg.mint}?depth=quick`, 15000)]).then(([radar, scan]) => ({ radar, scan }));
     if (msg.type === "scanNow")
-      return get(`/api/scan/${msg.mint}?depth=quick`, 30000).then((sc) =>
+      return get(`/api/scan/${msg.mint}${msg.full ? "" : "?depth=quick"}`, msg.full ? 90000 : 30000).then((sc) =>
         sc?.verdict ? { data: { mint: msg.mint, verdict: sc.verdict, reason: sc.reason, depth: sc.depth, pending: false, symbol: sc.market?.symbol ?? null }, scan: sc } : { error: "no answer" },
       );
-    if (msg.type === "open") return window.open(`${TEST_API}/token/${msg.mint}`, "_blank", "noopener"), Promise.resolve({});
     return Promise.resolve({});
   }
   const store = {
@@ -140,13 +139,19 @@
   let autoScan = false; // réglage « Scan every token automatically » (coupé par défaut) `[F-094]`
   const chosen = new Set(); // tokens qu'on a cliqués : lus, puis relus quand ils réapparaissent (gardés entre les pages)
   let pageAddr = null; // token de la page en cours (pump.fun/coin/…, Axiom /meme/…) : son panneau propose le scan
-  let serverError = null; // dernier échec du serveur Vigil (affiché dans le panneau au lieu d'un « Scanning » sans fin)
+  let serverError = null;
+  // Tokens cliqués dont le scan complet tourne (traçage des premiers acheteurs et de qui les a financés).
+  // Un Clean du scan rapide n'est pas montré avant la fin : le traçage peut le changer en Bundled `[F-096]`
+  const tracing = new Set();
+  const traced = new Set(); // traçage déjà tenté (réussi ou non) : le résultat affiché est définitif // dernier échec du serveur Vigil (affiché dans le panneau au lieu d'un « Scanning » sans fin)
 
   // Seuls les tokens cliqués sont lus et affichés : un verdict déjà connu reste caché tant qu'on n'a pas cliqué `[F-094]`
   const wantsRead = (a) => autoScan || chosen.has(a);
   function kindOf(a) {
     const s = state.get(a);
     if (!wantsRead(a)) return "idle";
+    // un Clean qui n'a pas encore été confirmé par le traçage n'est jamais montré
+    if (s?.d?.verdict === "clean" && s.d.depth !== "full" && !autoScan && !traced.has(a)) return "scan";
     if (s?.d?.verdict) return s.d.verdict;
     if (s?.failed) return "none";
     return "scan";
@@ -221,6 +226,8 @@
   function need(a, now) {
     if (!a || inflight.has(a) || !wantsRead(a)) return;
     const s = state.get(a);
+    // token choisi dont on ne connaît qu'un Clean rapide : on lance le traçage qui le confirme (ou pas)
+    if (chosen.has(a) && !autoScan && s?.d?.verdict === "clean" && s.d.depth !== "full" && s.d.mint && !traced.has(a)) return void traceFull(a, s.d.mint);
     if (s && s.d && s.d.mint === null) return;
     if (s && s.failed) return;
     if (s && s.d && s.d.verdict && now - s.at < REFRESH) return;
@@ -334,6 +341,9 @@
     if (k === "idle") {
       b.textContent = "Vigil · Click to scan this token";
       lines.push("Reads this launch only: the first ten seconds of buys, the dev's past launches, who funded the first wallets. A few seconds.");
+    } else if (k === "scan" && (tracing.has(el.dataset.vglAddr) || s?.d?.verdict === "clean")) {
+      b.textContent = "Vigil is tracing this launch…";
+      lines.push("First checks are clean. Now following the first buyers and who funded them.");
     } else if (k === "scan") {
       b.textContent = "Vigil is reading this token…";
       lines.push("Launch wallets, the dev's past launches, who funded the first buyers.");
@@ -344,7 +354,7 @@
       b.textContent = `Vigil · ${TEXT[k]}${s.d.symbol ? ` · ${s.d.symbol}` : ""}`;
       b.className = `vgl-${k}`;
       if (s.d.reason) lines.push(s.d.reason);
-      lines.push("Click for the numbers and the exit radar. Ctrl+click opens the full scan.");
+      lines.push("Click for the numbers and the exit radar.");
     }
     tip.replaceChildren(b, ...lines.map((t) => Object.assign(document.createElement("span"), { textContent: t })));
     tip.style.display = "block";
@@ -382,7 +392,6 @@
     }
   };
   // Clic sur une marque : on lit CE token et on ouvre son panneau ; la ligne du site ne reçoit pas le clic.
-  // Ctrl+clic ou clic molette : le scan complet dans un nouvel onglet.
   const onPress = (e) => {
     if (!running || !visible.size || (e.button !== undefined && e.button > 1)) return;
     const el = hitAt(e.clientX, e.clientY);
@@ -390,10 +399,7 @@
     e.preventDefault();
     e.stopImmediatePropagation();
     if (e.type !== "click" && e.type !== "auxclick") return;
-    const a = el.dataset.vglAddr;
-    const mint = state.get(a)?.d?.mint;
-    if ((e.type === "auxclick" || e.ctrlKey || e.metaKey) && mint && IS_B58.test(mint)) return send({ type: "open", mint });
-    pick(a);
+    pick(el.dataset.vglAddr);
   };
   // Le token choisi : scan direct et prioritaire sur le serveur, verdict dès qu'il est prêt (pas de relances)
   function pick(a) {
@@ -402,7 +408,9 @@
     openPanel(a);
     statsSoon();
     const s = state.get(a);
-    if (s?.d?.verdict && Date.now() - s.at < REFRESH) return; // déjà lu (au survol, à l'instant) : affiché tout de suite
+    if (tracing.has(a)) return;
+    // déjà lu à fond, ou déjà à risque : affiché tout de suite
+    if (s?.d?.verdict && Date.now() - s.at < REFRESH && (s.d.depth === "full" || s.d.verdict !== "clean")) return;
     scanNow(a);
   }
   async function scanNow(a) {
@@ -421,10 +429,29 @@
       state.set(a, { d: { ...state.get(a)?.d, ...r.data }, at: Date.now() });
       retry.delete(a);
       if (r.scan) detailCache.set(mint, { det: { scan: r.scan, radar: detailCache.get(mint)?.det?.radar || null }, at: 0 });
+      // Watch et Bundled sont déjà des alertes (le traçage ne peut qu'en ajouter) ; un Clean attend la fin du traçage
+      if (r.data.verdict === "clean" && r.data.depth !== "full") traceFull(a, mint);
     } else {
       serverError = r?.error || "no answer";
       retry.set(a, { n: (retry.get(a)?.n || 0) + 1, t: Date.now() + 3000 });
     }
+    paintAddr(a);
+    if (panelAddr === a) renderPanel();
+    statsSoon();
+  }
+  async function traceFull(a, mint) {
+    if (tracing.has(a)) return;
+    tracing.add(a);
+    paintAddr(a);
+    if (panelAddr === a) renderPanel();
+    const r = await send({ type: "scanNow", mint, full: true });
+    tracing.delete(a);
+    traced.add(a);
+    if (r?.data?.verdict) {
+      state.set(a, { d: { ...state.get(a)?.d, ...r.data }, at: Date.now() });
+      if (r.scan) detailCache.set(mint, { det: { scan: r.scan, radar: detailCache.get(mint)?.det?.radar || null }, at: 0 });
+    }
+    // traçage impossible (serveur, délai) : on garde le Clean des premiers contrôles, sa raison le dit
     paintAddr(a);
     if (panelAddr === a) renderPanel();
     statsSoon();
@@ -687,7 +714,7 @@
         <p class="r"></p>
         <div class="g"></div>
         <div class="ra"></div>
-        <button class="o" type="button">Open the full scan →</button>
+        <button class="o" type="button">Scan this token</button>
         <div class="ft">Read-only · facts from the chain, not financial advice</div>
       </div>`;
     panelRoot.appendChild(p);
@@ -709,11 +736,7 @@
         setTimeout(() => renderPanel(), 1200);
       }).catch(() => {});
     });
-    $(".o").addEventListener("click", () => {
-      if (kindOf(panelAddr) === "idle") return pick(panelAddr);
-      const mint = state.get(panelAddr)?.d?.mint;
-      if (mint && IS_B58.test(mint)) send({ type: "open", mint });
-    });
+    $(".o").addEventListener("click", () => pick(panelAddr));
     // le panneau se déplace (il ne doit jamais cacher le bouton d'achat d'un terminal) et garde sa place
     let drag = null;
     $(".h").addEventListener("pointerdown", (e) => {
@@ -793,15 +816,16 @@
     $(".r").textContent =
       k === "idle" ? "Vigil reads this launch only when you ask: the first ten seconds of buys, the dev's past launches, who funded the first wallets."
       : k === "scan" && serverError ? `Vigil's server isn't answering (${serverError}). Check the server in Vigil's window; retrying…`
+      : k === "scan" && (tracing.has(panelAddr) || d?.verdict === "clean") ? "First checks are clean. Now tracing the first buyers and who funded them, to be sure (a few seconds)…"
       : k === "scan" ? "Reading the launch wallets, the dev's history and who funded the first buyers…"
       : k === "none" ? "Not enough on-chain activity to judge this launch yet."
       : d?.reason || "";
-    $(".o").textContent = k === "idle" ? "Scan this token" : "Open the full scan →";
-    $(".o").disabled = k !== "idle" && !d?.mint;
+    $(".o").hidden = k !== "idle";
     $(".g").hidden = k === "idle";
     $(".ra").hidden = k === "idle";
     if (panelMin || !d?.mint || k === "idle" || k === "scan") {
-      fillDetail(null);
+      // pendant le traçage : les chiffres des premiers contrôles, déjà connus
+      fillDetail(k === "scan" && d?.mint ? detailCache.get(d.mint)?.det || null : null);
       return;
     }
     const c = detailCache.get(d.mint);

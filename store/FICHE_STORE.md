@@ -50,7 +50,8 @@ Axiom, GMGN, pump.fun, DexScreener, Padre and X. Photon and BullX in beta.
 
 HOW IT WORKS
 • Nothing runs until you click. Click the V next to a token: its seal lands in a few seconds and the token panel opens with the numbers and the exit radar.
-• Hover a seal for the reason in one line. Ctrl+click opens the full scan.
+• A Clean seal is only given once Vigil has traced the first buyers and who funded them. Watch and Bundled show as soon as they are found.
+• Hover a seal for the reason in one line. Everything stays in the panel: no tab to open, no site to visit.
 • Nothing is read behind your back: only the tokens you click get a seal.
 • Want every token on screen read? Turn on automatic scan in the extension's window.
 • The icon shows how many Bundled tokens are on screen.

@@ -74,11 +74,12 @@ async function verdicts(list, peek = false) {
 }
 
 // Le token cliqué : scan rapide direct, prioritaire côté serveur, réponse dès que le verdict est prêt `[F-094]`
-async function scanNow(mint) {
+// full : le scan complet (traçage des premiers acheteurs et de leurs financements), pour confirmer un Clean `[F-096]`
+async function scanNow(mint, full = false) {
   if (!IS_B58.test(mint || "")) return { error: "not a token" };
   const base = await apiBase();
   try {
-    const sc = await getJson(`${base}/api/scan/${mint}?depth=quick`, 45_000);
+    const sc = await getJson(`${base}/api/scan/${mint}${full ? "" : "?depth=quick"}`, full ? 90_000 : 45_000);
     if (!sc?.verdict) return { error: "no verdict" };
     const data = { mint, verdict: sc.verdict, reason: sc.reason, depth: sc.depth, pending: false, symbol: sc.market?.symbol ?? null };
     cache.set(mint, { data, at: Date.now() });
@@ -111,18 +112,6 @@ async function detail(mint) {
   return { radar, scan };
 }
 
-// Ouvre le scan complet dans un nouvel onglet, juste à côté de celui du terminal
-async function open(mint, tab) {
-  if (!IS_B58.test(mint || "")) return;
-  const base = await apiBase();
-  const opts = { url: `${base}/token/${mint}` };
-  if (tab) {
-    opts.index = tab.index + 1;
-    opts.openerTabId = tab.id;
-  }
-  await chrome.tabs.create(opts).catch(() => chrome.tabs.create({ url: opts.url }));
-}
-
 // Sur l'icône de l'extension : le nombre de tokens Bundled à l'écran, en rouge
 function setStats(c, tab) {
   if (!tab?.id) return;
@@ -139,16 +128,13 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
       verdicts(msg.addrs, !!msg.peek).then(reply, () => reply({}));
       return true;
     case "scanNow":
-      scanNow(msg.mint).then(reply, () => reply({ error: "unreachable" }));
+      scanNow(msg.mint, !!msg.full).then(reply, () => reply({ error: "unreachable" }));
       return true;
     case "health":
       health().then(reply);
       return true;
     case "detail":
       detail(msg.mint).then(reply, () => reply({}));
-      return true;
-    case "open":
-      open(msg.mint, tab).finally(() => reply({}));
       return true;
     case "stats":
       setStats(msg.c, tab);
