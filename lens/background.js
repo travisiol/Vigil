@@ -8,6 +8,7 @@ const PENDING_TTL = 1_200; // scan en cours : on redemande au serveur au bout de
 const IS_B58 = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
 const cache = new Map(); // adresse -> { data, at }
+let lastError = null;
 const inflight = new Map(); // adresse -> promesse de l'appel en cours (deux onglets ne déclenchent qu'un appel)
 
 // Serveur : le site en ligne, ou un autre réglé dans la fenêtre de l'extension (https, ou localhost pour le développement)
@@ -51,12 +52,16 @@ async function verdicts(list, peek = false) {
           const t = Date.now();
           for (const a of chunk) if (j?.results?.[a]) cache.set(a, { data: j.results[a], at: t, peek });
         })
-        .catch(() => {}) // réseau coupé ou serveur en erreur : la page redemandera plus tard
+        .catch((e) => {
+          // réseau coupé ou serveur en erreur : la page redemandera plus tard, et le dit
+          lastError = e?.name === "TimeoutError" ? "timeout" : /^\d+$/.test(e?.message || "") ? `HTTP ${e.message}` : "unreachable";
+        })
         .finally(() => chunk.forEach((a) => inflight.delete(key(a))));
       chunk.forEach((a) => inflight.set(key(a), p));
       waits.add(p);
     }
   }
+  lastError = null;
   await Promise.all(waits);
   for (const a of addrs) {
     if (out[a]) continue;
@@ -64,7 +69,35 @@ async function verdicts(list, peek = false) {
     if (c && c.at >= start) out[a] = c.data;
   }
   while (cache.size > 5000) cache.delete(cache.keys().next().value);
+  if (lastError) out.__error = lastError;
   return out;
+}
+
+// Le token cliqué : scan rapide direct, prioritaire côté serveur, réponse dès que le verdict est prêt `[F-094]`
+async function scanNow(mint) {
+  if (!IS_B58.test(mint || "")) return { error: "not a token" };
+  const base = await apiBase();
+  try {
+    const sc = await getJson(`${base}/api/scan/${mint}?depth=quick`, 45_000);
+    if (!sc?.verdict) return { error: "no verdict" };
+    const data = { mint, verdict: sc.verdict, reason: sc.reason, depth: sc.depth, pending: false, symbol: sc.market?.symbol ?? null };
+    cache.set(mint, { data, at: Date.now() });
+    return { data, scan: sc };
+  } catch (e) {
+    return { error: e?.name === "TimeoutError" ? "timeout" : /^\d+$/.test(e?.message || "") ? `HTTP ${e.message}` : "unreachable" };
+  }
+}
+
+// État du serveur, pour la fenêtre de l'extension
+async function health() {
+  const base = await apiBase();
+  try {
+    const r = await fetch(`${base}/api/lens?a=`, { signal: AbortSignal.timeout(6000) });
+    const j = await r.json().catch(() => null);
+    return { base, ok: r.ok && !!j && "results" in j, status: r.status };
+  } catch {
+    return { base, ok: false, status: 0 };
+  }
 }
 
 // Détail d'un token (panneau) : radar de sortie + scan rapide, à la demande
@@ -104,6 +137,12 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   switch (msg?.type) {
     case "verdicts":
       verdicts(msg.addrs, !!msg.peek).then(reply, () => reply({}));
+      return true;
+    case "scanNow":
+      scanNow(msg.mint).then(reply, () => reply({ error: "unreachable" }));
+      return true;
+    case "health":
+      health().then(reply);
       return true;
     case "detail":
       detail(msg.mint).then(reply, () => reply({}));

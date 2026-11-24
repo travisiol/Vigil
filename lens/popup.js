@@ -103,6 +103,21 @@ $("clean").addEventListener("change", () => {
   chrome.storage.sync.set({ showClean: settings.showClean });
 });
 
+// État du serveur : un serveur injoignable se voit tout de suite (au lieu de badges « Scanning » sans fin)
+async function checkServer() {
+  const h = await chrome.runtime.sendMessage({ type: "health" }).catch(() => null);
+  if (!h) return;
+  const box = $("srv");
+  box.hidden = h.ok;
+  $("srvOk").textContent = h.ok ? "Server online" : "";
+  if (!h.ok) {
+    const why = h.status ? `HTTP ${h.status}` : "no answer";
+    const hint = h.base === DEFAULT_API ? "The live server doesn't have Vigil's API yet." : "Is it running? Check the address under Advanced.";
+    box.innerHTML = `<b>Vigil's server isn't answering</b><code>${esc(h.base)}</code> · ${esc(why)}. ${esc(hint)}`;
+  }
+}
+checkServer();
+
 // Serveur Vigil (réglage avancé) : le site en ligne par défaut
 chrome.storage.local.get("api").then(({ api }) => {
   $("api").value = api || DEFAULT_API;
@@ -118,6 +133,6 @@ $("api").addEventListener("change", () => {
     v = DEFAULT_API;
   }
   $("api").value = v;
-  chrome.storage.local.set({ api: v === DEFAULT_API ? null : v });
+  chrome.storage.local.set({ api: v === DEFAULT_API ? null : v }).then(checkServer);
   $("open").href = v;
 });

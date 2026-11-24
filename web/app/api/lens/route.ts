@@ -62,7 +62,8 @@ async function get(req: Request) {
   const peek = new URL(req.url).searchParams.get("peek") === "1";
   if (!addrs.length) return Response.json({ results: {} }, { headers: CORS });
 
-  await mintFlags(addrs);
+  // lecture légère : en dernier dans la file du serveur, elle ne ralentit jamais un token cliqué
+  await (peek ? withPriority(2, () => mintFlags(addrs)) : mintFlags(addrs));
   await resolvePairs(addrs.filter((a) => !isMintCache.get(a)));
 
   const results: Record<string, Out> = {};

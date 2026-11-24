@@ -75,6 +75,10 @@
     const get = (p, ms) => fetch(TEST_API + p, { signal: AbortSignal.timeout(ms) }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
     if (msg.type === "verdicts") return get(`/api/lens?a=${msg.addrs.join(",")}${msg.peek ? "&peek=1" : ""}`, 12000).then((j) => j?.results || {});
     if (msg.type === "detail") return Promise.all([get(`/api/radar/${msg.mint}`, 15000), get(`/api/scan/${msg.mint}?depth=quick`, 15000)]).then(([radar, scan]) => ({ radar, scan }));
+    if (msg.type === "scanNow")
+      return get(`/api/scan/${msg.mint}?depth=quick`, 30000).then((sc) =>
+        sc?.verdict ? { data: { mint: msg.mint, verdict: sc.verdict, reason: sc.reason, depth: sc.depth, pending: false, symbol: sc.market?.symbol ?? null }, scan: sc } : { error: "no answer" },
+      );
     if (msg.type === "open") return window.open(`${TEST_API}/token/${msg.mint}`, "_blank", "noopener"), Promise.resolve({});
     return Promise.resolve({});
   }
@@ -135,14 +139,17 @@
   let running = false;
   let autoScan = false; // réglage « Scan every token automatically » (coupé par défaut) `[F-094]`
   const chosen = new Set(); // tokens qu'on a cliqués : lus, puis relus quand ils réapparaissent (gardés entre les pages)
-  let pageAddr = null; // token de la page en cours (pump.fun/coin/…, Axiom /meme/…) : lu d'office, c'est déjà un choix
+  let pageAddr = null; // token de la page en cours (pump.fun/coin/…, Axiom /meme/…) : son panneau propose le scan
+  let serverError = null; // dernier échec du serveur Vigil (affiché dans le panneau au lieu d'un « Scanning » sans fin)
 
-  const wantsRead = (a) => autoScan || chosen.has(a) || a === pageAddr;
+  // Seuls les tokens cliqués sont lus et affichés : un verdict déjà connu reste caché tant qu'on n'a pas cliqué `[F-094]`
+  const wantsRead = (a) => autoScan || chosen.has(a);
   function kindOf(a) {
     const s = state.get(a);
+    if (!wantsRead(a)) return "idle";
     if (s?.d?.verdict) return s.d.verdict;
     if (s?.failed) return "none";
-    return wantsRead(a) ? "scan" : "idle";
+    return "scan";
   }
   function choose(a) {
     if (!a || chosen.has(a)) return;
@@ -243,6 +250,7 @@
     for (const a of addrs) {
       const d = res && res[a];
       if (!d || state.get(a)?.d?.verdict) continue;
+      // gardé en mémoire (un clic l'affichera d'un coup) mais pas montré : seul le clic révèle un verdict
       if (d.mint === null || d.verdict || !state.has(a)) state.set(a, { d, at: now });
       paintAddr(a);
     }
@@ -262,6 +270,7 @@
       inflight.add(a);
     }
     const res = await send({ type: "verdicts", addrs });
+    serverError = res && res.__error ? res.__error : null;
     const now = Date.now();
     for (const a of addrs) {
       inflight.delete(a);
@@ -276,7 +285,7 @@
         const n = (retry.get(a)?.n || 0) + 1;
         if (n > MAX_TRIES && !prev?.d?.verdict) state.set(a, { d: d || prev?.d || null, at: now, failed: true });
         // un token cliqué est relu toutes les 1,5 s : le verdict arrive dès que le scan finit
-        else retry.set(a, { n, t: now + (chosen.has(a) || a === pageAddr ? (n < 10 ? 1500 : n < 16 ? 4000 : 12000) : n < 4 ? 3000 : n < 10 ? 6000 : 15000) });
+        else retry.set(a, { n, t: now + (chosen.has(a) ? (n < 10 ? 1500 : n < 16 ? 4000 : 12000) : n < 4 ? 3000 : n < 10 ? 6000 : 15000) });
       }
       paintAddr(a);
     }
@@ -384,13 +393,42 @@
     const a = el.dataset.vglAddr;
     const mint = state.get(a)?.d?.mint;
     if ((e.type === "auxclick" || e.ctrlKey || e.metaKey) && mint && IS_B58.test(mint)) return send({ type: "open", mint });
+    pick(a);
+  };
+  // Le token choisi : scan direct et prioritaire sur le serveur, verdict dès qu'il est prêt (pas de relances)
+  function pick(a) {
     choose(a);
     paintAddr(a);
-    need(a, Date.now());
-    flushSoon();
     openPanel(a);
     statsSoon();
-  };
+    const s = state.get(a);
+    if (s?.d?.verdict && Date.now() - s.at < REFRESH) return; // déjà lu (au survol, à l'instant) : affiché tout de suite
+    scanNow(a);
+  }
+  async function scanNow(a) {
+    const mint = state.get(a)?.d?.mint;
+    if (!mint) {
+      // adresse pas encore reconnue (paire, lien neuf) : le serveur la résout puis scanne
+      need(a, Date.now());
+      return flushSoon();
+    }
+    if (inflight.has(a)) return;
+    inflight.add(a);
+    const r = await send({ type: "scanNow", mint });
+    inflight.delete(a);
+    if (r?.data?.verdict) {
+      serverError = null;
+      state.set(a, { d: { ...state.get(a)?.d, ...r.data }, at: Date.now() });
+      retry.delete(a);
+      if (r.scan) detailCache.set(mint, { det: { scan: r.scan, radar: detailCache.get(mint)?.det?.radar || null }, at: 0 });
+    } else {
+      serverError = r?.error || "no answer";
+      retry.set(a, { n: (retry.get(a)?.n || 0) + 1, t: Date.now() + 3000 });
+    }
+    paintAddr(a);
+    if (panelAddr === a) renderPanel();
+    statsSoon();
+  }
 
   // --- parcours de la page ---
   // Le nom du token dans une ligne ou une carte : on pose le badge juste après (lisible, ne cache aucun chiffre)
@@ -594,7 +632,7 @@
   let panelAddr = null, panelHost = null, panelRoot = null, lastPath = "", panelMin = false, panelClosed = false;
   const detailCache = new Map(); // mint -> { det, at }
   const PANEL_CSS = `
-    :host{all:initial}
+    :host{all:initial}[hidden]{display:none!important}
     .p{width:300px;box-sizing:border-box;font:500 12.5px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:#F3EEF9;
        background:rgba(11,10,15,.97);border:1px solid #2A1E34;border-left:3px solid var(--c);border-radius:14px;padding:14px;box-shadow:0 20px 50px -18px #000}
     .p[data-v=clean]{--c:#2EF0C8}.p[data-v=watch]{--c:#FFB21F}.p[data-v=bundled]{--c:#FF4D4D}.p[data-v=scan],.p[data-v=none]{--c:#BE80FF}
@@ -672,6 +710,7 @@
       }).catch(() => {});
     });
     $(".o").addEventListener("click", () => {
+      if (kindOf(panelAddr) === "idle") return pick(panelAddr);
       const mint = state.get(panelAddr)?.d?.mint;
       if (mint && IS_B58.test(mint)) send({ type: "open", mint });
     });
@@ -723,8 +762,7 @@
     }
     ensurePanel();
     renderPanel();
-    need(panelAddr, Date.now());
-    flushSoon();
+    peekLater(panelAddr); // lecture légère : token ou pas ? (aucun scan)
   }
   function openPanel(a) {
     panelAddr = a;
@@ -753,12 +791,17 @@
     if ($(".ca").textContent !== "Copied") $(".ca").textContent = d?.mint ? `${short(d.mint)} ⧉` : "";
     $(".ca").hidden = !d?.mint;
     $(".r").textContent =
-      k === "scan" ? "Reading the launch wallets, the dev's history and who funded the first buyers…"
+      k === "idle" ? "Vigil reads this launch only when you ask: the first ten seconds of buys, the dev's past launches, who funded the first wallets."
+      : k === "scan" && serverError ? `Vigil's server isn't answering (${serverError}). Check the server in Vigil's window; retrying…`
+      : k === "scan" ? "Reading the launch wallets, the dev's history and who funded the first buyers…"
       : k === "none" ? "Not enough on-chain activity to judge this launch yet."
       : d?.reason || "";
-    $(".o").disabled = !d?.mint;
-    if (panelMin || !d?.mint) {
-      if (!d?.mint) fillDetail(null);
+    $(".o").textContent = k === "idle" ? "Scan this token" : "Open the full scan →";
+    $(".o").disabled = k !== "idle" && !d?.mint;
+    $(".g").hidden = k === "idle";
+    $(".ra").hidden = k === "idle";
+    if (panelMin || !d?.mint || k === "idle" || k === "scan") {
+      fillDetail(null);
       return;
     }
     const c = detailCache.get(d.mint);

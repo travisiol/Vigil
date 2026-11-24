@@ -25,7 +25,7 @@ Si tu soumets avant de pousser, l'examinateur de Google ne verra aucun verdict e
 - Paye les frais d'inscription, 5 $ une seule fois, et confirme ton adresse e-mail.
 
 ## 2. Envoyer l'extension
-- Clique **New item**, puis envoie le fichier `store/vigil-lens-0.6.0-store.zip`. Le `manifest.json` est à la racine du zip, comme le store l'exige.
+- Clique **New item**, puis envoie le fichier `store/vigil-lens-store.zip`. Le `manifest.json` est à la racine du zip, comme le store l'exige.
 - Pour chaque nouvelle version, augmente `version` dans `lens/manifest.json` et refais le zip. Ne réutilise jamais un numéro déjà envoyé.
 
 ## 3. Onglet « Store listing »
@@ -51,7 +51,7 @@ Axiom, GMGN, pump.fun, DexScreener, Padre and X. Photon and BullX in beta.
 HOW IT WORKS
 • Nothing runs until you click. Click the V next to a token: its seal lands in a few seconds and the token panel opens with the numbers and the exit radar.
 • Hover a seal for the reason in one line. Ctrl+click opens the full scan.
-• Seals Vigil already knows show up on their own.
+• Nothing is read behind your back: only the tokens you click get a seal.
 • Want every token on screen read? Turn on automatic scan in the extension's window.
 • The icon shows how many Bundled tokens are on screen.
 • Turn Vigil on or off for each site. Hide Clean seals to keep only what needs attention.
