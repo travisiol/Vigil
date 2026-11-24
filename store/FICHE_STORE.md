@@ -30,9 +30,11 @@ Si tu soumets avant de pousser, l'examinateur de Google ne verra aucun verdict e
 
 ## 3. Onglet « Store listing »
 
+> ⚠️ Premier envoi refusé le 2026-11-24 pour « spam dans les mots clés » : la liste « Axiom, GMGN, pump.fun, DexScreener, Padre and X » dans la description, et la même liste dans le résumé du manifest. Ne jamais remettre de liste de noms de sites dans la fiche ni dans le manifest. L'extension sait sur quels sites elle tourne ; la fiche décrit ce qu'elle fait.
+
 **Description** (à coller) :
 ```
-Vigil puts a small V next to every Solana token on the sites you already use. Click it, and Vigil reads that token's launch in a few seconds, then seals it:
+Vigil puts a small V next to every Solana token on the trading sites you already use, and on X. Click it, and Vigil reads that token's launch in a few seconds, then seals it:
 
 ● Clean: the launch looks spread out. No wallet in control, no dev with a rug history.
 ◎ Watch: nothing proves a rug, but something is off. Look twice before you buy.
@@ -44,9 +46,6 @@ WHAT VIGIL READS
 • Who funded the first wallets: ten wallets funded by one source are one player.
 • The biggest wallet and the top 10 holders.
 • The exit radar: are the launch wallets already selling?
-
-WHERE IT WORKS
-Axiom, GMGN, pump.fun, DexScreener, Padre and X. Photon and BullX in beta.
 
 HOW IT WORKS
 • Nothing runs until you click. Click the V next to a token: its seal lands in a few seconds and the token panel opens with the numbers and the exit radar.
